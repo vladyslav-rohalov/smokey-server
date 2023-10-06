@@ -9,6 +9,7 @@ import {
 import { CreateDateColumn, UpdateDateColumn } from 'typeorm';
 import { Order } from '../../orders/entities/order.entity';
 import { Address } from '../../addresses/entities/address.entity';
+import { Cart } from '../../cart/entities/cart.entity';
 // import { Review } from '../../reviews/entities/review.entity';
 
 @Entity({ name: 'users' })
@@ -38,18 +39,19 @@ export class User {
   @JoinColumn({ name: 'address_id', referencedColumnName: 'id' })
   address: Address;
 
-  @Column('jsonb', { nullable: true })
-  cart: { productId: number; quantity: number }[];
-
-  @Column('int', { array: true, default: [] })
-  favorites: number[];
+  @OneToOne(() => Cart, cart => cart.user)
+  @JoinColumn({ name: 'cart_id', referencedColumnName: 'id' })
+  cart: Cart[];
 
   @OneToMany(() => Order, order => order.user)
   @JoinColumn({ name: 'order_id', referencedColumnName: 'id' })
   orders: Order[];
 
-  //   @OneToMany(type => Review, review => review.user)
-  //  reviews: Review[];
+  @Column('int', { array: true, default: [] })
+  favorites: number[];
+
+  // @OneToMany(type => Review, review => review.user)
+  // reviews: Review[];
 
   @CreateDateColumn()
   createdAt: Date;
