@@ -3,6 +3,7 @@ import 'dotenv/config';
 import { DataSource } from 'typeorm';
 import { User } from './users/entities/user.entity';
 import { Order } from './orders/entities/order.entity';
+import { Address } from './addresses/entities/address.entity';
 
 const {
   POSTGRES_HOST,
@@ -21,7 +22,7 @@ export const AppDataSource = new DataSource({
   database: POSTGRES_DB,
   synchronize: false,
   logging: false,
-  entities: [User, Order],
+  entities: [User, Order, Address],
   migrations: ['src/migrations/*.ts'],
   subscribers: [],
 });

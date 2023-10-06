@@ -26,7 +26,7 @@ export class Order {
   amount: number;
 
   @ManyToOne(() => User, user => user.orders)
-  @JoinColumn({ name: 'user_id' })
+  @JoinColumn({ name: 'user_id', referencedColumnName: 'id' })
   user: User;
 
   @Column()

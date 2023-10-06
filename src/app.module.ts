@@ -3,11 +3,13 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { User } from './users/entities/user.entity';
 import { Order } from './orders/entities/order.entity';
+import { Address } from './addresses/entities/address.entity';
 import { AuthModule } from './auth/auth.module';
 import { UsersModule } from './users/users.module';
 import { OrdersModule } from './orders/orders.module';
 import { ReviewsModule } from './reviews/reviews.module';
 import { ProductsModule } from './products/products.module';
+import { AddressesModule } from './addresses/addresses.module';
 
 @Module({
   controllers: [],
@@ -23,7 +25,7 @@ import { ProductsModule } from './products/products.module';
         username: configService.get('POSTGRES_USER'),
         password: configService.get('POSTGRES_PASSWORD'),
         database: configService.get('POSTGRES_DB'),
-        entities: [User, Order],
+        entities: [User, Order, Address],
         synchronize: false,
       }),
       inject: [ConfigService],
@@ -33,6 +35,7 @@ import { ProductsModule } from './products/products.module';
     OrdersModule,
     ReviewsModule,
     ProductsModule,
+    AddressesModule,
   ],
 })
 export class AppModule {}

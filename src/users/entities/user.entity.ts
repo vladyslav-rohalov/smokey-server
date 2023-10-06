@@ -4,9 +4,11 @@ import {
   Column,
   OneToMany,
   JoinColumn,
+  OneToOne,
 } from 'typeorm';
 import { CreateDateColumn, UpdateDateColumn } from 'typeorm';
 import { Order } from '../../orders/entities/order.entity';
+import { Address } from '../../addresses/entities/address.entity';
 // import { Review } from '../../reviews/entities/review.entity';
 
 @Entity({ name: 'users' })
@@ -32,8 +34,9 @@ export class User {
   @Column()
   role: string;
 
-  @Column('jsonb', { nullable: true })
-  address: { city: string; street: string; house: string; apartment: string };
+  @OneToOne(() => Address, address => address.user)
+  @JoinColumn({ name: 'address_id', referencedColumnName: 'id' })
+  address: Address;
 
   @Column('jsonb', { nullable: true })
   cart: { productId: number; quantity: number }[];
@@ -42,7 +45,7 @@ export class User {
   favorites: number[];
 
   @OneToMany(() => Order, order => order.user)
-  @JoinColumn({ name: 'order_id' })
+  @JoinColumn({ name: 'order_id', referencedColumnName: 'id' })
   orders: Order[];
 
   //   @OneToMany(type => Review, review => review.user)
