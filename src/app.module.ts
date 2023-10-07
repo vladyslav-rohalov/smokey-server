@@ -11,6 +11,7 @@ import { Review } from './reviews/entities/review.entity';
 import { Hookah } from './hookahs/entities/hookah.entity';
 import { Tobacco } from './tobacco/entities/tobacco.entity';
 import { Coal } from './coals/entities/coal.entity';
+import { CartItem } from './cart-item/entities/cart-item.entity';
 import { Accessory } from './accessories/entities/accessory.entity';
 import { AuthModule } from './auth/auth.module';
 import { UsersModule } from './users/users.module';
@@ -24,6 +25,7 @@ import { HookahsModule } from './hookahs/hookahs.module';
 import { TobaccoModule } from './tobacco/tobacco.module';
 import { CoalsModule } from './coals/coals.module';
 import { AccessoriesModule } from './accessories/accessories.module';
+import { CartItemModule } from './cart-item/cart-item.module';
 
 @Module({
   controllers: [],
@@ -51,6 +53,7 @@ import { AccessoriesModule } from './accessories/accessories.module';
           Tobacco,
           Coal,
           Accessory,
+          CartItem,
         ],
         synchronize: false,
       }),
@@ -68,6 +71,7 @@ import { AccessoriesModule } from './accessories/accessories.module';
     TobaccoModule,
     CoalsModule,
     AccessoriesModule,
+    CartItemModule,
   ],
 })
 export class AppModule {}

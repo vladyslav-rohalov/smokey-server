@@ -44,7 +44,6 @@ export class User {
   cart: Cart[];
 
   @OneToMany(() => Order, order => order.user)
-  @JoinColumn({ name: 'order_id', referencedColumnName: 'id' })
   orders: Order[];
 
   @Column('int', { array: true, default: [] })

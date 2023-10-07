@@ -1,4 +1,4 @@
-import { Entity, PrimaryGeneratedColumn, Column, JoinColumn } from 'typeorm';
+import { Entity, PrimaryGeneratedColumn, Column } from 'typeorm';
 import { CreateDateColumn, UpdateDateColumn, ManyToMany } from 'typeorm';
 import { Product } from '../../products/entities/product.entity';
 
@@ -17,8 +17,7 @@ export class Tobacco {
   strength: number;
 
   @ManyToMany(() => Product, product => product.tobacco)
-  @JoinColumn({ name: 'product_id', referencedColumnName: 'id' })
-  product: Product;
+  products: Product;
 
   @CreateDateColumn()
   createdAt: Date;

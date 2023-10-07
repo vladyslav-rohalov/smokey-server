@@ -1,4 +1,4 @@
-import { Entity, PrimaryGeneratedColumn, Column, JoinColumn } from 'typeorm';
+import { Entity, PrimaryGeneratedColumn, Column } from 'typeorm';
 import { CreateDateColumn, UpdateDateColumn, ManyToMany } from 'typeorm';
 import { Product } from '../../products/entities/product.entity';
 
@@ -33,8 +33,7 @@ export class Accessory {
   bowl_type: Bowl_Type;
 
   @ManyToMany(() => Product, product => product.accessory)
-  @JoinColumn({ name: 'product_id', referencedColumnName: 'id' })
-  product: Product;
+  products: Product;
 
   @CreateDateColumn()
   createdAt: Date;

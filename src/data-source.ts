@@ -12,6 +12,7 @@ import { Hookah } from './hookahs/entities/hookah.entity';
 import { Tobacco } from './tobacco/entities/tobacco.entity';
 import { Coal } from './coals/entities/coal.entity';
 import { Accessory } from './accessories/entities/accessory.entity';
+import { CartItem } from './cart-item/entities/cart-item.entity';
 
 const {
   POSTGRES_HOST,
@@ -42,6 +43,7 @@ export const AppDataSource = new DataSource({
     Tobacco,
     Coal,
     Accessory,
+    CartItem,
   ],
   migrations: ['src/migrations/*.ts'],
   subscribers: [],

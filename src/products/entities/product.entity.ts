@@ -1,13 +1,14 @@
 import { Entity, PrimaryGeneratedColumn, Column, JoinColumn } from 'typeorm';
 import { CreateDateColumn, UpdateDateColumn, ManyToMany } from 'typeorm';
+import { OneToMany, JoinTable } from 'typeorm';
 import { Favorite } from '../../favorites/entities/favorite.entity';
-import { Cart } from '../../cart/entities/cart.entity';
 import { Order } from '../../orders/entities/order.entity';
 import { Review } from '../../reviews/entities/review.entity';
 import { Hookah } from '../../hookahs/entities/hookah.entity';
 import { Tobacco } from '../../tobacco/entities/tobacco.entity';
 import { Coal } from '../../coals/entities/coal.entity';
 import { Accessory } from '../../accessories/entities/accessory.entity';
+import { CartItem } from '../../cart-item/entities/cart-item.entity';
 
 enum Promotion {
   HOT = 'hot',
@@ -55,20 +56,63 @@ export class Product {
   @Column()
   rating: number;
 
-  @ManyToMany(() => Hookah, hookah => hookah.product)
-  @JoinColumn({ name: 'hookah_id', referencedColumnName: 'id' })
-  hookah: Hookah;
+  @OneToMany(() => CartItem, item => item.product)
+  cartItems: CartItem[];
 
-  @ManyToMany(() => Tobacco, tobacco => tobacco.product)
-  @JoinColumn({ name: 'tobacco', referencedColumnName: 'id' })
+  @ManyToMany(() => Hookah, hookah => hookah.products, { cascade: true })
+  @JoinTable({
+    name: 'hookah_products',
+    joinColumn: {
+      name: 'product_id',
+      referencedColumnName: 'id',
+    },
+    inverseJoinColumn: {
+      name: 'hookah_id',
+      referencedColumnName: 'id',
+    },
+  })
+  hookahs: Hookah[];
+
+  @ManyToMany(() => Tobacco, tobacco => tobacco.products)
+  @JoinTable({
+    name: 'tobacco_products',
+    joinColumn: {
+      name: 'product_id',
+      referencedColumnName: 'id',
+    },
+    inverseJoinColumn: {
+      name: 'tobacco_id',
+      referencedColumnName: 'id',
+    },
+  })
   tobacco: Tobacco;
 
-  @ManyToMany(() => Coal, coal => coal.product)
-  @JoinColumn({ name: 'coal_id', referencedColumnName: 'id' })
-  coal: Coal;
+  @ManyToMany(() => Coal, coal => coal.products)
+  @JoinTable({
+    name: 'coals_products',
+    joinColumn: {
+      name: 'product_id',
+      referencedColumnName: 'id',
+    },
+    inverseJoinColumn: {
+      name: 'coal_id',
+      referencedColumnName: 'id',
+    },
+  })
+  coals: Coal;
 
-  @ManyToMany(() => Accessory, accessory => accessory.product)
-  @JoinColumn({ name: 'accessory_id', referencedColumnName: 'id' })
+  @ManyToMany(() => Accessory, accessory => accessory.products)
+  @JoinTable({
+    name: 'accessories_products',
+    joinColumn: {
+      name: 'product_id',
+      referencedColumnName: 'id',
+    },
+    inverseJoinColumn: {
+      name: 'accessory_id',
+      referencedColumnName: 'id',
+    },
+  })
   accessory: Accessory;
 
   @CreateDateColumn()
