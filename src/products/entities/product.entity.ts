@@ -2,13 +2,13 @@ import { Entity, PrimaryGeneratedColumn, Column, JoinColumn } from 'typeorm';
 import { CreateDateColumn, UpdateDateColumn, ManyToMany } from 'typeorm';
 import { OneToMany, JoinTable } from 'typeorm';
 import { Favorite } from '../../favorites/entities/favorite.entity';
-import { Order } from '../../orders/entities/order.entity';
 import { Review } from '../../reviews/entities/review.entity';
 import { Hookah } from '../../hookahs/entities/hookah.entity';
 import { Tobacco } from '../../tobacco/entities/tobacco.entity';
 import { Coal } from '../../coals/entities/coal.entity';
 import { Accessory } from '../../accessories/entities/accessory.entity';
 import { CartItem } from '../../cart-item/entities/cart-item.entity';
+import { OrderItem } from '../../order-item/entities/order-item.entity';
 
 enum Promotion {
   HOT = 'hot',
@@ -56,8 +56,17 @@ export class Product {
   @Column()
   rating: number;
 
+  @OneToMany(() => Favorite, favorite => favorite.product)
+  favorites: Favorite[];
+
   @OneToMany(() => CartItem, item => item.product)
   cartItems: CartItem[];
+
+  @OneToMany(() => OrderItem, item => item.product)
+  orderItems: OrderItem[];
+
+  @OneToMany(() => Review, review => review.product)
+  reviews: Review;
 
   @ManyToMany(() => Hookah, hookah => hookah.products, { cascade: true })
   @JoinTable({

@@ -2,9 +2,8 @@ import { Module } from '@nestjs/common';
 import { ProductsService } from './products.service';
 import { ProductsController } from './products.controller';
 import { Product } from './entities/product.entity';
-// import { Cart } from 'src/cart/entities/cart.entity';
 import { CartItem } from 'src/cart-item/entities/cart-item.entity';
-import { Order } from 'src/orders/entities/order.entity';
+import { OrderItem } from 'src/order-item/entities/order-item.entity';
 import { Favorite } from 'src/favorites/entities/favorite.entity';
 import { Review } from 'src/reviews/entities/review.entity';
 import { Hookah } from 'src/hookahs/entities/hookah.entity';
@@ -19,9 +18,8 @@ import { TypeOrmModule } from '@nestjs/typeorm';
   imports: [
     TypeOrmModule.forFeature([
       Product,
-      // Cart,
       CartItem,
-      Order,
+      OrderItem,
       Favorite,
       Review,
       Hookah,
