@@ -1,4 +1,5 @@
 import { Injectable, CanActivate, ExecutionContext } from '@nestjs/common';
+import { HttpException, HttpStatus } from '@nestjs/common';
 
 @Injectable()
 export class RolesGuard implements CanActivate {
@@ -10,6 +11,6 @@ export class RolesGuard implements CanActivate {
       return true;
     }
 
-    return false;
+    throw new HttpException('Something went wrong...', HttpStatus.NOT_FOUND);
   }
 }

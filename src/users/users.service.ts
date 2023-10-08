@@ -1,9 +1,10 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
+import { UnauthorizedException } from '@nestjs/common/exceptions';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { User } from './entities/user.entity';
 import { CreateUserDto } from './dto/create-user.dto';
-
+import { UpdateUserDto } from './dto/update-user.dto';
 
 @Injectable()
 export class UsersService {
@@ -25,25 +26,50 @@ export class UsersService {
     const user = await this.userRepository.findOneBy({ email });
     return user;
   }
-  // async update(id: number, updateUserDto: UpdateUserDto): Promise<User> {
-  //   const user = await this.userRepository.findOneBy({ id });
 
-  //   if (!user) {
-  //     throw new NotFoundException(`User with ID ${id} not found`);
-  //   }
+  async update(
+    id: number,
+    authenticatedUserId: number,
+    updateUserDto: UpdateUserDto,
+  ): Promise<{
+    id: number;
+    firstName: string;
+    lastName: string;
+    phone: string;
+    email: string;
+  }> {
+    const user = await this.userRepository.findOneBy({ id });
 
-  //   await this.userRepository.update(id, updateUserDto);
+    if (!user) {
+      throw new NotFoundException(`User with ID ${id} not found`);
+    }
 
-  //   return await this.userRepository.findOneBy({ id });
-  // }
+    if (authenticatedUserId !== user.id) {
+      throw new UnauthorizedException(`You can only update your own profile`);
+    }
 
-  // async remove(id: number): Promise<void> {
-  //   const user = await this.userRepository.findOneBy({ id });
+    await this.userRepository.update(id, updateUserDto);
 
-  //   if (!user) {
-  //     throw new NotFoundException(`User with ID ${id} not found`);
-  //   }
+    return {
+      id: user.id,
+      firstName: updateUserDto.firstName,
+      lastName: updateUserDto.lastName,
+      phone: updateUserDto.phone,
+      email: updateUserDto.email,
+    };
+  }
 
-  //   await this.userRepository.remove(user);
-  // }
+  async remove(id: number, authenticatedUserId: number): Promise<void> {
+    const user = await this.userRepository.findOneBy({ id });
+
+    if (!user) {
+      throw new NotFoundException(`User with ID ${id} not found`);
+    }
+
+    if (authenticatedUserId !== user.id) {
+      throw new UnauthorizedException(`You can only update your own profile`);
+    }
+
+    await this.userRepository.remove(user);
+  }
 }

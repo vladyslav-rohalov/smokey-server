@@ -4,10 +4,9 @@ import { LoginUserDto } from './login-user.dto';
 import { UsersService } from '../users/users.service';
 import { JwtService } from '@nestjs/jwt/dist';
 import {
-  HttpException,
   UnauthorizedException,
+  ConflictException,
 } from '@nestjs/common/exceptions';
-import { HttpStatus } from '@nestjs/common/enums';
 import * as bcrypt from 'bcryptjs';
 import { User } from '../users/entities/user.entity';
 
@@ -23,7 +22,7 @@ export class AuthService {
       createUserDto.email,
     );
     if (candidate) {
-      throw new HttpException('Email in use', HttpStatus.CONFLICT);
+      throw new ConflictException({ message: 'Email in use' });
     }
     const hashPassword = await bcrypt.hash(createUserDto.password, 10);
 
@@ -64,5 +63,9 @@ export class AuthService {
       throw new UnauthorizedException({ message: 'Wrong email or password' });
     }
     return user;
+  }
+
+  async logout(id: number): Promise<void> {
+    const user = await this.userService.findOneByID(id);
   }
 }
