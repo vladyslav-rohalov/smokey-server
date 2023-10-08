@@ -7,12 +7,19 @@ import { Review } from 'src/reviews/entities/review.entity';
 import { Comment } from 'src/comments/entities/comment.entity';
 import { ReviewRating } from 'src/review-rating/entities/review-rating.entity';
 import { TypeOrmModule } from '@nestjs/typeorm';
-
+import { JwtModule } from '@nestjs/jwt/dist';
 @Module({
   controllers: [UsersController],
   providers: [UsersService],
   imports: [
-    TypeOrmModule.forFeature([User, Order, Review, Comment, ReviewRating]),
+    TypeOrmModule.forFeature([
+      User,
+      Order,
+      Review,
+      Comment,
+      ReviewRating,
+      JwtModule,
+    ]),
   ],
   exports: [UsersService],
 })
