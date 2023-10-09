@@ -8,6 +8,7 @@ import { ConflictException } from '@nestjs/common/exceptions';
 import { UnauthorizedException } from '@nestjs/common/exceptions';
 import * as bcrypt from 'bcryptjs';
 import { User } from '../users/entities/user.entity';
+import { IAuthResponse } from 'src/lib/interfaces';
 
 @Injectable()
 export class AuthService {
@@ -17,7 +18,7 @@ export class AuthService {
     private blTokensService: BlacklistedTokensService,
   ) {}
 
-  async registration(createUserDto: CreateUserDto) {
+  async registration(createUserDto: CreateUserDto): Promise<IAuthResponse> {
     const candidate = await this.userService.findOneByEmail(
       createUserDto.email,
     );
@@ -34,14 +35,26 @@ export class AuthService {
 
     const token = await this.generateToken(user);
 
-    return { email: user.email, token };
+    return {
+      firstName: user.firstName,
+      lastName: user.lastName,
+      phone: user.phone,
+      email: user.email,
+      token,
+    };
   }
 
-  async login(loginUserDto: LoginUserDto) {
+  async login(loginUserDto: LoginUserDto): Promise<IAuthResponse> {
     const user = await this.validateUser(loginUserDto);
     const token = await this.generateToken(user);
 
-    return { email: user.email, token };
+    return {
+      firstName: user.firstName,
+      lastName: user.lastName,
+      phone: user.phone,
+      email: user.email,
+      token,
+    };
   }
 
   async logout(token: string): Promise<void> {
@@ -52,12 +65,6 @@ export class AuthService {
     const payload = { id: user.id, role: user.role };
     return this.jwtService.sign(payload);
   }
-
-  // async blacklistToken(token: string): Promise<void> {
-  //   const blacklistedToken = new BlacklistedToken();
-  //   blacklistedToken.token = token;
-  //   await this.blacklistedTokenRepository.save(blacklistedToken);
-  // }
 
   private async validateUser(loginUserDto: LoginUserDto) {
     const user = await this.userService.findOneByEmail(loginUserDto.email);

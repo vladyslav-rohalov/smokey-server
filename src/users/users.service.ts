@@ -5,6 +5,7 @@ import { Repository } from 'typeorm';
 import { User } from './entities/user.entity';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
+import { IAuthResponse } from 'src/lib/interfaces';
 
 @Injectable()
 export class UsersService {
@@ -17,9 +18,14 @@ export class UsersService {
     return user;
   }
 
-  async findOneByID(id: number): Promise<{ email: string }> {
+  async findOneByID(id: number): Promise<IAuthResponse> {
     const user = await this.userRepository.findOneBy({ id });
-    return { email: user.email };
+    return {
+      firstName: user.firstName,
+      lastName: user.lastName,
+      phone: user.phone,
+      email: user.email,
+    };
   }
 
   async findOneByEmail(email: string): Promise<User> {
@@ -31,12 +37,7 @@ export class UsersService {
     id: number,
     authenticatedUserId: number,
     updateUserDto: UpdateUserDto,
-  ): Promise<{
-    firstName: string;
-    lastName: string;
-    phone: string;
-    email: string;
-  }> {
+  ): Promise<IAuthResponse> {
     const user = await this.userRepository.findOneBy({ id });
 
     if (!user) {
