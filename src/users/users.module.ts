@@ -9,6 +9,7 @@ import { ReviewRating } from 'src/review-rating/entities/review-rating.entity';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { JwtModule } from '@nestjs/jwt/dist';
 import { AuthModule } from 'src/auth/auth.module';
+import { BlacklistedTokensModule } from 'src/blacklisted-tokens/blacklisted-tokens.module';
 
 @Module({
   controllers: [UsersController],
@@ -23,6 +24,7 @@ import { AuthModule } from 'src/auth/auth.module';
       JwtModule,
     ]),
     forwardRef(() => AuthModule),
+    BlacklistedTokensModule,
   ],
   exports: [UsersService],
 })

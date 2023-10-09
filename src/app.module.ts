@@ -16,6 +16,7 @@ import { OrderItem } from './order-item/entities/order-item.entity';
 import { Accessory } from './accessories/entities/accessory.entity';
 import { Comment } from './comments/entities/comment.entity';
 import { ReviewRating } from './review-rating/entities/review-rating.entity';
+import { BlacklistedToken } from './blacklisted-tokens/entities/blacklisted-token.entity';
 import { AuthModule } from './auth/auth.module';
 import { UsersModule } from './users/users.module';
 import { OrdersModule } from './orders/orders.module';
@@ -32,6 +33,7 @@ import { CartItemModule } from './cart-item/cart-item.module';
 import { OrderItemModule } from './order-item/order-item.module';
 import { CommentsModule } from './comments/comments.module';
 import { ReviewRatingModule } from './review-rating/review-rating.module';
+import { BlacklistedTokensModule } from './blacklisted-tokens/blacklisted-tokens.module';
 
 @Module({
   controllers: [],
@@ -63,6 +65,7 @@ import { ReviewRatingModule } from './review-rating/review-rating.module';
           OrderItem,
           Comment,
           ReviewRating,
+          BlacklistedToken,
         ],
         synchronize: false,
       }),
@@ -84,6 +87,7 @@ import { ReviewRatingModule } from './review-rating/review-rating.module';
     OrderItemModule,
     CommentsModule,
     ReviewRatingModule,
+    BlacklistedTokensModule,
   ],
 })
 export class AppModule {}

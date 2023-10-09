@@ -16,6 +16,8 @@ import { CartItem } from './cart-item/entities/cart-item.entity';
 import { OrderItem } from './order-item/entities/order-item.entity';
 import { Comment } from './comments/entities/comment.entity';
 import { ReviewRating } from './review-rating/entities/review-rating.entity';
+import { BlacklistedToken } from './blacklisted-tokens/entities/blacklisted-token.entity';
+
 const {
   POSTGRES_HOST,
   POSTGRES_USER,
@@ -49,6 +51,7 @@ export const AppDataSource = new DataSource({
     OrderItem,
     Comment,
     ReviewRating,
+    BlacklistedToken,
   ],
   migrations: ['src/migrations/*.ts'],
   subscribers: [],

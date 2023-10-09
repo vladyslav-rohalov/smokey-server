@@ -3,10 +3,9 @@ import { CreateUserDto } from '../users/dto/create-user.dto';
 import { LoginUserDto } from './login-user.dto';
 import { UsersService } from '../users/users.service';
 import { JwtService } from '@nestjs/jwt/dist';
-import {
-  UnauthorizedException,
-  ConflictException,
-} from '@nestjs/common/exceptions';
+import { BlacklistedTokensService } from 'src/blacklisted-tokens/blacklisted-tokens.service';
+import { ConflictException } from '@nestjs/common/exceptions';
+import { UnauthorizedException } from '@nestjs/common/exceptions';
 import * as bcrypt from 'bcryptjs';
 import { User } from '../users/entities/user.entity';
 
@@ -15,6 +14,7 @@ export class AuthService {
   constructor(
     private userService: UsersService,
     private jwtService: JwtService,
+    private blTokensService: BlacklistedTokensService,
   ) {}
 
   async registration(createUserDto: CreateUserDto) {
@@ -32,7 +32,7 @@ export class AuthService {
       role: 'user',
     });
 
-    const { token } = await this.generateToken(user);
+    const token = await this.generateToken(user);
 
     return { email: user.email, token };
   }
@@ -40,15 +40,24 @@ export class AuthService {
   async login(loginUserDto: LoginUserDto) {
     const user = await this.validateUser(loginUserDto);
     const token = await this.generateToken(user);
-    return token;
+
+    return { email: user.email, token };
   }
 
-  async generateToken(user: User) {
-    const payload = { id: user.id, role: user.role };
-    return {
-      token: this.jwtService.sign(payload),
-    };
+  async logout(token: string): Promise<void> {
+    await this.blTokensService.blacklistToken(token);
   }
+
+  async generateToken(user: User): Promise<string> {
+    const payload = { id: user.id, role: user.role };
+    return this.jwtService.sign(payload);
+  }
+
+  // async blacklistToken(token: string): Promise<void> {
+  //   const blacklistedToken = new BlacklistedToken();
+  //   blacklistedToken.token = token;
+  //   await this.blacklistedTokenRepository.save(blacklistedToken);
+  // }
 
   private async validateUser(loginUserDto: LoginUserDto) {
     const user = await this.userService.findOneByEmail(loginUserDto.email);
@@ -63,9 +72,5 @@ export class AuthService {
       throw new UnauthorizedException({ message: 'Wrong email or password' });
     }
     return user;
-  }
-
-  async logout(id: number): Promise<void> {
-    const user = await this.userService.findOneByID(id);
   }
 }
