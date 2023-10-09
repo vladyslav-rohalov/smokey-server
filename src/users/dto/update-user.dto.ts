@@ -1,4 +1,4 @@
-import { IsEmail, IsString, Length, IsOptional } from 'class-validator';
+import { IsEmail, IsString, IsOptional } from 'class-validator';
 
 export class UpdateUserDto {
   @IsString()
@@ -11,9 +11,6 @@ export class UpdateUserDto {
 
   @IsString()
   @IsOptional()
-  @Length(13, 13, {
-    message: 'The phone number must be 13 symbols',
-  })
   phone: string;
 
   @IsString()

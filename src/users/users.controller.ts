@@ -14,9 +14,11 @@ export class UsersController {
   constructor(private readonly usersService: UsersService) {}
 
   @UseGuards(JwtAuthGuard)
-  @Get(':id')
-  findOneById(@Param('id') id: string) {
-    return this.usersService.findOneByID(+id);
+  @HttpCode(200)
+  @Get('current')
+  findOneById(@Req() req: IRequest) {
+    const authenticatedUserId = req.user.id;
+    return this.usersService.findOneByID(authenticatedUserId);
   }
 
   @UseGuards(JwtAuthGuard)

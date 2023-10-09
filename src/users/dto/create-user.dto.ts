@@ -1,4 +1,4 @@
-import { IsEmail, IsString, Length, Matches } from 'class-validator';
+import { IsEmail, IsString, Matches } from 'class-validator';
 import { IsNotEmpty } from 'class-validator';
 
 export class CreateUserDto {
@@ -12,9 +12,6 @@ export class CreateUserDto {
 
   @IsString()
   @IsNotEmpty()
-  @Length(13, 13, {
-    message: 'The phone number must be 13 symbols',
-  })
   readonly phone: string;
 
   @IsString()

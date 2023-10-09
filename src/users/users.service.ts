@@ -17,9 +17,9 @@ export class UsersService {
     return user;
   }
 
-  async findOneByID(id: number): Promise<User> {
+  async findOneByID(id: number): Promise<{ email: string }> {
     const user = await this.userRepository.findOneBy({ id });
-    return user;
+    return { email: user.email };
   }
 
   async findOneByEmail(email: string): Promise<User> {
@@ -32,7 +32,6 @@ export class UsersService {
     authenticatedUserId: number,
     updateUserDto: UpdateUserDto,
   ): Promise<{
-    id: number;
     firstName: string;
     lastName: string;
     phone: string;
@@ -51,7 +50,6 @@ export class UsersService {
     await this.userRepository.update(id, updateUserDto);
 
     return {
-      id: user.id,
       firstName: updateUserDto.firstName,
       lastName: updateUserDto.lastName,
       phone: updateUserDto.phone,
