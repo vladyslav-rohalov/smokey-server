@@ -23,21 +23,17 @@ export class UsersController {
 
   @UseGuards(JwtAuthGuard)
   @HttpCode(200)
-  @Patch(':id')
-  update(
-    @Param('id') id: string,
-    @Body() updateUserDto: UpdateUserDto,
-    @Req() req: IRequest,
-  ) {
+  @Patch('update')
+  update(@Body() updateUserDto: UpdateUserDto, @Req() req: IRequest) {
     const authenticatedUserId = req.user.id;
-    return this.usersService.update(+id, authenticatedUserId, updateUserDto);
+    return this.usersService.update(authenticatedUserId, updateUserDto);
   }
 
   @UseGuards(JwtAuthGuard)
   @HttpCode(204)
-  @Delete(':id')
-  remove(@Param('id') id: string, @Req() req: IRequest) {
+  @Delete()
+  remove(@Req() req: IRequest) {
     const authenticatedUserId = req.user.id;
-    return this.usersService.remove(+id, authenticatedUserId);
+    return this.usersService.remove(authenticatedUserId);
   }
 }

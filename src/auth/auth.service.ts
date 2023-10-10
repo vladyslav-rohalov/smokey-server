@@ -36,10 +36,12 @@ export class AuthService {
     const token = await this.generateToken(user);
 
     return {
-      firstName: user.firstName,
-      lastName: user.lastName,
-      phone: user.phone,
-      email: user.email,
+      user: {
+        firstName: user.firstName,
+        lastName: user.lastName,
+        phone: user.phone,
+        email: user.email,
+      },
       token,
     };
   }
@@ -49,10 +51,12 @@ export class AuthService {
     const token = await this.generateToken(user);
 
     return {
-      firstName: user.firstName,
-      lastName: user.lastName,
-      phone: user.phone,
-      email: user.email,
+      user: {
+        firstName: user.firstName,
+        lastName: user.lastName,
+        phone: user.phone,
+        email: user.email,
+      },
       token,
     };
   }

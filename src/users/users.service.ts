@@ -21,10 +21,12 @@ export class UsersService {
   async findOneByID(id: number): Promise<IAuthResponse> {
     const user = await this.userRepository.findOneBy({ id });
     return {
-      firstName: user.firstName,
-      lastName: user.lastName,
-      phone: user.phone,
-      email: user.email,
+      user: {
+        firstName: user.firstName,
+        lastName: user.lastName,
+        phone: user.phone,
+        email: user.email,
+      },
     };
   }
 
@@ -34,39 +36,41 @@ export class UsersService {
   }
 
   async update(
-    id: number,
     authenticatedUserId: number,
     updateUserDto: UpdateUserDto,
   ): Promise<IAuthResponse> {
-    const user = await this.userRepository.findOneBy({ id });
+    const user = await this.userRepository.findOneBy({
+      id: authenticatedUserId,
+    });
 
     if (!user) {
-      throw new NotFoundException(`User with ID ${id} not found`);
+      throw new NotFoundException(
+        `User with ID ${authenticatedUserId} not found`,
+      );
     }
 
-    if (authenticatedUserId !== user.id) {
-      throw new UnauthorizedException(`You can only update your own profile`);
-    }
-
-    await this.userRepository.update(id, updateUserDto);
+    await this.userRepository.update(user.id, updateUserDto);
+    const updatedUser = await this.userRepository.findOneBy({ id: user.id });
 
     return {
-      firstName: updateUserDto.firstName,
-      lastName: updateUserDto.lastName,
-      phone: updateUserDto.phone,
-      email: updateUserDto.email,
+      user: {
+        firstName: updatedUser.firstName,
+        lastName: updatedUser.lastName,
+        phone: updatedUser.phone,
+        email: updatedUser.email,
+      },
     };
   }
 
-  async remove(id: number, authenticatedUserId: number): Promise<void> {
-    const user = await this.userRepository.findOneBy({ id });
+  async remove(authenticatedUserId: number): Promise<void> {
+    const user = await this.userRepository.findOneBy({
+      id: authenticatedUserId,
+    });
 
     if (!user) {
-      throw new NotFoundException(`User with ID ${id} not found`);
-    }
-
-    if (authenticatedUserId !== user.id) {
-      throw new UnauthorizedException(`You can only update your own profile`);
+      throw new NotFoundException(
+        `User with ID ${authenticatedUserId} not found`,
+      );
     }
 
     await this.userRepository.remove(user);
