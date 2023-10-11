@@ -41,6 +41,12 @@ export class AuthService {
         lastName: user.lastName,
         phone: user.phone,
         email: user.email,
+        address: {
+          city: user.address?.city || null,
+          street: user.address?.street || null,
+          house: user.address?.house || null,
+          apartment: user.address?.apartment || null,
+        },
       },
       token,
     };
@@ -56,6 +62,12 @@ export class AuthService {
         lastName: user.lastName,
         phone: user.phone,
         email: user.email,
+        address: {
+          city: user.address?.city || null,
+          street: user.address?.street || null,
+          house: user.address?.house || null,
+          apartment: user.address?.apartment || null,
+        },
       },
       token,
     };

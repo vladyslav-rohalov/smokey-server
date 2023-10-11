@@ -32,7 +32,7 @@ export class User {
   @Column({ default: 'user' })
   role: string;
 
-  @OneToOne(() => Address, address => address.user)
+  @OneToOne(() => Address, address => address.user, { onDelete: 'CASCADE' })
   @JoinColumn({ name: 'address_id', referencedColumnName: 'id' })
   address: Address;
 

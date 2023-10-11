@@ -1,26 +1,49 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, NotFoundException } from '@nestjs/common';
+import { InjectRepository } from '@nestjs/typeorm';
 import { CreateAddressDto } from './dto/create-address.dto';
-import { UpdateAddressDto } from './dto/update-address.dto';
+import { Repository } from 'typeorm';
+import { Address } from './entities/address.entity';
+import { User } from 'src/users/entities/user.entity';
+import { IAuthResponse } from 'src/lib/interfaces';
 
 @Injectable()
 export class AddressesService {
-  create(createAddressDto: CreateAddressDto) {
-    return 'This action adds a new address';
-  }
+  constructor(
+    @InjectRepository(User) private userRepository: Repository<User>,
+    @InjectRepository(Address) private addressRepository: Repository<Address>,
+  ) {}
 
-  findAll() {
-    return `This action returns all addresses`;
-  }
+  async updateAddress(
+    userId: number,
+    createAddressDto: CreateAddressDto,
+  ): Promise<IAuthResponse> {
+    const user = await this.userRepository.findOne({
+      where: { id: userId },
+      relations: ['address'],
+    });
 
-  findOne(id: number) {
-    return `This action returns a #${id} address`;
-  }
+    if (!user) {
+      throw new NotFoundException('User not found');
+    }
 
-  update(id: number, updateAddressDto: UpdateAddressDto) {
-    return `This action updates a #${id} address`;
-  }
+    const newAddress = await this.addressRepository.save(createAddressDto);
+    console.log(newAddress);
+    user.address = newAddress;
 
-  remove(id: number) {
-    return `This action removes a #${id} address`;
+    await this.userRepository.save(user);
+    return {
+      user: {
+        firstName: user.firstName,
+        lastName: user.lastName,
+        phone: user.phone,
+        email: user.email,
+        address: {
+          city: user.address.city,
+          street: user.address.street,
+          house: user.address.house,
+          apartment: user.address.apartment,
+        },
+      },
+    };
   }
 }

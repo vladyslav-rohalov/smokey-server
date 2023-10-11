@@ -1,5 +1,5 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
-import { UnauthorizedException } from '@nestjs/common/exceptions';
+import { ConflictException } from '@nestjs/common/exceptions';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { User } from './entities/user.entity';
@@ -19,19 +19,31 @@ export class UsersService {
   }
 
   async findOneByID(id: number): Promise<IAuthResponse> {
-    const user = await this.userRepository.findOneBy({ id });
+    const user = await this.userRepository.findOne({
+      where: { id: id },
+      relations: ['address'],
+    });
     return {
       user: {
         firstName: user.firstName,
         lastName: user.lastName,
         phone: user.phone,
         email: user.email,
+        address: {
+          city: user.address.city,
+          street: user.address.street,
+          house: user.address.house,
+          apartment: user.address.apartment,
+        },
       },
     };
   }
 
   async findOneByEmail(email: string): Promise<User> {
-    const user = await this.userRepository.findOneBy({ email });
+    const user = await this.userRepository.findOne({
+      where: { email: email },
+      relations: ['address'],
+    });
     return user;
   }
 
@@ -39,9 +51,10 @@ export class UsersService {
     authenticatedUserId: number,
     updateUserDto: UpdateUserDto,
   ): Promise<IAuthResponse> {
-    const user = await this.userRepository.findOneBy({
-      id: authenticatedUserId,
+    const user = await this.userRepository.findOne({
+      where: { id: authenticatedUserId },
     });
+    // const user = await this.findOneByID(authenticatedUserId);
 
     if (!user) {
       throw new NotFoundException(
@@ -49,22 +62,36 @@ export class UsersService {
       );
     }
 
-    await this.userRepository.update(user.id, updateUserDto);
-    const updatedUser = await this.userRepository.findOneBy({ id: user.id });
+    const isTwin = await this.findOneByEmail(updateUserDto.email);
+    if (isTwin) {
+      if (isTwin.email !== user.email) {
+        throw new ConflictException('This email is already in use');
+      }
+    }
 
-    return {
-      user: {
-        firstName: updatedUser.firstName,
-        lastName: updatedUser.lastName,
-        phone: updatedUser.phone,
-        email: updatedUser.email,
-      },
-    };
+    await this.userRepository.update(user.id, updateUserDto);
+    // const updatedUser = await this.userRepository.findOneBy({ id: user.id });
+    const updatedUser = await this.findOneByID(user.id);
+    return updatedUser;
+    // return {
+    //   user: {
+    //     firstName: updatedUser.firstName,
+    //     lastName: updatedUser.lastName,
+    //     phone: updatedUser.phone,
+    //     email: updatedUser.email,
+    //     address: {
+    //       city: user.address.city,
+    //       street: user.address.street,
+    //       house: user.address.house,
+    //       apartment: user.address.apartment,
+    //     },
+    //   },
+    // };
   }
 
   async remove(authenticatedUserId: number): Promise<void> {
-    const user = await this.userRepository.findOneBy({
-      id: authenticatedUserId,
+    const user = await this.userRepository.findOne({
+      where: { id: authenticatedUserId },
     });
 
     if (!user) {

@@ -1,7 +1,9 @@
 import { Module, forwardRef } from '@nestjs/common';
 import { UsersService } from './users.service';
+import { AddressesService } from 'src/addresses/addresses.service';
 import { UsersController } from './users.controller';
 import { User } from './entities/user.entity';
+import { Address } from 'src/addresses/entities/address.entity';
 import { Order } from 'src/orders/entities/order.entity';
 import { Review } from 'src/reviews/entities/review.entity';
 import { Comment } from 'src/comments/entities/comment.entity';
@@ -13,16 +15,18 @@ import { BlacklistedTokensModule } from 'src/blacklisted-tokens/blacklisted-toke
 
 @Module({
   controllers: [UsersController],
-  providers: [UsersService],
+  providers: [UsersService, AddressesService],
   imports: [
     TypeOrmModule.forFeature([
       User,
+      Address,
       Order,
       Review,
       Comment,
       ReviewRating,
       JwtModule,
     ]),
+
     forwardRef(() => AuthModule),
     BlacklistedTokensModule,
   ],
