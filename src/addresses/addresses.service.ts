@@ -26,9 +26,16 @@ export class AddressesService {
       throw new NotFoundException('User not found');
     }
 
-    const newAddress = await this.addressRepository.save(createAddressDto);
-    console.log(newAddress);
-    user.address = newAddress;
+    let address = user.address;
+
+    if (address) {
+      address = Object.assign(address, createAddressDto);
+    } else {
+      address = this.addressRepository.create(createAddressDto);
+    }
+
+    address = await this.addressRepository.save(address);
+    user.address = address;
 
     await this.userRepository.save(user);
     return {
@@ -38,10 +45,10 @@ export class AddressesService {
         phone: user.phone,
         email: user.email,
         address: {
-          city: user.address.city,
-          street: user.address.street,
-          house: user.address.house,
-          apartment: user.address.apartment,
+          city: user.address?.city,
+          street: user.address?.street,
+          house: user.address?.house,
+          apartment: user.address?.apartment,
         },
       },
     };

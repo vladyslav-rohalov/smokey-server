@@ -3,6 +3,7 @@ import { ConflictException } from '@nestjs/common/exceptions';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { User } from './entities/user.entity';
+import { Address } from 'src/addresses/entities/address.entity';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
 import { IAuthResponse } from 'src/lib/interfaces';
@@ -11,6 +12,7 @@ import { IAuthResponse } from 'src/lib/interfaces';
 export class UsersService {
   constructor(
     @InjectRepository(User) private userRepository: Repository<User>,
+    @InjectRepository(Address) private addressRepository: Repository<Address>,
   ) {}
 
   async create(createUserDto: CreateUserDto): Promise<User> {
@@ -54,7 +56,6 @@ export class UsersService {
     const user = await this.userRepository.findOne({
       where: { id: authenticatedUserId },
     });
-    // const user = await this.findOneByID(authenticatedUserId);
 
     if (!user) {
       throw new NotFoundException(
@@ -70,34 +71,24 @@ export class UsersService {
     }
 
     await this.userRepository.update(user.id, updateUserDto);
-    // const updatedUser = await this.userRepository.findOneBy({ id: user.id });
     const updatedUser = await this.findOneByID(user.id);
     return updatedUser;
-    // return {
-    //   user: {
-    //     firstName: updatedUser.firstName,
-    //     lastName: updatedUser.lastName,
-    //     phone: updatedUser.phone,
-    //     email: updatedUser.email,
-    //     address: {
-    //       city: user.address.city,
-    //       street: user.address.street,
-    //       house: user.address.house,
-    //       apartment: user.address.apartment,
-    //     },
-    //   },
-    // };
   }
 
   async remove(authenticatedUserId: number): Promise<void> {
     const user = await this.userRepository.findOne({
       where: { id: authenticatedUserId },
+      relations: ['address'],
     });
 
     if (!user) {
       throw new NotFoundException(
         `User with ID ${authenticatedUserId} not found`,
       );
+    }
+
+    if (user.address) {
+      await this.addressRepository.remove(user.address);
     }
 
     await this.userRepository.remove(user);

@@ -1,6 +1,6 @@
 import { Entity, PrimaryGeneratedColumn, Column } from 'typeorm';
 import { CreateDateColumn, UpdateDateColumn, JoinColumn } from 'typeorm';
-import { OneToOne, OneToMany } from 'typeorm';
+import { OneToOne, OneToMany, ManyToOne } from 'typeorm';
 import { Order } from '../../orders/entities/order.entity';
 import { Address } from '../../addresses/entities/address.entity';
 import { Cart } from '../../cart/entities/cart.entity';
@@ -32,7 +32,9 @@ export class User {
   @Column({ default: 'user' })
   role: string;
 
-  @OneToOne(() => Address, address => address.user, { onDelete: 'CASCADE' })
+  @OneToOne(() => Address, address => address.user, {
+    onDelete: 'CASCADE',
+  })
   @JoinColumn({ name: 'address_id', referencedColumnName: 'id' })
   address: Address;
 
