@@ -32,10 +32,10 @@ export class UsersService {
         phone: user.phone,
         email: user.email,
         address: {
-          city: user.address.city,
-          street: user.address.street,
-          house: user.address.house,
-          apartment: user.address.apartment,
+          city: user.address?.city,
+          street: user.address?.street,
+          house: user.address?.house,
+          apartment: user.address?.apartment,
         },
       },
     };

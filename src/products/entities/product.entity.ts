@@ -1,6 +1,6 @@
 import { Entity, PrimaryGeneratedColumn, Column, JoinColumn } from 'typeorm';
 import { CreateDateColumn, UpdateDateColumn, ManyToMany } from 'typeorm';
-import { OneToMany, JoinTable } from 'typeorm';
+import { OneToMany, JoinTable, OneToOne } from 'typeorm';
 import { Favorite } from '../../favorites/entities/favorite.entity';
 import { Review } from '../../reviews/entities/review.entity';
 import { Hookah } from '../../hookahs/entities/hookah.entity';
@@ -42,7 +42,7 @@ export class Product {
   price: number;
 
   @Column()
-  descriptiom: string;
+  description: string;
 
   @Column()
   brand: string;
@@ -53,7 +53,7 @@ export class Product {
   @Column()
   available: number;
 
-  @Column()
+  @Column({ nullable: true })
   rating: number;
 
   @OneToMany(() => Favorite, favorite => favorite.product)
@@ -82,21 +82,10 @@ export class Product {
   })
   hookahs: Hookah[];
 
-  @ManyToMany(() => Tobacco, tobacco => tobacco.products)
-  @JoinTable({
-    name: 'tobacco_products',
-    joinColumn: {
-      name: 'product_id',
-      referencedColumnName: 'id',
-    },
-    inverseJoinColumn: {
-      name: 'tobacco_id',
-      referencedColumnName: 'id',
-    },
-  })
+  @OneToOne(() => Tobacco, tobacco => tobacco.products, { cascade: true })
   tobacco: Tobacco;
 
-  @ManyToMany(() => Coal, coal => coal.products)
+  @ManyToMany(() => Coal, coal => coal.products, { cascade: true })
   @JoinTable({
     name: 'coals_products',
     joinColumn: {
@@ -110,7 +99,9 @@ export class Product {
   })
   coals: Coal;
 
-  @ManyToMany(() => Accessory, accessory => accessory.products)
+  @ManyToMany(() => Accessory, accessory => accessory.products, {
+    cascade: true,
+  })
   @JoinTable({
     name: 'accessories_products',
     joinColumn: {
