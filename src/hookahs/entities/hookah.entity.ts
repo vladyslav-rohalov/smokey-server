@@ -1,8 +1,8 @@
 import { Entity, PrimaryGeneratedColumn, Column } from 'typeorm';
-import { CreateDateColumn, UpdateDateColumn, ManyToMany } from 'typeorm';
+import { JoinColumn, OneToOne } from 'typeorm';
 import { Product } from '../../products/entities/product.entity';
 
-enum Size {
+export enum Size {
   BIG = 'big',
   MEDIUM = 'medium',
   SMALL = 'small',
@@ -20,12 +20,10 @@ export class Hookah {
   @Column({ type: 'enum', enum: Size })
   size: Size;
 
-  @ManyToMany(() => Product, product => product.hookahs)
+  @OneToOne(() => Product, product => product.hookahs, {
+    onDelete: 'CASCADE',
+    onUpdate: 'CASCADE',
+  })
+  @JoinColumn({ name: 'product_id', referencedColumnName: 'id' })
   products: Product;
-
-  @CreateDateColumn()
-  createdAt: Date;
-
-  @UpdateDateColumn()
-  updatedAt: Date;
 }

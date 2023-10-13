@@ -79,21 +79,4 @@ export class TobaccoService {
     const tobacco = await this.productService.findAllTobacco();
     return tobacco;
   }
-
-  async remove(productId: number) {
-    const product = await this.productRepository.findOne({
-      where: { id: productId },
-      relations: ['tobacco'],
-    });
-    if (!product) {
-      throw new NotFoundException(`product with id ${productId} not found`);
-    }
-
-    const tobacco = await this.tobaccoRepository.findOne({
-      where: { id: product.tobacco.id },
-    });
-
-    await this.productRepository.remove(product);
-    await this.tobaccoRepository.remove(tobacco);
-  }
 }

@@ -1,6 +1,6 @@
-import { Entity, PrimaryGeneratedColumn, Column, JoinColumn } from 'typeorm';
+import { Entity, PrimaryGeneratedColumn, Column } from 'typeorm';
 import { CreateDateColumn, UpdateDateColumn, ManyToMany } from 'typeorm';
-import { OneToMany, JoinTable, OneToOne } from 'typeorm';
+import { OneToMany, OneToOne } from 'typeorm';
 import { Favorite } from '../../favorites/entities/favorite.entity';
 import { Review } from '../../reviews/entities/review.entity';
 import { Hookah } from '../../hookahs/entities/hookah.entity';
@@ -35,8 +35,8 @@ export class Product {
   @Column({ type: 'enum', enum: Status, default: Status.IN_STOCK })
   status: Status;
 
-  @Column({ type: 'varchar', array: true })
-  images: string[];
+  @Column({ type: 'varchar', array: true, nullable: true })
+  images: string[] | null;
 
   @Column()
   price: number;
@@ -68,50 +68,17 @@ export class Product {
   @OneToMany(() => Review, review => review.product)
   reviews: Review;
 
-  @ManyToMany(() => Hookah, hookah => hookah.products, { cascade: true })
-  @JoinTable({
-    name: 'hookah_products',
-    joinColumn: {
-      name: 'product_id',
-      referencedColumnName: 'id',
-    },
-    inverseJoinColumn: {
-      name: 'hookah_id',
-      referencedColumnName: 'id',
-    },
-  })
-  hookahs: Hookah[];
+  @OneToOne(() => Hookah, hookah => hookah.products, { cascade: true })
+  hookahs: Hookah;
 
   @OneToOne(() => Tobacco, tobacco => tobacco.products, { cascade: true })
   tobacco: Tobacco;
 
-  @ManyToMany(() => Coal, coal => coal.products, { cascade: true })
-  @JoinTable({
-    name: 'coals_products',
-    joinColumn: {
-      name: 'product_id',
-      referencedColumnName: 'id',
-    },
-    inverseJoinColumn: {
-      name: 'coal_id',
-      referencedColumnName: 'id',
-    },
-  })
+  @OneToOne(() => Coal, coal => coal.products, { cascade: true })
   coals: Coal;
 
-  @ManyToMany(() => Accessory, accessory => accessory.products, {
+  @OneToOne(() => Accessory, accessory => accessory.products, {
     cascade: true,
-  })
-  @JoinTable({
-    name: 'accessories_products',
-    joinColumn: {
-      name: 'product_id',
-      referencedColumnName: 'id',
-    },
-    inverseJoinColumn: {
-      name: 'accessory_id',
-      referencedColumnName: 'id',
-    },
   })
   accessory: Accessory;
 
@@ -120,4 +87,5 @@ export class Product {
 
   @UpdateDateColumn()
   updatedAt: Date;
+  product: Product;
 }

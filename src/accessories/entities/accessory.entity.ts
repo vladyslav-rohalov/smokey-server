@@ -1,8 +1,8 @@
 import { Entity, PrimaryGeneratedColumn, Column } from 'typeorm';
-import { CreateDateColumn, UpdateDateColumn, ManyToMany } from 'typeorm';
+import { OneToOne, JoinColumn } from 'typeorm';
 import { Product } from '../../products/entities/product.entity';
 
-enum Type {
+export enum Type {
   BOWL = 'bowl',
   HOSE = 'hose',
   TONGS = 'tongs',
@@ -14,7 +14,7 @@ enum Type {
   OTHER = 'other',
 }
 
-enum Bowl_Type {
+export enum Bowl_Type {
   TURKISH = 'turkish',
   PHUNNEL = 'phunnel',
   VORTEX = 'vortex',
@@ -29,15 +29,13 @@ export class Accessory {
   @Column({ type: 'enum', enum: Type })
   type: Type;
 
-  @Column({ type: 'enum', enum: Bowl_Type })
-  bowl_type: Bowl_Type;
+  @Column({ type: 'enum', enum: Bowl_Type, nullable: true })
+  bowl_type: Bowl_Type | null;
 
-  @ManyToMany(() => Product, product => product.accessory)
+  @OneToOne(() => Product, product => product.accessory, {
+    onDelete: 'CASCADE',
+    onUpdate: 'CASCADE',
+  })
+  @JoinColumn({ name: 'product_id', referencedColumnName: 'id' })
   products: Product;
-
-  @CreateDateColumn()
-  createdAt: Date;
-
-  @UpdateDateColumn()
-  updatedAt: Date;
 }

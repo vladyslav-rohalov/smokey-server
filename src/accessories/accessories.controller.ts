@@ -1,34 +1,50 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete } from '@nestjs/common';
+import {
+  Controller,
+  Get,
+  Post,
+  Body,
+  Patch,
+  Param,
+  Delete,
+} from '@nestjs/common';
 import { AccessoriesService } from './accessories.service';
 import { CreateAccessoryDto } from './dto/create-accessory.dto';
 import { UpdateAccessoryDto } from './dto/update-accessory.dto';
+import { CreateProductDto } from 'src/products/dto/create-product.dto';
+import { UpdateProductDto } from 'src/products/dto/update-product.dto';
 
-@Controller('accessories')
+@Controller('api/products/accessories')
 export class AccessoriesController {
   constructor(private readonly accessoriesService: AccessoriesService) {}
 
   @Post()
-  create(@Body() createAccessoryDto: CreateAccessoryDto) {
-    return this.accessoriesService.create(createAccessoryDto);
+  createProductWithTobacco(
+    @Body() createAccessoryDto: CreateAccessoryDto,
+    @Body() createProductDto: CreateProductDto,
+  ) {
+    return this.accessoriesService.createProductWithAccessory(
+      createProductDto,
+      createAccessoryDto,
+    );
   }
 
   @Get()
   findAll() {
-    return this.accessoriesService.findAll();
-  }
-
-  @Get(':id')
-  findOne(@Param('id') id: string) {
-    return this.accessoriesService.findOne(+id);
+    return this.accessoriesService.findAllAccessories();
   }
 
   @Patch(':id')
-  update(@Param('id') id: string, @Body() updateAccessoryDto: UpdateAccessoryDto) {
-    return this.accessoriesService.update(+id, updateAccessoryDto);
-  }
-
-  @Delete(':id')
-  remove(@Param('id') id: string) {
-    return this.accessoriesService.remove(+id);
+  update(
+    @Param('id') id: string,
+    @Body()
+    updateAccessoryDto: UpdateAccessoryDto,
+    @Body()
+    updateProductDto: UpdateProductDto,
+  ) {
+    return this.accessoriesService.updateProductWithAccessory(
+      +id,
+      updateProductDto,
+      updateAccessoryDto,
+    );
   }
 }

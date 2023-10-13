@@ -1,15 +1,5 @@
-import {
-  Controller,
-  Get,
-  Post,
-  Body,
-  Patch,
-  Param,
-  Delete,
-} from '@nestjs/common';
+import { Controller, Get, Post, Body, Param, Delete } from '@nestjs/common';
 import { ProductsService } from './products.service';
-import { CreateProductDto } from './dto/create-product.dto';
-import { UpdateProductDto } from './dto/update-product.dto';
 
 @Controller('api/products')
 export class ProductsController {
@@ -18,15 +8,22 @@ export class ProductsController {
   @Get()
   findAll() {
     return this.productsService.findAll();
+    // нужно преобразовать ответ, рзгладить категории
   }
 
-  @Get(':id')
-  findOne(@Param('id') id: string) {
-    return this.productsService.findOne(+id);
+  @Delete(':id')
+  remove(@Param('id') id: string) {
+    return this.productsService.remove(+id);
   }
 
-  @Post(':id/images')
-  addImages(@Param('id') id: string, @Body() images: string[]) {
-    return this.productsService.addImages(+id, images);
-  }
+  // из за этой функции вощгикает ошибка NaN
+  // @Get(':id')
+  // findOne(@Param('id') id: string) {
+  //   return this.productsService.findOne(+id);
+  // }
+
+  // @Post(':id/images')
+  // addImages(@Param('id') id: string, @Body() images: string[]) {
+  //   return this.productsService.addImages(+id, images);
+  // }
 }

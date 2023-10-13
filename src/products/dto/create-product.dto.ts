@@ -1,4 +1,10 @@
-import { IsArray, IsEnum, IsNumber, IsString } from 'class-validator';
+import {
+  IsArray,
+  IsEnum,
+  IsNumber,
+  IsString,
+  IsOptional,
+} from 'class-validator';
 import { IsNotEmpty } from 'class-validator';
 
 enum Promotion {
@@ -25,7 +31,7 @@ export class CreateProductDto {
   readonly status: Status;
 
   @IsArray()
-  @IsNotEmpty()
+  @IsOptional()
   readonly images: string[];
 
   @IsNumber()

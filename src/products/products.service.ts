@@ -38,13 +38,15 @@ export class ProductsService {
 
     return await this.productRepository.findOne({
       where: { id: productId },
-      relations: ['tobacco'],
+      // relations: ['tobacco', 'hookahs', 'coals', 'accessories'],
+      relations: ['tobacco', 'hookahs', 'coals'],
     });
   }
 
   async findAll() {
     const products = await this.productRepository.find({
-      relations: ['tobacco'],
+      // relations: ['tobacco', 'hookahs', 'coals', 'accessories'],
+      relations: ['tobacco', 'hookahs', 'coals'],
     });
     return products;
   }
@@ -52,7 +54,8 @@ export class ProductsService {
   async findOne(productId: number) {
     const product = await this.productRepository.findOne({
       where: { id: productId },
-      relations: ['tobacco'],
+      relations: ['tobacco', 'hookahs', 'coals'],
+      // relations: ['tobacco', 'hookahs', 'coals', 'accessories'],
     });
     if (!product) {
       throw new NotFoundException(`product with id ${productId} not found`);
@@ -60,11 +63,44 @@ export class ProductsService {
     return product;
   }
 
+  // находит все вместо тобака и т.д
   async findAllTobacco() {
     const tobacco = await this.productRepository.find({
       relations: ['tobacco'],
     });
     return tobacco;
+  }
+
+  async findAllHookahs() {
+    const hookahs = await this.productRepository.find({
+      relations: ['hookahs'],
+    });
+    return hookahs;
+  }
+
+  async findAllCoals() {
+    const coals = await this.productRepository.find({
+      relations: ['coals'],
+    });
+    console.log(coals);
+    return coals;
+  }
+
+  async findAllAccessories() {
+    const accessories = await this.productRepository.find({
+      relations: ['accessories'],
+    });
+    return accessories;
+  }
+
+  async remove(productId: number) {
+    const product = await this.productRepository.findOne({
+      where: { id: productId },
+    });
+    if (!product) {
+      throw new NotFoundException(`product with id ${productId} not found`);
+    }
+    await this.productRepository.remove(product);
   }
 
   async addImages(productId: number, images: string[]) {}

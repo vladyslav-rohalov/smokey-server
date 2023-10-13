@@ -1,7 +1,6 @@
 import { IsNumber, IsString, IsNotEmpty, IsOptional } from 'class-validator';
-import { CreateProductDto } from 'src/products/dto/create-product.dto';
 
-export class CreateTobaccoDto extends CreateProductDto {
+export class CreateTobaccoDto {
   @IsString()
   @IsNotEmpty()
   flavor: string;
