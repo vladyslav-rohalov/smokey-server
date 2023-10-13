@@ -17,14 +17,29 @@ export class ProductsService {
   }
 
   async updateProduct(productId: number, updateProductDto: UpdateProductDto) {
-    const product = this.productRepository.findOne({
+    const product = await this.productRepository.findOne({
       where: { id: productId },
     });
+
     if (!product) {
       throw new NotFoundException(`product with id ${productId} not found`);
     }
-    await this.productRepository.update(productId, updateProductDto);
-    return await this.productRepository.findOne({ where: { id: productId } });
+    const dto = {
+      promotion: updateProductDto.promotion || product.promotion,
+      status: updateProductDto.status || product.status,
+      price: updateProductDto.price || product.price,
+      description: updateProductDto.description || product.description,
+      brand: updateProductDto.brand || product.brand,
+      title: updateProductDto.title || product.title,
+      available: updateProductDto.available || product.available,
+    };
+
+    await this.productRepository.update(productId, dto);
+
+    return await this.productRepository.findOne({
+      where: { id: productId },
+      relations: ['tobacco'],
+    });
   }
 
   async findAll() {
@@ -52,7 +67,5 @@ export class ProductsService {
     return tobacco;
   }
 
-  remove(id: number) {
-    return `This action removes a #${id} product`;
-  }
+  async addImages(productId: number, images: string[]) {}
 }

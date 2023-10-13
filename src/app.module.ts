@@ -34,6 +34,7 @@ import { OrderItemModule } from './order-item/order-item.module';
 import { CommentsModule } from './comments/comments.module';
 import { ReviewRatingModule } from './review-rating/review-rating.module';
 import { BlacklistedTokensModule } from './blacklisted-tokens/blacklisted-tokens.module';
+import { AwsS3Module } from './aws-s3/aws-s3.module';
 
 @Module({
   controllers: [],
@@ -88,6 +89,7 @@ import { BlacklistedTokensModule } from './blacklisted-tokens/blacklisted-tokens
     CommentsModule,
     ReviewRatingModule,
     BlacklistedTokensModule,
+    AwsS3Module,
   ],
 })
 export class AppModule {}

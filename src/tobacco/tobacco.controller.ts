@@ -12,6 +12,7 @@ import { CreateTobaccoDto } from './dto/create-tobacco.dto';
 import { UpdateTobaccoDto } from './dto/update-tobacco.dto';
 import { CreateProductDto } from 'src/products/dto/create-product.dto';
 import { UpdateProductDto } from 'src/products/dto/update-product.dto';
+import { ValidationPipe } from '@nestjs/common';
 
 @Controller('api/products/tobacco')
 export class TobaccoController {
@@ -34,7 +35,22 @@ export class TobaccoController {
   }
 
   @Patch(':id')
-  update(@Param('id') id: string, @Body() updateTobaccoDto: UpdateTobaccoDto) {
-    return this.tobaccoService.update(+id, updateTobaccoDto);
+  update(
+    @Param('id') id: string,
+    @Body()
+    updateTobaccoDto: UpdateTobaccoDto,
+    @Body()
+    updateProductDto: UpdateProductDto,
+  ) {
+    return this.tobaccoService.updateProductWithTobacco(
+      +id,
+      updateProductDto,
+      updateTobaccoDto,
+    );
+  }
+
+  @Delete(':id')
+  remove(@Param('id') id: string) {
+    return this.tobaccoService.remove(+id);
   }
 }

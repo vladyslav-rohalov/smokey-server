@@ -23,13 +23,21 @@ export class TobaccoService {
   }
 
   async updateTobacco(tobaccoId: number, updateTobaccoDto: UpdateTobaccoDto) {
-    const tobacco = this.tobaccoRepository.findOne({
+    const tobacco = await this.tobaccoRepository.findOne({
       where: { id: tobaccoId },
     });
+
     if (!tobacco) {
       throw new NotFoundException(`product with id ${tobaccoId} not found`);
     }
-    await this.tobaccoRepository.update(tobaccoId, updateTobaccoDto);
+
+    const dto = {
+      flavor: updateTobaccoDto.flavor || tobacco.flavor,
+      weight: updateTobaccoDto.weight || tobacco.weight,
+      strength: updateTobaccoDto.strength || tobacco.strength,
+    };
+
+    await this.tobaccoRepository.update(tobaccoId, dto);
     return await this.tobaccoRepository.findOne({ where: { id: tobaccoId } });
   }
 
@@ -51,19 +59,20 @@ export class TobaccoService {
     updateProductDto: UpdateProductDto,
     updateTobaccoDto: UpdateTobaccoDto,
   ) {
-    const product = await this.productService.updateProduct(
+    const updatedProduct = await this.productService.updateProduct(
       productId,
       updateProductDto,
     );
-    const tobacco = await this.updateTobacco(
-      product.tobacco.id,
+
+    const updatedTobacco = await this.updateTobacco(
+      updatedProduct.tobacco.id,
       updateTobaccoDto,
     );
 
-    product.tobacco = tobacco;
-    await this.productRepository.save(product);
+    updatedProduct.tobacco = updatedTobacco;
+    await this.productRepository.save(updatedProduct);
 
-    return product;
+    return updatedProduct;
   }
 
   async findAllTobacco() {
@@ -71,11 +80,20 @@ export class TobaccoService {
     return tobacco;
   }
 
-  update(id: number, updateTobaccoDto: UpdateTobaccoDto) {
-    return `This action updates a #${id} tobacco`;
-  }
+  async remove(productId: number) {
+    const product = await this.productRepository.findOne({
+      where: { id: productId },
+      relations: ['tobacco'],
+    });
+    if (!product) {
+      throw new NotFoundException(`product with id ${productId} not found`);
+    }
 
-  remove(id: number) {
-    return `This action removes a #${id} tobacco`;
+    const tobacco = await this.tobaccoRepository.findOne({
+      where: { id: product.tobacco.id },
+    });
+
+    await this.productRepository.remove(product);
+    await this.tobaccoRepository.remove(tobacco);
   }
 }
