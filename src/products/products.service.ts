@@ -50,12 +50,17 @@ export class ProductsService {
       limit = 10;
     }
     const skip = (page - 1) * limit;
-    const products = await this.productRepository.find({
+
+    const [products, total] = await this.productRepository.findAndCount({
       relations: ['tobacco', 'hookahs', 'coals', 'accessories'],
       take: limit,
       skip: skip,
     });
-    return products;
+
+    return {
+      products,
+      total,
+    };
   }
 
   async findOne(productId: number) {
@@ -77,14 +82,18 @@ export class ProductsService {
       limit = 10;
     }
     const skip = (page - 1) * limit;
-    const tobacco = await this.productRepository
+
+    const [products, total] = await this.productRepository
       .createQueryBuilder('product')
       .innerJoinAndSelect('product.tobacco', 'tobacco')
       .skip(skip)
       .take(limit)
-      .getMany();
+      .getManyAndCount();
 
-    return tobacco;
+    return {
+      products,
+      total,
+    };
   }
 
   async findAllHookahs(page: number, limit: number) {
@@ -95,14 +104,17 @@ export class ProductsService {
       limit = 10;
     }
     const skip = (page - 1) * limit;
-    const hookahs = await this.productRepository
+    const [products, total] = await this.productRepository
       .createQueryBuilder('product')
       .innerJoinAndSelect('product.hookahs', 'hookahs')
       .skip(skip)
       .take(limit)
       .getMany();
 
-    return hookahs;
+    return {
+      products,
+      total,
+    };
   }
 
   async findAllCoals(page: number, limit: number) {
@@ -113,14 +125,17 @@ export class ProductsService {
       limit = 10;
     }
     const skip = (page - 1) * limit;
-    const coals = await this.productRepository
+    const [products, total] = await this.productRepository
       .createQueryBuilder('product')
       .innerJoinAndSelect('product.coals', 'coals')
       .skip(skip)
       .take(limit)
       .getMany();
 
-    return coals;
+    return {
+      products,
+      total,
+    };
   }
 
   async findAllAccessories(page: number, limit: number) {
@@ -131,14 +146,17 @@ export class ProductsService {
       limit = 10;
     }
     const skip = (page - 1) * limit;
-    const accessories = await this.productRepository
+    const [products, total] = await this.productRepository
       .createQueryBuilder('product')
       .innerJoinAndSelect('product.accessories', 'accessories')
       .skip(skip)
       .take(limit)
       .getMany();
 
-    return accessories;
+    return {
+      products,
+      total,
+    };
   }
 
   async remove(productId: number) {
