@@ -1,4 +1,5 @@
 import { Controller, Get, Post, Body, Patch, Param } from '@nestjs/common';
+import { Query } from '@nestjs/common';
 import { AccessoriesService } from './accessories.service';
 import { CreateAccessoryDto } from './dto/create-accessory.dto';
 import { UpdateAccessoryDto } from './dto/update-accessory.dto';
@@ -21,8 +22,8 @@ export class AccessoriesController {
   }
 
   @Get()
-  findAll() {
-    return this.accessoriesService.findAllAccessories();
+  findAll(@Query('page') page: number = 1, @Query('limit') limit: number = 10) {
+    return this.accessoriesService.findAllAccessories(page, limit);
   }
 
   @Patch(':id')

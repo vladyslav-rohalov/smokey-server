@@ -4,7 +4,6 @@ import { Repository, In } from 'typeorm';
 import { Product } from './entities/product.entity';
 import { CreateProductDto } from './dto/create-product.dto';
 import { UpdateProductDto } from './dto/update-product.dto';
-import { transformResponse } from 'src/lib/transformResponse';
 
 @Injectable()
 export class ProductsService {
@@ -43,9 +42,18 @@ export class ProductsService {
     });
   }
 
-  async findAll() {
+  async findAll(page: number, limit: number) {
+    if (!page || isNaN(page) || page <= 0) {
+      page = 1;
+    }
+    if (!limit || isNaN(limit) || limit <= 0) {
+      limit = 10;
+    }
+    const skip = (page - 1) * limit;
     const products = await this.productRepository.find({
       relations: ['tobacco', 'hookahs', 'coals', 'accessories'],
+      take: limit,
+      skip: skip,
     });
     return products;
   }
@@ -61,37 +69,73 @@ export class ProductsService {
     return product;
   }
 
-  async findAllTobacco() {
+  async findAllTobacco(page: number, limit: number) {
+    if (!page || isNaN(page) || page <= 0) {
+      page = 1;
+    }
+    if (!limit || isNaN(limit) || limit <= 0) {
+      limit = 10;
+    }
+    const skip = (page - 1) * limit;
     const tobacco = await this.productRepository
       .createQueryBuilder('product')
       .innerJoinAndSelect('product.tobacco', 'tobacco')
+      .skip(skip)
+      .take(limit)
       .getMany();
 
     return tobacco;
   }
 
-  async findAllHookahs() {
+  async findAllHookahs(page: number, limit: number) {
+    if (!page || isNaN(page) || page <= 0) {
+      page = 1;
+    }
+    if (!limit || isNaN(limit) || limit <= 0) {
+      limit = 10;
+    }
+    const skip = (page - 1) * limit;
     const hookahs = await this.productRepository
       .createQueryBuilder('product')
       .innerJoinAndSelect('product.hookahs', 'hookahs')
+      .skip(skip)
+      .take(limit)
       .getMany();
 
     return hookahs;
   }
 
-  async findAllCoals() {
+  async findAllCoals(page: number, limit: number) {
+    if (!page || isNaN(page) || page <= 0) {
+      page = 1;
+    }
+    if (!limit || isNaN(limit) || limit <= 0) {
+      limit = 10;
+    }
+    const skip = (page - 1) * limit;
     const coals = await this.productRepository
       .createQueryBuilder('product')
       .innerJoinAndSelect('product.coals', 'coals')
+      .skip(skip)
+      .take(limit)
       .getMany();
 
     return coals;
   }
 
-  async findAllAccessories() {
+  async findAllAccessories(page: number, limit: number) {
+    if (!page || isNaN(page) || page <= 0) {
+      page = 1;
+    }
+    if (!limit || isNaN(limit) || limit <= 0) {
+      limit = 10;
+    }
+    const skip = (page - 1) * limit;
     const accessories = await this.productRepository
       .createQueryBuilder('product')
       .innerJoinAndSelect('product.accessories', 'accessories')
+      .skip(skip)
+      .take(limit)
       .getMany();
 
     return accessories;

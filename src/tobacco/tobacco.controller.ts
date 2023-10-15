@@ -1,12 +1,5 @@
-import {
-  Controller,
-  Get,
-  Post,
-  Body,
-  Patch,
-  Param,
-  Delete,
-} from '@nestjs/common';
+import { Controller, Get, Post, Body, Patch, Param } from '@nestjs/common';
+import { Query } from '@nestjs/common';
 import { TobaccoService } from './tobacco.service';
 import { CreateTobaccoDto } from './dto/create-tobacco.dto';
 import { UpdateTobaccoDto } from './dto/update-tobacco.dto';
@@ -29,8 +22,8 @@ export class TobaccoController {
   }
 
   @Get()
-  findAll() {
-    return this.tobaccoService.findAllTobacco();
+  findAll(@Query('page') page: number = 1, @Query('limit') limit: number = 10) {
+    return this.tobaccoService.findAllTobacco(page, limit);
   }
 
   @Patch(':id')

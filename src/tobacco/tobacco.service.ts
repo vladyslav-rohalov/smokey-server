@@ -75,10 +75,8 @@ export class TobaccoService {
     return updatedProduct;
   }
 
-  async findAllTobacco() {
-    // const tbc = await this.tobaccoRepository.find({ relations: ['product'] });
-    // console.log(tbc);
-    const tobacco = await this.productService.findAllTobacco();
+  async findAllTobacco(page: number, limit: number) {
+    const tobacco = await this.productService.findAllTobacco(page, limit);
     return tobacco;
   }
 }

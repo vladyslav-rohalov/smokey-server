@@ -1,4 +1,5 @@
 import { Controller, Get, Post, Body, Param, Delete } from '@nestjs/common';
+import { Query } from '@nestjs/common';
 import { ProductsService } from './products.service';
 
 @Controller('api/products')
@@ -6,9 +7,8 @@ export class ProductsController {
   constructor(private readonly productsService: ProductsService) {}
 
   @Get()
-  findAll() {
-    return this.productsService.findAll();
-    // нужно преобразовать ответ, рзгладить категории
+  findAll(@Query('page') page: number, @Query('limit') limit: number) {
+    return this.productsService.findAll(page, limit);
   }
 
   @Delete(':id')

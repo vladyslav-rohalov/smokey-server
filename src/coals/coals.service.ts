@@ -74,8 +74,8 @@ export class CoalsService {
     return updatedProduct;
   }
 
-  async findAllcoal() {
-    const coals = await this.productService.findAllCoals();
+  async findAllcoal(page: number, limit: number) {
+    const coals = await this.productService.findAllCoals(page, limit);
     return coals;
   }
 }

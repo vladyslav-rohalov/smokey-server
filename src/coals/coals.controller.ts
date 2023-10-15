@@ -1,4 +1,5 @@
 import { Controller, Get, Post, Body, Patch, Param } from '@nestjs/common';
+import { Query } from '@nestjs/common';
 import { CoalsService } from './coals.service';
 import { CreateCoalDto } from './dto/create-coal.dto';
 import { UpdateCoalDto } from './dto/update-coal.dto';
@@ -21,8 +22,8 @@ export class CoalsController {
   }
 
   @Get()
-  findAll() {
-    return this.coalsService.findAllcoal();
+  findAll(@Query('page') page: number = 1, @Query('limit') limit: number = 10) {
+    return this.coalsService.findAllcoal(page, limit);
   }
 
   @Patch(':id')

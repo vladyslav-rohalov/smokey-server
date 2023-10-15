@@ -82,8 +82,8 @@ export class AccessoriesService {
     return updatedProduct;
   }
 
-  async findAllAccessories() {
-    const accesory = await this.productService.findAllAccessories();
+  async findAllAccessories(page: number, limit: number) {
+    const accesory = await this.productService.findAllAccessories(page, limit);
     return accesory;
   }
 }

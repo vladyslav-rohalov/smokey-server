@@ -1,4 +1,5 @@
 import { Controller, Get, Post, Body, Patch, Param } from '@nestjs/common';
+import { Query } from '@nestjs/common';
 import { HookahsService } from './hookahs.service';
 import { CreateHookahDto } from './dto/create-hookah.dto';
 import { UpdateHookahDto } from './dto/update-hookah.dto';
@@ -21,8 +22,8 @@ export class HookahsController {
   }
 
   @Get()
-  findAll() {
-    return this.hookahsService.findAllHookahs();
+  findAll(@Query('page') page: number = 1, @Query('limit') limit: number = 10) {
+    return this.hookahsService.findAllHookahs(page, limit);
   }
 
   @Patch(':id')

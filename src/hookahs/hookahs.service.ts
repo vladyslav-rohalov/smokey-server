@@ -74,8 +74,8 @@ export class HookahsService {
     return updatedProduct;
   }
 
-  async findAllHookahs() {
-    const hookah = await this.productService.findAllHookahs();
+  async findAllHookahs(page: number, limit: number) {
+    const hookah = await this.productService.findAllHookahs(page, limit);
     return hookah;
   }
 }
