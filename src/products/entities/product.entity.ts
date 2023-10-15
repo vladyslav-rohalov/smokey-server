@@ -80,7 +80,7 @@ export class Product {
   @OneToOne(() => Accessory, accessory => accessory.products, {
     cascade: true,
   })
-  accessory: Accessory;
+  accessories: Accessory;
 
   @CreateDateColumn()
   createdAt: Date;

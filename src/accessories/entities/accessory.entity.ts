@@ -32,7 +32,7 @@ export class Accessory {
   @Column({ type: 'enum', enum: Bowl_Type, nullable: true })
   bowl_type: Bowl_Type | null;
 
-  @OneToOne(() => Product, product => product.accessory, {
+  @OneToOne(() => Product, product => product.accessories, {
     onDelete: 'CASCADE',
     onUpdate: 'CASCADE',
   })

@@ -38,15 +38,13 @@ export class ProductsService {
 
     return await this.productRepository.findOne({
       where: { id: productId },
-      // relations: ['tobacco', 'hookahs', 'coals', 'accessories'],
-      relations: ['tobacco', 'hookahs', 'coals'],
+      relations: ['tobacco', 'hookahs', 'coals', 'accessories'],
     });
   }
 
   async findAll() {
     const products = await this.productRepository.find({
-      // relations: ['tobacco', 'hookahs', 'coals', 'accessories'],
-      relations: ['tobacco', 'hookahs', 'coals'],
+      relations: ['tobacco', 'hookahs', 'coals', 'accessories'],
     });
     return products;
   }
@@ -54,8 +52,7 @@ export class ProductsService {
   async findOne(productId: number) {
     const product = await this.productRepository.findOne({
       where: { id: productId },
-      relations: ['tobacco', 'hookahs', 'coals'],
-      // relations: ['tobacco', 'hookahs', 'coals', 'accessories'],
+      relations: ['tobacco', 'hookahs', 'coals', 'accessories'],
     });
     if (!product) {
       throw new NotFoundException(`product with id ${productId} not found`);
@@ -95,7 +92,7 @@ export class ProductsService {
     // const coals = await this.productRepository.find({
     //   relations: ['coals'],
     // });
-    // console.log(coals);
+
     // return coals;
   }
 

@@ -17,10 +17,10 @@ export class ProductsController {
   }
 
   // из за этой функции вощгикает ошибка NaN
-  // @Get(':id')
-  // findOne(@Param('id') id: string) {
-  //   return this.productsService.findOne(+id);
-  // }
+  @Get(':id')
+  findOne(@Param('id') id: string) {
+    return this.productsService.findOne(+id);
+  }
 
   // @Post(':id/images')
   // addImages(@Param('id') id: string, @Body() images: string[]) {

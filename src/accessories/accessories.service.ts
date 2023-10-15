@@ -53,11 +53,9 @@ export class AccessoriesService {
     createAccessoryDto: CreateAccessoryDto,
   ) {
     const product = await this.productService.createProduct(createProductDto);
-
     const accessory = await this.createAccessory(createAccessoryDto);
-    console.log(product);
-    console.log(accessory);
-    product.accessory = accessory;
+
+    product.accessories = accessory;
     await this.productRepository.save(product);
 
     return product;
@@ -72,13 +70,13 @@ export class AccessoriesService {
       productId,
       updateProductDto,
     );
-
+    console.log(updatedProduct);
     const updatedAccessory = await this.updateAccessory(
-      updatedProduct.accessory.id,
+      updatedProduct.accessories.id,
       updateAccessoryDto,
     );
 
-    updatedProduct.accessory = updatedAccessory;
+    updatedProduct.accessories = updatedAccessory;
     await this.productRepository.save(updatedProduct);
 
     return updatedProduct;
