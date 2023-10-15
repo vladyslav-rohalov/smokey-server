@@ -16,10 +16,14 @@ export class ProductsController {
     return this.productsService.remove(+id);
   }
 
-  // из за этой функции вощгикает ошибка NaN
-  @Get(':id')
+  @Get('id/:id')
   findOne(@Param('id') id: string) {
     return this.productsService.findOne(+id);
+  }
+
+  @Get('/promotion')
+  findAllPromotion() {
+    return this.productsService.findAllPromotion();
   }
 
   // @Post(':id/images')

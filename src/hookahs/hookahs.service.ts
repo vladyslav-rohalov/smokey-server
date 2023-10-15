@@ -33,7 +33,7 @@ export class HookahsService {
 
     const dto = {
       color: updateHookahDto.color || hookah.color,
-      size: updateHookahDto.size || hookah.size,
+      size: updateHookahDto.hookah_size || hookah.hookah_size,
     };
 
     await this.hookahRepository.update(hookahId, dto);

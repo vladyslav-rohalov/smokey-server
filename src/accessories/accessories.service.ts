@@ -70,7 +70,7 @@ export class AccessoriesService {
       productId,
       updateProductDto,
     );
-    console.log(updatedProduct);
+
     const updatedAccessory = await this.updateAccessory(
       updatedProduct.accessories.id,
       updateAccessoryDto,

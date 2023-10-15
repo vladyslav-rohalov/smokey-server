@@ -18,7 +18,7 @@ export class Hookah {
   color: string;
 
   @Column({ type: 'enum', enum: Size })
-  size: Size;
+  hookah_size: Size;
 
   @OneToOne(() => Product, product => product.hookahs, {
     onDelete: 'CASCADE',

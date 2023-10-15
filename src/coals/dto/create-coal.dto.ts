@@ -3,9 +3,9 @@ import { IsNumber, IsNotEmpty } from 'class-validator';
 export class CreateCoalDto {
   @IsNumber()
   @IsNotEmpty()
-  size: number;
+  coal_size: number;
 
   @IsNumber()
   @IsNotEmpty()
-  weight: number;
+  coal_weight: number;
 }

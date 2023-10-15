@@ -33,7 +33,7 @@ export class TobaccoService {
 
     const dto = {
       flavor: updateTobaccoDto.flavor || tobacco.flavor,
-      weight: updateTobaccoDto.weight || tobacco.weight,
+      weight: updateTobaccoDto.tobacco_weight || tobacco.tobacco_weight,
       strength: updateTobaccoDto.strength || tobacco.strength,
     };
 

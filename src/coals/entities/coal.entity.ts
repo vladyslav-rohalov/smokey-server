@@ -8,10 +8,10 @@ export class Coal {
   id: number;
 
   @Column({ type: 'smallint' })
-  size: number;
+  coal_size: number;
 
   @Column({ type: 'smallint' })
-  weight: number;
+  coal_weight: number;
 
   @OneToOne(() => Product, product => product.coals, {
     onDelete: 'CASCADE',

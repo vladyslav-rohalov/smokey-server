@@ -8,5 +8,5 @@ export class CreateHookahDto {
 
   @IsEnum(Size)
   @IsNotEmpty()
-  size: Size;
+  hookah_size: Size;
 }

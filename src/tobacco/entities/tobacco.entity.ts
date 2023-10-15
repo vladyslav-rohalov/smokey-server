@@ -11,7 +11,7 @@ export class Tobacco {
   flavor: string;
 
   @Column({ type: 'smallint' })
-  weight: number;
+  tobacco_weight: number;
 
   @Column({ type: 'smallint', nullable: true })
   strength: number;

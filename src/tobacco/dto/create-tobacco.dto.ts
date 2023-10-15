@@ -7,7 +7,7 @@ export class CreateTobaccoDto {
 
   @IsNumber()
   @IsNotEmpty()
-  weight: number;
+  tobacco_weight: number;
 
   @IsNumber()
   @IsOptional()

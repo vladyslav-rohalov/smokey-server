@@ -1,9 +1,10 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Repository } from 'typeorm';
+import { Repository, In } from 'typeorm';
 import { Product } from './entities/product.entity';
 import { CreateProductDto } from './dto/create-product.dto';
 import { UpdateProductDto } from './dto/update-product.dto';
+import { transformResponse } from 'src/lib/transformResponse';
 
 @Injectable()
 export class ProductsService {
@@ -76,10 +77,6 @@ export class ProductsService {
       .getMany();
 
     return hookahs;
-    // const hookahs = await this.productRepository.find({
-    //   relations: ['hookahs'],
-    // });
-    // return hookahs;
   }
 
   async findAllCoals() {
@@ -89,11 +86,6 @@ export class ProductsService {
       .getMany();
 
     return coals;
-    // const coals = await this.productRepository.find({
-    //   relations: ['coals'],
-    // });
-
-    // return coals;
   }
 
   async findAllAccessories() {
@@ -103,10 +95,6 @@ export class ProductsService {
       .getMany();
 
     return accessories;
-    // const accessories = await this.productRepository.find({
-    //   relations: ['accessories'],
-    // });
-    // return accessories;
   }
 
   async remove(productId: number) {
@@ -120,4 +108,15 @@ export class ProductsService {
   }
 
   async addImages(productId: number, images: string[]) {}
+
+  async findAllPromotion() {
+    const promoted = await this.productRepository.find({
+      where: {
+        promotion: In(['hot', 'sale', 'new']),
+      },
+      relations: ['tobacco', 'hookahs', 'coals', 'accessories'],
+    });
+
+    return promoted;
+  }
 }
