@@ -7,13 +7,13 @@ export class Tobacco {
   @PrimaryGeneratedColumn({ name: 'tobacco_id' })
   id: number;
 
-  @Column()
+  @Column({ type: 'varchar' })
   flavor: string;
 
-  @Column()
+  @Column({ type: 'smallint' })
   weight: number;
 
-  @Column({ nullable: true })
+  @Column({ type: 'smallint', nullable: true })
   strength: number;
 
   @OneToOne(() => Product, product => product.tobacco, {

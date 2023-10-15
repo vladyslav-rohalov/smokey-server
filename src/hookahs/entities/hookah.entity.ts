@@ -14,7 +14,7 @@ export class Hookah {
   @PrimaryGeneratedColumn({ name: 'hookah_id' })
   id: number;
 
-  @Column()
+  @Column({ type: 'varchar' })
   color: string;
 
   @Column({ type: 'enum', enum: Size })

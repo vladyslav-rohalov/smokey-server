@@ -38,22 +38,22 @@ export class Product {
   @Column({ type: 'varchar', array: true, nullable: true })
   images: string[] | null;
 
-  @Column()
+  @Column({ type: 'decimal', precision: 7, scale: 2 })
   price: number;
 
-  @Column()
+  @Column({ type: 'text', nullable: true })
   description: string;
 
-  @Column()
+  @Column({ type: 'varchar' })
   brand: string;
 
-  @Column()
+  @Column({ type: 'varchar' })
   title: string;
 
-  @Column()
+  @Column({ type: 'smallint' })
   available: number;
 
-  @Column({ nullable: true })
+  @Column({ type: 'smallint', nullable: true })
   rating: number;
 
   @OneToMany(() => Favorite, favorite => favorite.product)

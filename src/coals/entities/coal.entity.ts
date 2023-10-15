@@ -7,10 +7,10 @@ export class Coal {
   @PrimaryGeneratedColumn({ name: 'tobacco_id' })
   id: number;
 
-  @Column()
+  @Column({ type: 'smallint' })
   size: number;
 
-  @Column()
+  @Column({ type: 'smallint' })
   weight: number;
 
   @OneToOne(() => Product, product => product.coals, {

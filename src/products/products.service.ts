@@ -63,34 +63,53 @@ export class ProductsService {
     return product;
   }
 
-  // находит все вместо тобака и т.д
   async findAllTobacco() {
-    const tobacco = await this.productRepository.find({
-      relations: ['tobacco'],
-    });
+    const tobacco = await this.productRepository
+      .createQueryBuilder('product')
+      .innerJoinAndSelect('product.tobacco', 'tobacco')
+      .getMany();
+
     return tobacco;
   }
 
   async findAllHookahs() {
-    const hookahs = await this.productRepository.find({
-      relations: ['hookahs'],
-    });
+    const hookahs = await this.productRepository
+      .createQueryBuilder('product')
+      .innerJoinAndSelect('product.hookahs', 'hookahs')
+      .getMany();
+
     return hookahs;
+    // const hookahs = await this.productRepository.find({
+    //   relations: ['hookahs'],
+    // });
+    // return hookahs;
   }
 
   async findAllCoals() {
-    const coals = await this.productRepository.find({
-      relations: ['coals'],
-    });
-    console.log(coals);
+    const coals = await this.productRepository
+      .createQueryBuilder('product')
+      .innerJoinAndSelect('product.coals', 'coals')
+      .getMany();
+
     return coals;
+    // const coals = await this.productRepository.find({
+    //   relations: ['coals'],
+    // });
+    // console.log(coals);
+    // return coals;
   }
 
   async findAllAccessories() {
-    const accessories = await this.productRepository.find({
-      relations: ['accessories'],
-    });
+    const accessories = await this.productRepository
+      .createQueryBuilder('product')
+      .innerJoinAndSelect('product.accessories', 'accessories')
+      .getMany();
+
     return accessories;
+    // const accessories = await this.productRepository.find({
+    //   relations: ['accessories'],
+    // });
+    // return accessories;
   }
 
   async remove(productId: number) {
