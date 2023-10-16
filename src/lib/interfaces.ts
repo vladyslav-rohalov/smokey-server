@@ -61,11 +61,11 @@ export interface ISearchHookahs extends ISearch {
 }
 
 export interface ISearchCoals extends ISearch {
-  coal_size: number;
-  coal_weight: number;
+  coalSize: string;
+  coalWeight: string;
 }
 
 export interface ISearchAccessories extends ISearch {
   type: string;
-  bowl_type: string;
+  bowlType: string;
 }

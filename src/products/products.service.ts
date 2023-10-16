@@ -74,48 +74,6 @@ export class ProductsService {
     return product;
   }
 
-  // async findAllHookahs(page: number, limit: number) {
-  //   if (!page || isNaN(page) || page <= 0) {
-  //     page = 1;
-  //   }
-  //   if (!limit || isNaN(limit) || limit <= 0) {
-  //     limit = 10;
-  //   }
-  //   const skip = (page - 1) * limit;
-  //   const [products, total] = await this.productRepository
-  //     .createQueryBuilder('product')
-  //     .innerJoinAndSelect('product.hookahs', 'hookahs')
-  //     .skip(skip)
-  //     .take(limit)
-  //     .getMany();
-
-  //   return {
-  //     products,
-  //     total,
-  //   };
-  // }
-
-  async findAllCoals(page: number, limit: number) {
-    if (!page || isNaN(page) || page <= 0) {
-      page = 1;
-    }
-    if (!limit || isNaN(limit) || limit <= 0) {
-      limit = 10;
-    }
-    const skip = (page - 1) * limit;
-    const [products, total] = await this.productRepository
-      .createQueryBuilder('product')
-      .innerJoinAndSelect('product.coals', 'coals')
-      .skip(skip)
-      .take(limit)
-      .getMany();
-
-    return {
-      products,
-      total,
-    };
-  }
-
   async findAllAccessories(page: number, limit: number) {
     if (!page || isNaN(page) || page <= 0) {
       page = 1;

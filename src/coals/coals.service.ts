@@ -8,6 +8,9 @@ import { Coal } from './entities/coal.entity';
 import { CreateProductDto } from 'src/products/dto/create-product.dto';
 import { UpdateProductDto } from 'src/products/dto/update-product.dto';
 import { ProductsService } from 'src/products/products.service';
+import { ISearchCoals } from 'src/lib/interfaces';
+import { sortProductsByPrice, Pagination } from 'src/lib/functions';
+import { paramToArr } from 'src/lib/functions';
 
 @Injectable()
 export class CoalsService {
@@ -74,8 +77,113 @@ export class CoalsService {
     return updatedProduct;
   }
 
-  async findAllcoal(page: number, limit: number) {
-    const coals = await this.productService.findAllCoals(page, limit);
-    return coals;
+  async findAllСoals(params: ISearchCoals) {
+    const { page, limit, sort, brand, status, coalSize, coalWeight, min, max } =
+      params;
+
+    const brandsArr = await paramToArr(brand);
+    const weightsArr = await paramToArr(coalWeight);
+    const sizesArr = await paramToArr(coalSize);
+
+    let query = this.productRepository
+      .createQueryBuilder('product')
+      .innerJoinAndSelect('product.coals', 'coals');
+
+    if (status) {
+      query = query.andWhere('product.status = :status', { status });
+    }
+
+    if (brandsArr && brandsArr.length > 0) {
+      query = query.andWhere('LOWER(product.brand) IN (:...brandsArr)', {
+        brandsArr: brandsArr.map(brand => brand.toLowerCase()),
+      });
+    }
+    if (sizesArr && sizesArr.length > 0) {
+      query = query.andWhere('(coals.coal_size) IN (:...sizesArr)', {
+        sizesArr: sizesArr.map(size => +size),
+      });
+    }
+    if (weightsArr && weightsArr.length > 0) {
+      query = query.andWhere('(coals.coal_weight) IN (:...weightsArr)', {
+        weightsArr: weightsArr.map(weight => +weight),
+      });
+    }
+
+    if (sort) {
+      if (sort === 'new' || sort === 'sale' || sort === 'hot') {
+        query = query.andWhere('product.promotion = :sort', { sort });
+      }
+    }
+    if (min && max) {
+      query = query.andWhere('product.price BETWEEN :min AND :max', {
+        min,
+        max,
+      });
+    } else if (min) {
+      query = query.andWhere('product.price >= :min', { min });
+    } else if (max) {
+      query = query.andWhere('product.price <= :max', { max });
+    }
+
+    const products = await query.getMany();
+
+    const total = products.length;
+    const brandCounts: { [key: string]: number } = {};
+    const sizeCounts: { [key: string]: number } = {};
+    const weightCounts: { [key: string]: number } = {};
+    const statusCounts: { [key: string]: number } = {};
+    const prices = { min: Number.MAX_VALUE, max: Number.MIN_VALUE };
+    if (products.length <= 0) {
+      prices.min = 0;
+      prices.max = 0;
+    }
+    products.forEach(product => {
+      const brand = product.brand.toLowerCase();
+      const size = product.coals.coal_size;
+      const weight = product.coals.coal_weight;
+      const status = product.status.toLocaleLowerCase();
+      const price = +product.price;
+
+      if (price < prices.min) {
+        prices.min = price;
+      }
+      if (price > prices.max) {
+        prices.max = price;
+      }
+      if (!brandCounts[brand]) {
+        brandCounts[brand] = 0;
+      }
+      brandCounts[brand]++;
+
+      if (!statusCounts[status]) {
+        statusCounts[status] = 0;
+      }
+      statusCounts[status]++;
+
+      if (!sizeCounts[size]) {
+        sizeCounts[size] = 0;
+      }
+      sizeCounts[size]++;
+
+      if (!weightCounts[weight]) {
+        weightCounts[weight] = 0;
+      }
+      weightCounts[weight]++;
+    });
+
+    const sortedProducts = await sortProductsByPrice(products, sort);
+    const paginatedProducts = await Pagination(sortedProducts, page, limit);
+
+    return {
+      products: paginatedProducts,
+      counts: {
+        total,
+        brandCounts,
+        sizeCounts,
+        weightCounts,
+        statusCounts,
+        prices,
+      },
+    };
   }
 }

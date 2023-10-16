@@ -22,8 +22,28 @@ export class CoalsController {
   }
 
   @Get()
-  findAll(@Query('page') page: number = 1, @Query('limit') limit: number = 10) {
-    return this.coalsService.findAllcoal(page, limit);
+  findAll(
+    @Query('page') page: number,
+    @Query('limit') limit: number,
+    @Query('sort') sort: string,
+    @Query('brand') brand: string,
+    @Query('status') status: string,
+    @Query('coal_size') coalSize: string,
+    @Query('coal_weight') coalWeight: string,
+    @Query('min') min: number,
+    @Query('max') max: number,
+  ) {
+    return this.coalsService.findAllСoals({
+      page,
+      limit,
+      sort,
+      brand,
+      status,
+      coalSize,
+      coalWeight,
+      min,
+      max,
+    });
   }
 
   @Patch(':id')
