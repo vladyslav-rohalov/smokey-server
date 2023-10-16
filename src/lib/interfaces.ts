@@ -57,7 +57,7 @@ export interface ISearchTobacco extends ISearch {
 
 export interface ISearchHookahs extends ISearch {
   color: string;
-  hookah_size: string;
+  hookahSize: string;
 }
 
 export interface ISearchCoals extends ISearch {

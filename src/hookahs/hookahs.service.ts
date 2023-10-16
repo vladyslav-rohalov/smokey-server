@@ -8,6 +8,9 @@ import { Hookah } from './entities/hookah.entity';
 import { CreateProductDto } from 'src/products/dto/create-product.dto';
 import { UpdateProductDto } from 'src/products/dto/update-product.dto';
 import { ProductsService } from 'src/products/products.service';
+import { ISearchHookahs } from 'src/lib/interfaces';
+import { sortProductsByPrice, Pagination } from 'src/lib/functions';
+import { paramToArr } from 'src/lib/functions';
 
 @Injectable()
 export class HookahsService {
@@ -74,8 +77,112 @@ export class HookahsService {
     return updatedProduct;
   }
 
-  async findAllHookahs(page: number, limit: number) {
-    const hookah = await this.productService.findAllHookahs(page, limit);
-    return hookah;
+  async findAllHookahs(params: ISearchHookahs) {
+    const { page, limit, sort, brand, status, color, hookahSize, min, max } =
+      params;
+
+    const brandsArr = await paramToArr(brand);
+    const colorsArr = await paramToArr(color);
+    const hookahSizesArr = await paramToArr(hookahSize);
+    console.log(hookahSizesArr);
+    let query = this.productRepository
+      .createQueryBuilder('product')
+      .innerJoinAndSelect('product.hookahs', 'hookahs');
+
+    if (status) {
+      query = query.andWhere('product.status = :status', { status });
+    }
+
+    if (brandsArr && brandsArr.length > 0) {
+      query = query.andWhere('LOWER(product.brand) IN (:...brandsArr)', {
+        brandsArr: brandsArr.map(brand => brand.toLowerCase()),
+      });
+    }
+    if (colorsArr && colorsArr.length > 0) {
+      query = query.andWhere('LOWER(hookahs.color) IN (:...colorsArr)', {
+        colorsArr: colorsArr.map(color => color.toLocaleLowerCase()),
+      });
+    }
+    if (hookahSizesArr && hookahSizesArr.length > 0) {
+      query = query.andWhere('(hookahs.hookah_size) IN (:...hookahSizesArr)', {
+        hookahSizesArr: hookahSizesArr.map(size => size.toLocaleLowerCase()),
+      });
+    }
+    if (sort) {
+      if (sort === 'new' || sort === 'sale' || sort === 'hot') {
+        query = query.andWhere('product.promotion = :sort', { sort });
+      }
+    }
+    if (min && max) {
+      query = query.andWhere('product.price BETWEEN :min AND :max', {
+        min,
+        max,
+      });
+    } else if (min) {
+      query = query.andWhere('product.price >= :min', { min });
+    } else if (max) {
+      query = query.andWhere('product.price <= :max', { max });
+    }
+
+    const products = await query.getMany();
+
+    const total = products.length;
+    const brandCounts: { [key: string]: number } = {};
+    const colorCounts: { [key: string]: number } = {};
+    const hookahSizeCounts: { [key: string]: number } = {};
+    const statusCounts: { [key: string]: number } = {};
+    const prices = { min: Number.MAX_VALUE, max: Number.MIN_VALUE };
+    if (products.length <= 0) {
+      prices.min = 0;
+      prices.max = 0;
+    }
+    products.forEach(product => {
+      const brand = product.brand.toLowerCase();
+      const color = product.hookahs.color.toLocaleLowerCase();
+      const size = product.hookahs.hookah_size.toLocaleLowerCase();
+      const status = product.status.toLocaleLowerCase();
+      const price = +product.price;
+
+      if (price < prices.min) {
+        prices.min = price;
+      }
+      if (price > prices.max) {
+        prices.max = price;
+      }
+      if (!brandCounts[brand]) {
+        brandCounts[brand] = 0;
+      }
+      brandCounts[brand]++;
+
+      if (!statusCounts[status]) {
+        statusCounts[status] = 0;
+      }
+      statusCounts[status]++;
+
+      if (!colorCounts[color]) {
+        colorCounts[color] = 0;
+      }
+      colorCounts[color]++;
+
+      if (!hookahSizeCounts[size]) {
+        hookahSizeCounts[size] = 0;
+      }
+      hookahSizeCounts[size]++;
+    });
+
+    const sortedProducts = await sortProductsByPrice(products, sort);
+    const paginatedProducts = await Pagination(sortedProducts, page, limit);
+
+    return {
+      products: paginatedProducts,
+      counts: {
+        total,
+        brandCounts,
+        colorCounts,
+        hookahSizeCounts,
+        statusCounts,
+        prices,
+      },
+    };
   }
 }

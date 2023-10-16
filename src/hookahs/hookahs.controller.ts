@@ -22,8 +22,28 @@ export class HookahsController {
   }
 
   @Get()
-  findAll(@Query('page') page: number = 1, @Query('limit') limit: number = 10) {
-    return this.hookahsService.findAllHookahs(page, limit);
+  findAll(
+    @Query('page') page: number,
+    @Query('limit') limit: number,
+    @Query('sort') sort: string,
+    @Query('brand') brand: string,
+    @Query('status') status: string,
+    @Query('color') color: string,
+    @Query('hookah_size') hookahSize: string,
+    @Query('min') min: number,
+    @Query('max') max: number,
+  ) {
+    return this.hookahsService.findAllHookahs({
+      page,
+      limit,
+      sort,
+      brand,
+      status,
+      color,
+      hookahSize,
+      min,
+      max,
+    });
   }
 
   @Patch(':id')
