@@ -22,8 +22,28 @@ export class AccessoriesController {
   }
 
   @Get()
-  findAll(@Query('page') page: number = 1, @Query('limit') limit: number = 10) {
-    return this.accessoriesService.findAllAccessories(page, limit);
+  findAll(
+    @Query('page') page: number,
+    @Query('limit') limit: number,
+    @Query('sort') sort: string,
+    @Query('brand') brand: string,
+    @Query('status') status: string,
+    @Query('type') type: string,
+    @Query('bowl_type') bowlType: string,
+    @Query('min') min: number,
+    @Query('max') max: number,
+  ) {
+    return this.accessoriesService.findAllAccessories({
+      page,
+      limit,
+      sort,
+      brand,
+      status,
+      type,
+      bowlType,
+      min,
+      max,
+    });
   }
 
   @Patch(':id')
