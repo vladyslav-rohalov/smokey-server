@@ -38,3 +38,34 @@ export interface IAllCats {
   coals?: { id?: number; coal_size?: number; coal_weight?: number };
   accessories?: { id?: number; type?: string; bowl_type?: string };
 }
+
+export interface ISearch {
+  page: number;
+  limit: number;
+  sort: string;
+  brand: string;
+  status: string;
+  min: number;
+  max: number;
+}
+
+export interface ISearchTobacco extends ISearch {
+  flavor: string;
+  weight: string;
+  strength: number;
+}
+
+export interface ISearchHookahs extends ISearch {
+  color: string;
+  hookah_size: string;
+}
+
+export interface ISearchCoals extends ISearch {
+  coal_size: number;
+  coal_weight: number;
+}
+
+export interface ISearchAccessories extends ISearch {
+  type: string;
+  bowl_type: string;
+}

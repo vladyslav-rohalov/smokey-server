@@ -22,8 +22,30 @@ export class TobaccoController {
   }
 
   @Get()
-  findAll(@Query('page') page: number = 1, @Query('limit') limit: number = 10) {
-    return this.tobaccoService.findAllTobacco(page, limit);
+  findAll(
+    @Query('page') page: number,
+    @Query('limit') limit: number,
+    @Query('sort') sort: string,
+    @Query('brand') brand: string,
+    @Query('status') status: string,
+    @Query('flavor') flavor: string,
+    @Query('weight') weight: string,
+    @Query('strength') strength: number,
+    @Query('min') min: number,
+    @Query('max') max: number,
+  ) {
+    return this.tobaccoService.findAllTobacco({
+      page,
+      limit,
+      sort,
+      brand,
+      status,
+      flavor,
+      weight,
+      strength,
+      min,
+      max,
+    });
   }
 
   @Patch(':id')

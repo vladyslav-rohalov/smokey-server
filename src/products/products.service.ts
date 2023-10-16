@@ -74,28 +74,6 @@ export class ProductsService {
     return product;
   }
 
-  async findAllTobacco(page: number, limit: number) {
-    if (!page || isNaN(page) || page <= 0) {
-      page = 1;
-    }
-    if (!limit || isNaN(limit) || limit <= 0) {
-      limit = 10;
-    }
-    const skip = (page - 1) * limit;
-
-    const [products, total] = await this.productRepository
-      .createQueryBuilder('product')
-      .innerJoinAndSelect('product.tobacco', 'tobacco')
-      .skip(skip)
-      .take(limit)
-      .getManyAndCount();
-
-    return {
-      products,
-      total,
-    };
-  }
-
   async findAllHookahs(page: number, limit: number) {
     if (!page || isNaN(page) || page <= 0) {
       page = 1;
