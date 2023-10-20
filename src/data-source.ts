@@ -17,6 +17,13 @@ import { OrderItem } from './order-item/entities/order-item.entity';
 import { Comment } from './comments/entities/comment.entity';
 import { ReviewRating } from './review-rating/entities/review-rating.entity';
 import { BlacklistedToken } from './blacklisted-tokens/entities/blacklisted-token.entity';
+import { PromotionModule } from './enums/promotion/promotion.module';
+import { BrandModule } from './enums/brand/brand.module';
+import { FlavorModule } from './enums/flavor/flavor.module';
+import { ColorModule } from './enums/color/color.module';
+import { AccessoryTypeModule } from './enums/accessory-type/accessory-type.module';
+import { BowlTypeModule } from './enums/bowl-type/bowl-type.module';
+import { HookahSizeModule } from './enums/hookah-size/hookah-size.module';
 
 const {
   POSTGRES_HOST,
@@ -52,6 +59,13 @@ export const AppDataSource = new DataSource({
     Comment,
     ReviewRating,
     BlacklistedToken,
+    PromotionModule,
+    BrandModule,
+    FlavorModule,
+    ColorModule,
+    AccessoryTypeModule,
+    BowlTypeModule,
+    HookahSizeModule,
   ],
   migrations: ['src/migrations/*.ts'],
   subscribers: [],

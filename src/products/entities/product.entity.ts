@@ -1,5 +1,5 @@
 import { Entity, PrimaryGeneratedColumn, Column } from 'typeorm';
-import { CreateDateColumn, UpdateDateColumn, ManyToMany } from 'typeorm';
+import { CreateDateColumn, UpdateDateColumn } from 'typeorm';
 import { OneToMany, OneToOne } from 'typeorm';
 import { Favorite } from '../../favorites/entities/favorite.entity';
 import { Review } from '../../reviews/entities/review.entity';
@@ -87,5 +87,4 @@ export class Product {
 
   @UpdateDateColumn()
   updatedAt: Date;
-  product: Product;
 }

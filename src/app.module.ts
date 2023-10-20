@@ -17,6 +17,13 @@ import { Accessory } from './accessories/entities/accessory.entity';
 import { Comment } from './comments/entities/comment.entity';
 import { ReviewRating } from './review-rating/entities/review-rating.entity';
 import { BlacklistedToken } from './blacklisted-tokens/entities/blacklisted-token.entity';
+import { Promotion } from './enums/promotion/entities/promotion.entity';
+import { Brand } from './enums/brand/entities/brand.entity';
+import { Flavor } from './enums/flavor/entities/flavor.entity';
+import { Color } from './enums/color/entities/color.entity';
+import { AccessoryType } from './enums/accessory-type/entities/accessory-type.entity';
+import { BowlType } from './enums/bowl-type/entities/bowl-type.entity';
+import { HookahSize } from './enums/hookah-size/entities/hookah-size.entity';
 import { AuthModule } from './auth/auth.module';
 import { UsersModule } from './users/users.module';
 import { OrdersModule } from './orders/orders.module';
@@ -35,6 +42,13 @@ import { CommentsModule } from './comments/comments.module';
 import { ReviewRatingModule } from './review-rating/review-rating.module';
 import { BlacklistedTokensModule } from './blacklisted-tokens/blacklisted-tokens.module';
 import { AwsS3Module } from './aws-s3/aws-s3.module';
+import { PromotionModule } from './enums/promotion/promotion.module';
+import { BrandModule } from './enums/brand/brand.module';
+import { FlavorModule } from './enums/flavor/flavor.module';
+import { ColorModule } from './enums/color/color.module';
+import { AccessoryTypeModule } from './enums/accessory-type/accessory-type.module';
+import { BowlTypeModule } from './enums/bowl-type/bowl-type.module';
+import { HookahSizeModule } from './enums/hookah-size/hookah-size.module';
 
 @Module({
   controllers: [],
@@ -67,6 +81,13 @@ import { AwsS3Module } from './aws-s3/aws-s3.module';
           Comment,
           ReviewRating,
           BlacklistedToken,
+          Promotion,
+          Brand,
+          Flavor,
+          Color,
+          AccessoryType,
+          BowlType,
+          HookahSize,
         ],
         synchronize: false,
       }),
@@ -90,6 +111,13 @@ import { AwsS3Module } from './aws-s3/aws-s3.module';
     ReviewRatingModule,
     BlacklistedTokensModule,
     AwsS3Module,
+    PromotionModule,
+    BrandModule,
+    FlavorModule,
+    ColorModule,
+    AccessoryTypeModule,
+    BowlTypeModule,
+    HookahSizeModule,
   ],
 })
 export class AppModule {}
