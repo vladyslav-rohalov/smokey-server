@@ -1,24 +1,27 @@
-import { Entity, PrimaryGeneratedColumn, Column } from 'typeorm';
-import { JoinColumn, OneToOne } from 'typeorm';
+import { Entity, PrimaryGeneratedColumn } from 'typeorm';
+import { JoinColumn, OneToOne, ManyToOne } from 'typeorm';
 import { Product } from '../../products/entities/product.entity';
-
-export enum Size {
-  BIG = 'big',
-  MEDIUM = 'medium',
-  SMALL = 'small',
-  PORTABLE = 'portable',
-}
+import { HookahSize } from '../../enums/hookah-size/entities/hookah-size.entity';
+import { Color } from '../../enums/color/entities/color.entity';
+// export enum Size {
+//   BIG = 'big',
+//   MEDIUM = 'medium',
+//   SMALL = 'small',
+//   PORTABLE = 'portable',
+// }
 
 @Entity({ name: 'hookahs' })
 export class Hookah {
   @PrimaryGeneratedColumn({ name: 'hookah_id' })
   id: number;
 
-  @Column({ type: 'varchar' })
-  color: string;
+  @ManyToOne(() => Color, color => color.hookahs)
+  @JoinColumn({ name: 'color_id' })
+  color: Color;
 
-  @Column({ type: 'enum', enum: Size })
-  hookah_size: Size;
+  @ManyToOne(() => HookahSize, hookahSize => hookahSize.hookahs)
+  @JoinColumn({ name: 'hookah_size_id' })
+  hookah_size: HookahSize;
 
   @OneToOne(() => Product, product => product.hookahs, {
     onDelete: 'CASCADE',

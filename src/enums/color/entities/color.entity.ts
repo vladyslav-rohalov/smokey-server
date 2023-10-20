@@ -7,11 +7,14 @@ export class Color {
   @PrimaryGeneratedColumn({ name: 'color_id' })
   id: number;
 
-  @Column({ unique: true })
+  @Column({ unique: true, type: 'varchar' })
   name: string;
 
+  @Column({ unique: true, type: 'varchar' })
+  value: string;
+
   @OneToMany(() => Hookah, hookah => hookah.color)
-  color: Hookah[];
+  hookahs: Hookah[];
 
   @CreateDateColumn()
   createdAt: Date;

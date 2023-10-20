@@ -7,11 +7,11 @@ export class Flavor {
   @PrimaryGeneratedColumn({ name: 'flavor_id' })
   id: number;
 
-  @Column({ unique: true })
+  @Column({ unique: true, type: 'varchar' })
   name: string;
 
   @OneToMany(() => Tobacco, tobacco => tobacco.flavor)
-  flavor: Tobacco[];
+  tobacco: Tobacco[];
 
   @CreateDateColumn()
   createdAt: Date;

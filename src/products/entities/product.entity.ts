@@ -1,6 +1,6 @@
 import { Entity, PrimaryGeneratedColumn, Column } from 'typeorm';
 import { CreateDateColumn, UpdateDateColumn } from 'typeorm';
-import { OneToMany, OneToOne } from 'typeorm';
+import { OneToMany, OneToOne, ManyToOne, JoinColumn } from 'typeorm';
 import { Favorite } from '../../favorites/entities/favorite.entity';
 import { Review } from '../../reviews/entities/review.entity';
 import { Hookah } from '../../hookahs/entities/hookah.entity';
@@ -9,13 +9,15 @@ import { Coal } from '../../coals/entities/coal.entity';
 import { Accessory } from '../../accessories/entities/accessory.entity';
 import { CartItem } from '../../cart-item/entities/cart-item.entity';
 import { OrderItem } from '../../order-item/entities/order-item.entity';
+import { Promotion } from '../../enums/promotion/entities/promotion.entity';
+import { Brand } from '../../enums/brand/entities/brand.entity';
 
-enum Promotion {
-  HOT = 'hot',
-  SALE = 'sale',
-  NEW = 'new',
-  None = 'none',
-}
+// enum Promotion {
+//   HOT = 'hot',
+//   SALE = 'sale',
+//   NEW = 'new',
+//   None = 'none',
+// }
 
 enum Status {
   IN_STOCK = 'in stock',
@@ -28,9 +30,6 @@ enum Status {
 export class Product {
   @PrimaryGeneratedColumn({ name: 'product_id' })
   id: number;
-
-  @Column({ type: 'enum', enum: Promotion, default: Promotion.None })
-  promotion: Promotion;
 
   @Column({ type: 'enum', enum: Status, default: Status.IN_STOCK })
   status: Status;
@@ -45,9 +44,6 @@ export class Product {
   description: string;
 
   @Column({ type: 'varchar' })
-  brand: string;
-
-  @Column({ type: 'varchar' })
   title: string;
 
   @Column({ type: 'smallint' })
@@ -55,6 +51,14 @@ export class Product {
 
   @Column({ type: 'smallint', nullable: true })
   rating: number;
+
+  @ManyToOne(() => Promotion, promotion => promotion.products)
+  @JoinColumn({ name: 'promotion_id' })
+  promotion: Promotion;
+
+  @ManyToOne(() => Brand, brand => brand.products)
+  @JoinColumn({ name: 'brand_id' })
+  brand: Brand;
 
   @OneToMany(() => Favorite, favorite => favorite.product)
   favorites: Favorite[];

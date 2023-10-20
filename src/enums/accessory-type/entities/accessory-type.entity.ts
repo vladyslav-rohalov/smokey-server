@@ -7,11 +7,11 @@ export class AccessoryType {
   @PrimaryGeneratedColumn({ name: 'type_id' })
   id: number;
 
-  @Column({ unique: true })
+  @Column({ unique: true, type: 'varchar' })
   name: string;
 
   @OneToMany(() => Accessory, accessory => accessory.type)
-  type: Accessory[];
+  accessories: Accessory[];
 
   @CreateDateColumn()
   createdAt: Date;

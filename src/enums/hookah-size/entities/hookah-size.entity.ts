@@ -7,11 +7,11 @@ export class HookahSize {
   @PrimaryGeneratedColumn({ name: 'hookah_size_id' })
   id: number;
 
-  @Column({ unique: true })
+  @Column({ unique: true, type: 'varchar' })
   name: string;
 
   @OneToMany(() => Hookah, hookah => hookah.hookah_size)
-  hookah_size: Hookah[];
+  hookahs: Hookah[];
 
   @CreateDateColumn()
   createdAt: Date;

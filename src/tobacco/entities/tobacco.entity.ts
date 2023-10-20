@@ -1,14 +1,16 @@
 import { Entity, PrimaryGeneratedColumn, Column } from 'typeorm';
-import { OneToOne, JoinColumn } from 'typeorm';
+import { OneToOne, JoinColumn, ManyToOne } from 'typeorm';
 import { Product } from '../../products/entities/product.entity';
+import { Flavor } from '../../enums/flavor/entities/flavor.entity';
 
 @Entity({ name: 'tobacco' })
 export class Tobacco {
   @PrimaryGeneratedColumn({ name: 'tobacco_id' })
   id: number;
 
-  @Column({ type: 'varchar' })
-  flavor: string;
+  @ManyToOne(() => Flavor, flavor => flavor.tobacco)
+  @JoinColumn({ name: 'flavor_id' })
+  flavor: Flavor;
 
   @Column({ type: 'smallint' })
   tobacco_weight: number;

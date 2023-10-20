@@ -17,13 +17,13 @@ import { OrderItem } from './order-item/entities/order-item.entity';
 import { Comment } from './comments/entities/comment.entity';
 import { ReviewRating } from './review-rating/entities/review-rating.entity';
 import { BlacklistedToken } from './blacklisted-tokens/entities/blacklisted-token.entity';
-import { PromotionModule } from './enums/promotion/promotion.module';
-import { BrandModule } from './enums/brand/brand.module';
-import { FlavorModule } from './enums/flavor/flavor.module';
-import { ColorModule } from './enums/color/color.module';
-import { AccessoryTypeModule } from './enums/accessory-type/accessory-type.module';
-import { BowlTypeModule } from './enums/bowl-type/bowl-type.module';
-import { HookahSizeModule } from './enums/hookah-size/hookah-size.module';
+import { Promotion } from './enums/promotion/entities/promotion.entity';
+import { Brand } from './enums/brand/entities/brand.entity';
+import { Flavor } from './enums/flavor/entities/flavor.entity';
+import { Color } from './enums/color/entities/color.entity';
+import { AccessoryType } from './enums/accessory-type/entities/accessory-type.entity';
+import { BowlType } from './enums/bowl-type/entities/bowl-type.entity';
+import { HookahSize } from './enums/hookah-size/entities/hookah-size.entity';
 
 const {
   POSTGRES_HOST,
@@ -59,13 +59,13 @@ export const AppDataSource = new DataSource({
     Comment,
     ReviewRating,
     BlacklistedToken,
-    PromotionModule,
-    BrandModule,
-    FlavorModule,
-    ColorModule,
-    AccessoryTypeModule,
-    BowlTypeModule,
-    HookahSizeModule,
+    Promotion,
+    Brand,
+    Flavor,
+    Color,
+    AccessoryType,
+    BowlType,
+    HookahSize,
   ],
   migrations: ['src/migrations/*.ts'],
   subscribers: [],

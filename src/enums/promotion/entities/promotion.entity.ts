@@ -7,11 +7,11 @@ export class Promotion {
   @PrimaryGeneratedColumn({ name: 'promotion_id' })
   id: number;
 
-  @Column({ unique: true })
+  @Column({ unique: true, type: 'varchar' })
   name: string;
 
   @OneToMany(() => Product, product => product.promotion)
-  promotion: Product[];
+  products: Product[];
 
   @CreateDateColumn()
   createdAt: Date;

@@ -1,36 +1,40 @@
-import { Entity, PrimaryGeneratedColumn, Column } from 'typeorm';
-import { OneToOne, JoinColumn } from 'typeorm';
+import { Entity, PrimaryGeneratedColumn } from 'typeorm';
+import { OneToOne, JoinColumn, ManyToOne } from 'typeorm';
 import { Product } from '../../products/entities/product.entity';
+import { AccessoryType } from '../../enums/accessory-type/entities/accessory-type.entity';
+import { BowlType } from '../../enums/bowl-type/entities/bowl-type.entity';
 
-export enum Type {
-  BOWL = 'bowl',
-  HOSE = 'hose',
-  TONGS = 'tongs',
-  CAP = 'cap',
-  COAL_HOLDER = 'charcoal holder',
-  SEALS = 'seals',
-  CLEANERS = 'cleaners',
-  FLASK = 'flask',
-  OTHER = 'other',
-}
+// export enum Type {
+//   BOWL = 'bowl',
+//   HOSE = 'hose',
+//   TONGS = 'tongs',
+//   CAP = 'cap',
+//   COAL_HOLDER = 'charcoal holder',
+//   SEALS = 'seals',
+//   CLEANERS = 'cleaners',
+//   FLASK = 'flask',
+//   OTHER = 'other',
+// }
 
-export enum Bowl_Type {
-  TURKISH = 'turkish',
-  PHUNNEL = 'phunnel',
-  VORTEX = 'vortex',
-  EVIL = 'evil',
-}
+// export enum Bowl_Type {
+//   TURKISH = 'turkish',
+//   PHUNNEL = 'phunnel',
+//   VORTEX = 'vortex',
+//   EVIL = 'evil',
+// }
 
 @Entity({ name: 'accessories' })
 export class Accessory {
   @PrimaryGeneratedColumn({ name: 'accessory_id' })
   id: number;
 
-  @Column({ type: 'enum', enum: Type })
-  type: Type;
+  @ManyToOne(() => AccessoryType, type => type.accessories)
+  @JoinColumn({ name: 'type_id' })
+  type: AccessoryType;
 
-  @Column({ type: 'enum', enum: Bowl_Type, nullable: true })
-  bowl_type: Bowl_Type | null;
+  @ManyToOne(() => BowlType, type => type.accessories)
+  @JoinColumn({ name: 'bowl_type_id' })
+  bowl_type: BowlType | null;
 
   @OneToOne(() => Product, product => product.accessories, {
     onDelete: 'CASCADE',
