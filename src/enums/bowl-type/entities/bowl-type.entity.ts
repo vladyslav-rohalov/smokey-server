@@ -8,7 +8,7 @@ export class BowlType {
   id: number;
 
   @Column({ unique: true, type: 'varchar' })
-  name: string;
+  bowl_type: string;
 
   @OneToMany(() => Accessory, accessory => accessory.bowl_type)
   accessories: Accessory[];

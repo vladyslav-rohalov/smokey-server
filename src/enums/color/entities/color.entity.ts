@@ -8,10 +8,10 @@ export class Color {
   id: number;
 
   @Column({ unique: true, type: 'varchar' })
-  name: string;
+  color: string;
 
   @Column({ unique: true, type: 'varchar' })
-  value: string;
+  color_value: string;
 
   @OneToMany(() => Hookah, hookah => hookah.color)
   hookahs: Hookah[];

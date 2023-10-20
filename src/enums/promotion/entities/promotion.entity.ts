@@ -8,7 +8,7 @@ export class Promotion {
   id: number;
 
   @Column({ unique: true, type: 'varchar' })
-  name: string;
+  promotion: string;
 
   @OneToMany(() => Product, product => product.promotion)
   products: Product[];

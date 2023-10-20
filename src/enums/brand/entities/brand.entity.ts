@@ -8,7 +8,7 @@ export class Brand {
   id: number;
 
   @Column({ unique: true, type: 'varchar' })
-  name: string;
+  brand: string;
 
   @OneToMany(() => Product, product => product.brand)
   products: Product[];

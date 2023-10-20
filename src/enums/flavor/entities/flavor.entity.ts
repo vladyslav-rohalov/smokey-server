@@ -8,7 +8,7 @@ export class Flavor {
   id: number;
 
   @Column({ unique: true, type: 'varchar' })
-  name: string;
+  flavor: string;
 
   @OneToMany(() => Tobacco, tobacco => tobacco.flavor)
   tobacco: Tobacco[];

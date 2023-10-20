@@ -8,7 +8,7 @@ export class AccessoryType {
   id: number;
 
   @Column({ unique: true, type: 'varchar' })
-  name: string;
+  type: string;
 
   @OneToMany(() => Accessory, accessory => accessory.type)
   accessories: Accessory[];

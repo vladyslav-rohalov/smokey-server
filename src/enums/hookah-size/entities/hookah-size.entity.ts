@@ -8,7 +8,7 @@ export class HookahSize {
   id: number;
 
   @Column({ unique: true, type: 'varchar' })
-  name: string;
+  hookah_size: string;
 
   @OneToMany(() => Hookah, hookah => hookah.hookah_size)
   hookahs: Hookah[];
