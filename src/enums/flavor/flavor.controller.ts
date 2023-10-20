@@ -1,9 +1,10 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete } from '@nestjs/common';
+import { Controller, Body, Param } from '@nestjs/common';
+import { Get, Post, Patch, Delete } from '@nestjs/common';
 import { FlavorService } from './flavor.service';
 import { CreateFlavorDto } from './dto/create-flavor.dto';
 import { UpdateFlavorDto } from './dto/update-flavor.dto';
 
-@Controller('flavor')
+@Controller('api/enum/flavor')
 export class FlavorController {
   constructor(private readonly flavorService: FlavorService) {}
 
@@ -15,11 +16,6 @@ export class FlavorController {
   @Get()
   findAll() {
     return this.flavorService.findAll();
-  }
-
-  @Get(':id')
-  findOne(@Param('id') id: string) {
-    return this.flavorService.findOne(+id);
   }
 
   @Patch(':id')

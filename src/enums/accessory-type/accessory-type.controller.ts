@@ -1,12 +1,5 @@
-import {
-  Controller,
-  Get,
-  Post,
-  Body,
-  Patch,
-  Param,
-  Delete,
-} from '@nestjs/common';
+import { Controller, Body, Param } from '@nestjs/common';
+import { Get, Post, Patch, Delete } from '@nestjs/common';
 import { AccessoryTypeService } from './accessory-type.service';
 import { CreateAccessoryTypeDto } from './dto/create-accessory-type.dto';
 import { UpdateAccessoryTypeDto } from './dto/update-accessory-type.dto';

@@ -1,26 +1,50 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, NotFoundException } from '@nestjs/common';
+import { InjectRepository } from '@nestjs/typeorm';
+import { Repository } from 'typeorm';
 import { CreateFlavorDto } from './dto/create-flavor.dto';
 import { UpdateFlavorDto } from './dto/update-flavor.dto';
+import { Flavor } from './entities/flavor.entity';
 
 @Injectable()
 export class FlavorService {
-  create(createFlavorDto: CreateFlavorDto) {
-    return 'This action adds a new flavor';
+  constructor(
+    @InjectRepository(Flavor)
+    private flavorRepository: Repository<Flavor>,
+  ) {}
+
+  async create(createFlavorDto: CreateFlavorDto) {
+    const flavor = this.flavorRepository.create(createFlavorDto);
+    return await this.flavorRepository.save(flavor);
   }
 
-  findAll() {
-    return `This action returns all flavor`;
+  async findAll() {
+    const flavors = await this.flavorRepository.find();
+    return flavors;
   }
 
-  findOne(id: number) {
-    return `This action returns a #${id} flavor`;
+  async update(id: number, updateFlavorDto: UpdateFlavorDto) {
+    const flavor = await this.flavorRepository.findOne({
+      where: { id },
+    });
+    if (!flavor) {
+      throw new NotFoundException(`Flavor with id ${id} not found`);
+    }
+    await this.flavorRepository.update(id, updateFlavorDto);
+
+    const updatedFlavor = await this.flavorRepository.findOne({
+      where: { id },
+    });
+
+    return updatedFlavor;
   }
 
-  update(id: number, updateFlavorDto: UpdateFlavorDto) {
-    return `This action updates a #${id} flavor`;
-  }
-
-  remove(id: number) {
-    return `This action removes a #${id} flavor`;
+  async remove(id: number) {
+    const flavor = await this.flavorRepository.findOne({
+      where: { id },
+    });
+    if (!flavor) {
+      throw new NotFoundException(`Flavor with id ${id} not found`);
+    }
+    await this.flavorRepository.remove(flavor);
   }
 }

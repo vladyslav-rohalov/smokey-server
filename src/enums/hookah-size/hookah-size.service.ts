@@ -1,26 +1,50 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, NotFoundException } from '@nestjs/common';
+import { InjectRepository } from '@nestjs/typeorm';
+import { Repository } from 'typeorm';
 import { CreateHookahSizeDto } from './dto/create-hookah-size.dto';
 import { UpdateHookahSizeDto } from './dto/update-hookah-size.dto';
+import { HookahSize } from './entities/hookah-size.entity';
 
 @Injectable()
 export class HookahSizeService {
-  create(createHookahSizeDto: CreateHookahSizeDto) {
-    return 'This action adds a new hookahSize';
+  constructor(
+    @InjectRepository(HookahSize)
+    private hookahSizeRepository: Repository<HookahSize>,
+  ) {}
+
+  async create(createHookahSizeDto: CreateHookahSizeDto) {
+    const hookahSize = this.hookahSizeRepository.create(createHookahSizeDto);
+    return await this.hookahSizeRepository.save(hookahSize);
   }
 
-  findAll() {
-    return `This action returns all hookahSize`;
+  async findAll() {
+    const hookahSizes = await this.hookahSizeRepository.find();
+    return hookahSizes;
   }
 
-  findOne(id: number) {
-    return `This action returns a #${id} hookahSize`;
+  async update(id: number, updateHookahSizeDto: UpdateHookahSizeDto) {
+    const hookahSize = await this.hookahSizeRepository.findOne({
+      where: { id },
+    });
+    if (!hookahSize) {
+      throw new NotFoundException(`Hookah size with id ${id} not found`);
+    }
+    await this.hookahSizeRepository.update(id, updateHookahSizeDto);
+
+    const updatedHookahSize = await this.hookahSizeRepository.findOne({
+      where: { id },
+    });
+
+    return updatedHookahSize;
   }
 
-  update(id: number, updateHookahSizeDto: UpdateHookahSizeDto) {
-    return `This action updates a #${id} hookahSize`;
-  }
-
-  remove(id: number) {
-    return `This action removes a #${id} hookahSize`;
+  async remove(id: number) {
+    const hookahSize = await this.hookahSizeRepository.findOne({
+      where: { id },
+    });
+    if (!hookahSize) {
+      throw new NotFoundException(`Hookah size with id ${id} not found`);
+    }
+    await this.hookahSizeRepository.remove(hookahSize);
   }
 }

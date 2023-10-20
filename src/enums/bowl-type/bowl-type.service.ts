@@ -1,26 +1,50 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, NotFoundException } from '@nestjs/common';
+import { InjectRepository } from '@nestjs/typeorm';
+import { Repository } from 'typeorm';
 import { CreateBowlTypeDto } from './dto/create-bowl-type.dto';
 import { UpdateBowlTypeDto } from './dto/update-bowl-type.dto';
+import { BowlType } from './entities/bowl-type.entity';
 
 @Injectable()
 export class BowlTypeService {
-  create(createBowlTypeDto: CreateBowlTypeDto) {
-    return 'This action adds a new bowlType';
+  constructor(
+    @InjectRepository(BowlType)
+    private bowlTypeRepository: Repository<BowlType>,
+  ) {}
+
+  async create(createBowlTypeDto: CreateBowlTypeDto) {
+    const bowlType = this.bowlTypeRepository.create(createBowlTypeDto);
+    return await this.bowlTypeRepository.save(bowlType);
   }
 
-  findAll() {
-    return `This action returns all bowlType`;
+  async findAll() {
+    const bowlTypes = await this.bowlTypeRepository.find();
+    return bowlTypes;
   }
 
-  findOne(id: number) {
-    return `This action returns a #${id} bowlType`;
+  async update(id: number, updateBowlTypeDto: UpdateBowlTypeDto) {
+    const bowlType = await this.bowlTypeRepository.findOne({
+      where: { id },
+    });
+    if (!bowlType) {
+      throw new NotFoundException(`Bowl type with id ${id} not found`);
+    }
+    await this.bowlTypeRepository.update(id, updateBowlTypeDto);
+
+    const updatedBowlType = await this.bowlTypeRepository.findOne({
+      where: { id },
+    });
+
+    return updatedBowlType;
   }
 
-  update(id: number, updateBowlTypeDto: UpdateBowlTypeDto) {
-    return `This action updates a #${id} bowlType`;
-  }
-
-  remove(id: number) {
-    return `This action removes a #${id} bowlType`;
+  async remove(id: number) {
+    const bowlType = await this.bowlTypeRepository.findOne({
+      where: { id },
+    });
+    if (!bowlType) {
+      throw new NotFoundException(`Bowl type with id ${id} not found`);
+    }
+    await this.bowlTypeRepository.remove(bowlType);
   }
 }

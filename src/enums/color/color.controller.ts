@@ -1,9 +1,10 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete } from '@nestjs/common';
+import { Controller, Body, Param } from '@nestjs/common';
+import { Get, Post, Patch, Delete } from '@nestjs/common';
 import { ColorService } from './color.service';
 import { CreateColorDto } from './dto/create-color.dto';
 import { UpdateColorDto } from './dto/update-color.dto';
 
-@Controller('color')
+@Controller('api/enum/color')
 export class ColorController {
   constructor(private readonly colorService: ColorService) {}
 
@@ -15,11 +16,6 @@ export class ColorController {
   @Get()
   findAll() {
     return this.colorService.findAll();
-  }
-
-  @Get(':id')
-  findOne(@Param('id') id: string) {
-    return this.colorService.findOne(+id);
   }
 
   @Patch(':id')

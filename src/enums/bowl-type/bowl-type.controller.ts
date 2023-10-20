@@ -1,9 +1,10 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete } from '@nestjs/common';
+import { Controller, Body, Param } from '@nestjs/common';
+import { Get, Post, Patch, Delete } from '@nestjs/common';
 import { BowlTypeService } from './bowl-type.service';
 import { CreateBowlTypeDto } from './dto/create-bowl-type.dto';
 import { UpdateBowlTypeDto } from './dto/update-bowl-type.dto';
 
-@Controller('bowl-type')
+@Controller('api/enum/bowl-type')
 export class BowlTypeController {
   constructor(private readonly bowlTypeService: BowlTypeService) {}
 
@@ -17,13 +18,11 @@ export class BowlTypeController {
     return this.bowlTypeService.findAll();
   }
 
-  @Get(':id')
-  findOne(@Param('id') id: string) {
-    return this.bowlTypeService.findOne(+id);
-  }
-
   @Patch(':id')
-  update(@Param('id') id: string, @Body() updateBowlTypeDto: UpdateBowlTypeDto) {
+  update(
+    @Param('id') id: string,
+    @Body() updateBowlTypeDto: UpdateBowlTypeDto,
+  ) {
     return this.bowlTypeService.update(+id, updateBowlTypeDto);
   }
 
