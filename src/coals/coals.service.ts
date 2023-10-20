@@ -81,7 +81,7 @@ export class CoalsService {
     const { page, limit, sort, brand, status, coalSize, coalWeight, min, max } =
       params;
 
-    const brandsArr = await paramToArr(brand);
+    // const brandsArr = await paramToArr(brand);
     const weightsArr = await paramToArr(coalWeight);
     const sizesArr = await paramToArr(coalSize);
 
@@ -93,11 +93,11 @@ export class CoalsService {
       query = query.andWhere('product.status = :status', { status });
     }
 
-    if (brandsArr && brandsArr.length > 0) {
-      query = query.andWhere('LOWER(product.brand) IN (:...brandsArr)', {
-        brandsArr: brandsArr.map(brand => brand.toLowerCase()),
-      });
-    }
+    // if (brandsArr && brandsArr.length > 0) {
+    //   query = query.andWhere('LOWER(product.brand) IN (:...brandsArr)', {
+    //     brandsArr: brandsArr.map(brand => brand.toLowerCase()),
+    //   });
+    // }
     if (sizesArr && sizesArr.length > 0) {
       query = query.andWhere('(coals.coal_size) IN (:...sizesArr)', {
         sizesArr: sizesArr.map(size => +size),
@@ -128,7 +128,7 @@ export class CoalsService {
     const products = await query.getMany();
 
     const total = products.length;
-    const brandCounts: { [key: string]: number } = {};
+    // const brandCounts: { [key: string]: number } = {};
     const sizeCounts: { [key: string]: number } = {};
     const weightCounts: { [key: string]: number } = {};
     const statusCounts: { [key: string]: number } = {};
@@ -138,7 +138,7 @@ export class CoalsService {
       prices.max = 0;
     }
     products.forEach(product => {
-      const brand = product.brand.toLowerCase();
+      // const brand = product.brand.toLowerCase();
       const size = product.coals.coal_size;
       const weight = product.coals.coal_weight;
       const status = product.status.toLocaleLowerCase();
@@ -150,10 +150,10 @@ export class CoalsService {
       if (price > prices.max) {
         prices.max = price;
       }
-      if (!brandCounts[brand]) {
-        brandCounts[brand] = 0;
-      }
-      brandCounts[brand]++;
+      // if (!brandCounts[brand]) {
+      //   brandCounts[brand] = 0;
+      // }
+      // brandCounts[brand]++;
 
       if (!statusCounts[status]) {
         statusCounts[status] = 0;
@@ -178,7 +178,7 @@ export class CoalsService {
       products: paginatedProducts,
       counts: {
         total,
-        brandCounts,
+        // brandCounts,
         sizeCounts,
         weightCounts,
         statusCounts,

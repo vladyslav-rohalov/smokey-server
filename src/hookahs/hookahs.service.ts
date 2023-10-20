@@ -81,10 +81,10 @@ export class HookahsService {
     const { page, limit, sort, brand, status, color, hookahSize, min, max } =
       params;
 
-    const brandsArr = await paramToArr(brand);
-    const colorsArr = await paramToArr(color);
-    const hookahSizesArr = await paramToArr(hookahSize);
-    console.log(hookahSizesArr);
+    // const brandsArr = await paramToArr(brand);
+    // const colorsArr = await paramToArr(color);
+    // const hookahSizesArr = await paramToArr(hookahSize);
+
     let query = this.productRepository
       .createQueryBuilder('product')
       .innerJoinAndSelect('product.hookahs', 'hookahs');
@@ -93,21 +93,21 @@ export class HookahsService {
       query = query.andWhere('product.status = :status', { status });
     }
 
-    if (brandsArr && brandsArr.length > 0) {
-      query = query.andWhere('LOWER(product.brand) IN (:...brandsArr)', {
-        brandsArr: brandsArr.map(brand => brand.toLowerCase()),
-      });
-    }
-    if (colorsArr && colorsArr.length > 0) {
-      query = query.andWhere('LOWER(hookahs.color) IN (:...colorsArr)', {
-        colorsArr: colorsArr.map(color => color.toLocaleLowerCase()),
-      });
-    }
-    if (hookahSizesArr && hookahSizesArr.length > 0) {
-      query = query.andWhere('(hookahs.hookah_size) IN (:...hookahSizesArr)', {
-        hookahSizesArr: hookahSizesArr.map(size => size.toLocaleLowerCase()),
-      });
-    }
+    // if (brandsArr && brandsArr.length > 0) {
+    //   query = query.andWhere('LOWER(product.brand) IN (:...brandsArr)', {
+    //     brandsArr: brandsArr.map(brand => brand.toLowerCase()),
+    //   });
+    // }
+    // if (colorsArr && colorsArr.length > 0) {
+    //   query = query.andWhere('LOWER(hookahs.color) IN (:...colorsArr)', {
+    //     colorsArr: colorsArr.map(color => color.toLocaleLowerCase()),
+    //   });
+    // }
+    // if (hookahSizesArr && hookahSizesArr.length > 0) {
+    //   query = query.andWhere('(hookahs.hookah_size) IN (:...hookahSizesArr)', {
+    //     hookahSizesArr: hookahSizesArr.map(size => size.toLocaleLowerCase()),
+    //   });
+    // }
     if (sort) {
       if (sort === 'new' || sort === 'sale' || sort === 'hot') {
         query = query.andWhere('product.promotion = :sort', { sort });
@@ -127,9 +127,9 @@ export class HookahsService {
     const products = await query.getMany();
 
     const total = products.length;
-    const brandCounts: { [key: string]: number } = {};
-    const colorCounts: { [key: string]: number } = {};
-    const hookahSizeCounts: { [key: string]: number } = {};
+    // const brandCounts: { [key: string]: number } = {};
+    // const colorCounts: { [key: string]: number } = {};
+    // const hookahSizeCounts: { [key: string]: number } = {};
     const statusCounts: { [key: string]: number } = {};
     const prices = { min: Number.MAX_VALUE, max: Number.MIN_VALUE };
     if (products.length <= 0) {
@@ -137,9 +137,9 @@ export class HookahsService {
       prices.max = 0;
     }
     products.forEach(product => {
-      const brand = product.brand.toLowerCase();
-      const color = product.hookahs.color.toLocaleLowerCase();
-      const size = product.hookahs.hookah_size.toLocaleLowerCase();
+      // const brand = product.brand.toLowerCase();
+      // const color = product.hookahs.color.toLocaleLowerCase();
+      // const size = product.hookahs.hookah_size.toLocaleLowerCase();
       const status = product.status.toLocaleLowerCase();
       const price = +product.price;
 
@@ -149,25 +149,25 @@ export class HookahsService {
       if (price > prices.max) {
         prices.max = price;
       }
-      if (!brandCounts[brand]) {
-        brandCounts[brand] = 0;
-      }
-      brandCounts[brand]++;
+      // if (!brandCounts[brand]) {
+      //   brandCounts[brand] = 0;
+      // }
+      // brandCounts[brand]++;
 
       if (!statusCounts[status]) {
         statusCounts[status] = 0;
       }
       statusCounts[status]++;
 
-      if (!colorCounts[color]) {
-        colorCounts[color] = 0;
-      }
-      colorCounts[color]++;
+      // if (!colorCounts[color]) {
+      //   colorCounts[color] = 0;
+      // }
+      // colorCounts[color]++;
 
-      if (!hookahSizeCounts[size]) {
-        hookahSizeCounts[size] = 0;
-      }
-      hookahSizeCounts[size]++;
+      // if (!hookahSizeCounts[size]) {
+      //   hookahSizeCounts[size] = 0;
+      // }
+      // hookahSizeCounts[size]++;
     });
 
     const sortedProducts = await sortProductsByPrice(products, sort);
@@ -177,9 +177,9 @@ export class HookahsService {
       products: paginatedProducts,
       counts: {
         total,
-        brandCounts,
-        colorCounts,
-        hookahSizeCounts,
+        // brandCounts,
+        // colorCounts,
+        // hookahSizeCounts,
         statusCounts,
         prices,
       },

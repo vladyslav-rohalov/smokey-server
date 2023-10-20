@@ -92,9 +92,9 @@ export class TobaccoService {
       max,
     } = params;
 
-    const brandsArr = await paramToArr(brand);
+    // const brandsArr = await paramToArr(brand);
     const weightsArr = await paramToArr(weight);
-    const flavorsArr = await paramToArr(flavor);
+    // const flavorsArr = await paramToArr(flavor);
 
     let query = this.productRepository
       .createQueryBuilder('product')
@@ -104,16 +104,16 @@ export class TobaccoService {
       query = query.andWhere('product.status = :status', { status });
     }
 
-    if (brandsArr && brandsArr.length > 0) {
-      query = query.andWhere('LOWER(product.brand) IN (:...brandsArr)', {
-        brandsArr: brandsArr.map(brand => brand.toLowerCase()),
-      });
-    }
-    if (flavorsArr && flavorsArr.length > 0) {
-      query = query.andWhere('LOWER(tobacco.flavor) IN (:...flavorsArr)', {
-        flavorsArr: flavorsArr.map(flavor => flavor.toLocaleLowerCase()),
-      });
-    }
+    // if (brandsArr && brandsArr.length > 0) {
+    //   query = query.andWhere('LOWER(product.brand) IN (:...brandsArr)', {
+    //     brandsArr: brandsArr.map(brand => brand.toLowerCase()),
+    //   });
+    // }
+    // if (flavorsArr && flavorsArr.length > 0) {
+    //   query = query.andWhere('LOWER(tobacco.flavor) IN (:...flavorsArr)', {
+    //     flavorsArr: flavorsArr.map(flavor => flavor.toLocaleLowerCase()),
+    //   });
+    // }
     if (weightsArr && weightsArr.length > 0) {
       query = query.andWhere('(tobacco.tobacco_weight) IN (:...weightsArr)', {
         weightsArr: weightsArr.map(weight => +weight),
@@ -141,8 +141,8 @@ export class TobaccoService {
     const products = await query.getMany();
 
     const total = products.length;
-    const brandCounts: { [key: string]: number } = {};
-    const flavorCounts: { [key: string]: number } = {};
+    // const brandCounts: { [key: string]: number } = {};
+    // const flavorCounts: { [key: string]: number } = {};
     const weightCounts: { [key: string]: number } = {};
     const statusCounts: { [key: string]: number } = {};
     const prices = { min: Number.MAX_VALUE, max: Number.MIN_VALUE };
@@ -151,8 +151,8 @@ export class TobaccoService {
       prices.max = 0;
     }
     products.forEach(product => {
-      const brand = product.brand.toLowerCase();
-      const flavor = product.tobacco.flavor.toLowerCase();
+      // const brand = product.brand.toLowerCase();
+      // const flavor = product.tobacco.flavor.toLowerCase();
       const weight = product.tobacco.tobacco_weight;
       const status = product.status.toLocaleLowerCase();
       const price = +product.price;
@@ -163,20 +163,20 @@ export class TobaccoService {
       if (price > prices.max) {
         prices.max = price;
       }
-      if (!brandCounts[brand]) {
-        brandCounts[brand] = 0;
-      }
-      brandCounts[brand]++;
+      // if (!brandCounts[brand]) {
+      //   brandCounts[brand] = 0;
+      // }
+      // brandCounts[brand]++;
 
       if (!statusCounts[status]) {
         statusCounts[status] = 0;
       }
       statusCounts[status]++;
 
-      if (!flavorCounts[flavor]) {
-        flavorCounts[flavor] = 0;
-      }
-      flavorCounts[flavor]++;
+      // if (!flavorCounts[flavor]) {
+      //   flavorCounts[flavor] = 0;
+      // }
+      // flavorCounts[flavor]++;
 
       if (!weightCounts[weight]) {
         weightCounts[weight] = 0;
@@ -191,8 +191,8 @@ export class TobaccoService {
       products: paginatedProducts,
       counts: {
         total,
-        brandCounts,
-        flavorCounts,
+        // brandCounts,
+        // flavorCounts,
         weightCounts,
         statusCounts,
         prices,

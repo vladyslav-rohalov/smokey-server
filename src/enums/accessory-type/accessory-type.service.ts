@@ -1,26 +1,50 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, NotFoundException } from '@nestjs/common';
+import { InjectRepository } from '@nestjs/typeorm';
+import { Repository } from 'typeorm';
 import { CreateAccessoryTypeDto } from './dto/create-accessory-type.dto';
 import { UpdateAccessoryTypeDto } from './dto/update-accessory-type.dto';
+import { AccessoryType } from './entities/accessory-type.entity';
 
 @Injectable()
 export class AccessoryTypeService {
-  create(createAccessoryTypeDto: CreateAccessoryTypeDto) {
-    return 'This action adds a new accessoryType';
+  constructor(
+    @InjectRepository(AccessoryType)
+    private accessoryTypeRepository: Repository<AccessoryType>,
+  ) {}
+
+  async create(createAccessoryTypeDto: CreateAccessoryTypeDto) {
+    const type = this.accessoryTypeRepository.create(createAccessoryTypeDto);
+    return await this.accessoryTypeRepository.save(type);
   }
 
-  findAll() {
-    return `This action returns all accessoryType`;
+  async findAll() {
+    const types = await this.accessoryTypeRepository.find();
+    return types;
   }
 
-  findOne(id: number) {
-    return `This action returns a #${id} accessoryType`;
+  async update(id: number, updateAccessoryTypeDto: UpdateAccessoryTypeDto) {
+    const type = await this.accessoryTypeRepository.findOne({
+      where: { id },
+    });
+    if (!type) {
+      throw new NotFoundException(`Accessory type with id ${id} not found`);
+    }
+    await this.accessoryTypeRepository.update(id, updateAccessoryTypeDto);
+
+    const updatedType = await this.accessoryTypeRepository.findOne({
+      where: { id },
+    });
+
+    return updatedType;
   }
 
-  update(id: number, updateAccessoryTypeDto: UpdateAccessoryTypeDto) {
-    return `This action updates a #${id} accessoryType`;
-  }
-
-  remove(id: number) {
-    return `This action removes a #${id} accessoryType`;
+  async remove(id: number) {
+    const type = await this.accessoryTypeRepository.findOne({
+      where: { id },
+    });
+    if (!type) {
+      throw new NotFoundException(`Accessory type with id ${id} not found`);
+    }
+    await this.accessoryTypeRepository.remove(type);
   }
 }

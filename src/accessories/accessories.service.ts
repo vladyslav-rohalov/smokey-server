@@ -135,7 +135,7 @@ export class AccessoriesService {
     const products = await query.getMany();
 
     const total = products.length;
-    const brandCounts: { [key: string]: number } = {};
+    // const brandCounts: { [key: string]: number } = {};
     const typeCounts: { [key: string]: number } = {};
     const bowlTypeCounts: { [key: string]: number } = {};
     const statusCounts: { [key: string]: number } = {};
@@ -145,19 +145,19 @@ export class AccessoriesService {
       prices.max = 0;
     }
     products.forEach(product => {
-      const brand = product.brand.toLowerCase();
-      const type = product.accessories.type.toLowerCase();
+      // const brand = product.brand.toLowerCase();
+      // const type = product.accessories.type.toLowerCase();
       const status = product.status.toLocaleLowerCase();
       const price = +product.price;
 
-      if (product.accessories && product.accessories.bowl_type) {
-        const bowlType = product.accessories.bowl_type.toLowerCase();
+      // if (product.accessories && product.accessories.bowl_type) {
+      //   const bowlType = product.accessories.bowl_type.toLowerCase();
 
-        if (!bowlTypeCounts[bowlType]) {
-          bowlTypeCounts[bowlType] = 0;
-        }
-        bowlTypeCounts[bowlType]++;
-      }
+      //   if (!bowlTypeCounts[bowlType]) {
+      //     bowlTypeCounts[bowlType] = 0;
+      //   }
+      //   bowlTypeCounts[bowlType]++;
+      // }
 
       if (price < prices.min) {
         prices.min = price;
@@ -165,10 +165,10 @@ export class AccessoriesService {
       if (price > prices.max) {
         prices.max = price;
       }
-      if (!brandCounts[brand]) {
-        brandCounts[brand] = 0;
-      }
-      brandCounts[brand]++;
+      // if (!brandCounts[brand]) {
+      //   brandCounts[brand] = 0;
+      // }
+      // brandCounts[brand]++;
 
       if (!statusCounts[status]) {
         statusCounts[status] = 0;
@@ -193,7 +193,7 @@ export class AccessoriesService {
       products: paginatedProducts,
       counts: {
         total,
-        brandCounts,
+        // brandCounts,
         typeCounts,
         bowlTypeCounts,
         statusCounts,
