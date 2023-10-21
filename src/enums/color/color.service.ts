@@ -22,6 +22,13 @@ export class ColorService {
     return colors;
   }
 
+  async getColor(colorDto: string) {
+    const color = await this.colorRepository.findOne({
+      where: { color: colorDto },
+    });
+    return color;
+  }
+
   async update(id: number, updateColorDto: UpdateColorDto) {
     const color = await this.colorRepository.findOne({
       where: { id },

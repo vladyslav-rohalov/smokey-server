@@ -1,19 +1,15 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
-import { CreateAccessoryDto } from './dto/create-accessory.dto';
-import { UpdateAccessoryDto } from './dto/update-accessory.dto';
 import { Product } from 'src/products/entities/product.entity';
 import { Accessory } from './entities/accessory.entity';
-import { Brand } from 'src/enums/brand/entities/brand.entity';
-import { Promotion } from 'src/enums/promotion/entities/promotion.entity';
-import { AccessoryType } from 'src/enums/accessory-type/entities/accessory-type.entity';
-import { BowlType } from 'src/enums/bowl-type/entities/bowl-type.entity';
-import { CreateProductDto } from 'src/products/dto/create-product.dto';
-import { UpdateProductDto } from 'src/products/dto/update-product.dto';
 import { ProductsService } from 'src/products/products.service';
 import { AccessoryTypeService } from 'src/enums/accessory-type/accessory-type.service';
 import { BowlTypeService } from 'src/enums/bowl-type/bowl-type.service';
+import { CreateProductDto } from 'src/products/dto/create-product.dto';
+import { UpdateProductDto } from 'src/products/dto/update-product.dto';
+import { CreateAccessoryDto } from './dto/create-accessory.dto';
+import { UpdateAccessoryDto } from './dto/update-accessory.dto';
 import { ISearchAccessories } from 'src/lib/interfaces';
 import { sortProductsByPrice, Pagination } from 'src/lib/functions';
 import { paramToArr } from 'src/lib/functions';
@@ -63,49 +59,58 @@ export class AccessoriesService {
     return product;
   }
 
-  // async updateAccessory(
-  //   accessoryId: number,
-  //   updateAccessoryDto: UpdateAccessoryDto,
-  // ) {
-  //   const accesory = await this.accessoriesRepository.findOne({
-  //     where: { id: accessoryId },
-  //   });
+  async updateAccessory(
+    accessoryId: number,
+    updateAccessoryDto: UpdateAccessoryDto,
+  ) {
+    const type = await this.accessoryTypeService.getType(
+      updateAccessoryDto.type,
+    );
 
-  //   if (!accesory) {
-  //     throw new NotFoundException(`product with id ${accessoryId} not found`);
-  //   }
+    const bowl_type = updateAccessoryDto.bowl_type
+      ? await this.bowlTypeService.getBowlType(updateAccessoryDto.bowl_type)
+      : null;
 
-  //   const dto = {
-  //     type: updateAccessoryDto.type || accesory.type,
-  //     bowl_type: updateAccessoryDto.bowl_type || accesory.bowl_type,
-  //   };
+    const accesory = await this.accessoriesRepository.findOne({
+      where: { id: accessoryId },
+    });
 
-  //   await this.accessoriesRepository.update(accessoryId, dto);
-  //   return await this.accessoriesRepository.findOne({
-  //     where: { id: accessoryId },
-  //   });
-  // }
+    if (!accesory) {
+      throw new NotFoundException(`product with id ${accessoryId} not found`);
+    }
 
-  // async updateProductWithAccessory(
-  //   productId: number,
-  //   updateProductDto: UpdateProductDto,
-  //   updateAccessoryDto: UpdateAccessoryDto,
-  // ) {
-  //   const updatedProduct = await this.productService.updateProduct(
-  //     productId,
-  //     updateProductDto,
-  //   );
+    const dto = {
+      type: type,
+      bowl_type: bowl_type,
+    };
 
-  //   const updatedAccessory = await this.updateAccessory(
-  //     updatedProduct.accessories.id,
-  //     updateAccessoryDto,
-  //   );
+    await this.accessoriesRepository.update(accessoryId, dto);
+    return await this.accessoriesRepository.findOne({
+      where: { id: accessoryId },
+      relations: ['type', 'bowl_type'],
+    });
+  }
 
-  //   updatedProduct.accessories = updatedAccessory;
-  //   await this.productRepository.save(updatedProduct);
+  async updateProductWithAccessory(
+    productId: number,
+    updateProductDto: UpdateProductDto,
+    updateAccessoryDto: UpdateAccessoryDto,
+  ) {
+    const updatedProduct = await this.productService.updateProduct(
+      productId,
+      updateProductDto,
+    );
 
-  //   return updatedProduct;
-  // }
+    const updatedAccessory = await this.updateAccessory(
+      updatedProduct.accessories.id,
+      updateAccessoryDto,
+    );
+
+    updatedProduct.accessories = updatedAccessory;
+    await this.productRepository.save(updatedProduct);
+
+    return updatedProduct;
+  }
 
   async findAllAccessories(params: ISearchAccessories) {
     const { page, limit, sort, brand, status, type, bowlType, min, max } =

@@ -22,9 +22,9 @@ export class HookahSizeService {
     return hookahSizes;
   }
 
-  async getHookahSize(hookah_sizeDto: HookahSize) {
+  async getHookahSize(hookah_sizeDto: string) {
     const hookahSize = await this.hookahSizeRepository.findOne({
-      where: { hookah_size: hookah_sizeDto.toString() },
+      where: { hookah_size: hookah_sizeDto },
     });
     return hookahSize;
   }

@@ -1,11 +1,9 @@
-import { IsNumber, IsNotEmpty, IsOptional } from 'class-validator';
-import { IsEnum } from 'class-validator';
-import { Flavor } from 'src/enums/flavor/entities/flavor.entity';
+import { IsNumber, IsNotEmpty, IsOptional, IsString } from 'class-validator';
 
 export class CreateTobaccoDto {
-  @IsEnum(Flavor)
+  @IsString()
   @IsNotEmpty()
-  readonly flavor: Flavor;
+  readonly flavor: string;
 
   @IsNumber()
   @IsNotEmpty()

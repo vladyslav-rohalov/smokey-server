@@ -1,13 +1,11 @@
-import { IsNotEmpty, IsEnum } from 'class-validator';
-import { HookahSize } from 'src/enums/hookah-size/entities/hookah-size.entity';
-import { Color } from 'src/enums/color/entities/color.entity';
+import { IsNotEmpty, IsString } from 'class-validator';
 
 export class CreateHookahDto {
-  @IsEnum(Color)
+  @IsString()
   @IsNotEmpty()
-  color: Color;
+  color: string;
 
-  @IsEnum(HookahSize)
+  @IsString()
   @IsNotEmpty()
-  hookah_size: HookahSize;
+  hookah_size: string;
 }

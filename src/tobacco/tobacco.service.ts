@@ -8,6 +8,7 @@ import { UpdateTobaccoDto } from './dto/update-tobacco.dto';
 import { CreateProductDto } from 'src/products/dto/create-product.dto';
 import { UpdateProductDto } from 'src/products/dto/update-product.dto';
 import { ProductsService } from 'src/products/products.service';
+import { FlavorService } from 'src/enums/flavor/flavor.service';
 import { ISearchTobacco } from 'src/lib/interfaces';
 import { sortProductsByPrice, Pagination } from 'src/lib/functions';
 import { paramToArr } from 'src/lib/functions';
@@ -18,14 +19,33 @@ export class TobaccoService {
     @InjectRepository(Product) private productRepository: Repository<Product>,
     @InjectRepository(Tobacco) private tobaccoRepository: Repository<Tobacco>,
     private productService: ProductsService,
+    private flavorService: FlavorService,
   ) {}
 
   async createTobacco(createTobaccoDto: CreateTobaccoDto) {
-    const tobacco = this.tobaccoRepository.create(createTobaccoDto);
+    const flavor = await this.flavorService.getFlavor(createTobaccoDto.flavor);
+    const tobacco = this.tobaccoRepository.create({
+      ...createTobaccoDto,
+      flavor,
+    });
     return await this.tobaccoRepository.save(tobacco);
   }
 
+  async createProductWithTobacco(
+    createProductDto: CreateProductDto,
+    createTobaccoDto: CreateTobaccoDto,
+  ) {
+    const product = await this.productService.createProduct(createProductDto);
+    const tobacco = await this.createTobacco(createTobaccoDto);
+
+    product.tobacco = tobacco;
+    await this.productRepository.save(product);
+
+    return product;
+  }
+
   async updateTobacco(tobaccoId: number, updateTobaccoDto: UpdateTobaccoDto) {
+    const flavor = await this.flavorService.getFlavor(updateTobaccoDto.flavor);
     const tobacco = await this.tobaccoRepository.findOne({
       where: { id: tobaccoId },
     });
@@ -35,8 +55,8 @@ export class TobaccoService {
     }
 
     const dto = {
-      flavor: updateTobaccoDto.flavor || tobacco.flavor,
-      weight: updateTobaccoDto.tobacco_weight || tobacco.tobacco_weight,
+      flavor: flavor,
+      tobacco_weight: updateTobaccoDto.tobacco_weight || tobacco.tobacco_weight,
       strength: updateTobaccoDto.strength || tobacco.strength,
     };
 
@@ -44,39 +64,26 @@ export class TobaccoService {
     return await this.tobaccoRepository.findOne({ where: { id: tobaccoId } });
   }
 
-  // async createProductWithTobacco(
-  //   createProductDto: CreateProductDto,
-  //   createTobaccoDto: CreateTobaccoDto,
-  // ) {
-  //   const product = await this.productService.createProduct(createProductDto);
-  //   const tobacco = await this.createTobacco(createTobaccoDto);
+  async updateProductWithTobacco(
+    productId: number,
+    updateProductDto: UpdateProductDto,
+    updateTobaccoDto: UpdateTobaccoDto,
+  ) {
+    const updatedProduct = await this.productService.updateProduct(
+      productId,
+      updateProductDto,
+    );
 
-  //   product.tobacco = tobacco;
-  //   await this.productRepository.save(product);
+    const updatedTobacco = await this.updateTobacco(
+      updatedProduct.tobacco.id,
+      updateTobaccoDto,
+    );
 
-  //   return product;
-  // }
+    updatedProduct.tobacco = updatedTobacco;
+    await this.productRepository.save(updatedProduct);
 
-  // async updateProductWithTobacco(
-  //   productId: number,
-  //   updateProductDto: UpdateProductDto,
-  //   updateTobaccoDto: UpdateTobaccoDto,
-  // ) {
-  //   const updatedProduct = await this.productService.updateProduct(
-  //     productId,
-  //     updateProductDto,
-  //   );
-
-  //   const updatedTobacco = await this.updateTobacco(
-  //     updatedProduct.tobacco.id,
-  //     updateTobaccoDto,
-  //   );
-
-  //   updatedProduct.tobacco = updatedTobacco;
-  //   await this.productRepository.save(updatedProduct);
-
-  //   return updatedProduct;
-  // }
+    return updatedProduct;
+  }
 
   async findAllTobacco(params: ISearchTobacco) {
     const {
@@ -92,28 +99,37 @@ export class TobaccoService {
       max,
     } = params;
 
-    // const brandsArr = await paramToArr(brand);
+    const brandsArr = await paramToArr(brand);
     const weightsArr = await paramToArr(weight);
-    // const flavorsArr = await paramToArr(flavor);
+    const flavorsArr = await paramToArr(flavor);
 
     let query = this.productRepository
       .createQueryBuilder('product')
-      .innerJoinAndSelect('product.tobacco', 'tobacco');
-
+      .innerJoinAndSelect('product.tobacco', 'tobacco')
+      .leftJoinAndSelect('tobacco.flavor', 'flavor')
+      .innerJoinAndSelect('product.brand', 'brand')
+      .innerJoinAndSelect('product.promotion', 'promotion');
     if (status) {
       query = query.andWhere('product.status = :status', { status });
     }
 
-    // if (brandsArr && brandsArr.length > 0) {
-    //   query = query.andWhere('LOWER(product.brand) IN (:...brandsArr)', {
-    //     brandsArr: brandsArr.map(brand => brand.toLowerCase()),
-    //   });
-    // }
-    // if (flavorsArr && flavorsArr.length > 0) {
-    //   query = query.andWhere('LOWER(tobacco.flavor) IN (:...flavorsArr)', {
-    //     flavorsArr: flavorsArr.map(flavor => flavor.toLocaleLowerCase()),
-    //   });
-    // }
+    if (brandsArr && brandsArr.length > 0) {
+      query = query.andWhere(
+        'product.brand_id IN (SELECT brand_id FROM brand WHERE LOWER(brand) IN (:...brandsArr))',
+        {
+          brandsArr: brandsArr.map(brand => brand.toLowerCase()),
+        },
+      );
+    }
+
+    if (flavorsArr && flavorsArr.length > 0) {
+      query = query.andWhere(
+        'tobacco.flavor IN (SELECT flavor_id FROM flavor WHERE LOWER(flavor) IN (:...flavorsArr))',
+        {
+          flavorsArr: flavorsArr.map(flavor => flavor.toLocaleLowerCase()),
+        },
+      );
+    }
     if (weightsArr && weightsArr.length > 0) {
       query = query.andWhere('(tobacco.tobacco_weight) IN (:...weightsArr)', {
         weightsArr: weightsArr.map(weight => +weight),
@@ -141,8 +157,8 @@ export class TobaccoService {
     const products = await query.getMany();
 
     const total = products.length;
-    // const brandCounts: { [key: string]: number } = {};
-    // const flavorCounts: { [key: string]: number } = {};
+    const brandCounts: { [key: string]: number } = {};
+    const flavorCounts: { [key: string]: number } = {};
     const weightCounts: { [key: string]: number } = {};
     const statusCounts: { [key: string]: number } = {};
     const prices = { min: Number.MAX_VALUE, max: Number.MIN_VALUE };
@@ -151,8 +167,8 @@ export class TobaccoService {
       prices.max = 0;
     }
     products.forEach(product => {
-      // const brand = product.brand.toLowerCase();
-      // const flavor = product.tobacco.flavor.toLowerCase();
+      const brand = product.brand.brand.toLowerCase();
+      const flavor = product.tobacco.flavor.flavor.toLowerCase();
       const weight = product.tobacco.tobacco_weight;
       const status = product.status.toLocaleLowerCase();
       const price = +product.price;
@@ -163,20 +179,20 @@ export class TobaccoService {
       if (price > prices.max) {
         prices.max = price;
       }
-      // if (!brandCounts[brand]) {
-      //   brandCounts[brand] = 0;
-      // }
-      // brandCounts[brand]++;
+      if (!brandCounts[brand]) {
+        brandCounts[brand] = 0;
+      }
+      brandCounts[brand]++;
 
       if (!statusCounts[status]) {
         statusCounts[status] = 0;
       }
       statusCounts[status]++;
 
-      // if (!flavorCounts[flavor]) {
-      //   flavorCounts[flavor] = 0;
-      // }
-      // flavorCounts[flavor]++;
+      if (!flavorCounts[flavor]) {
+        flavorCounts[flavor] = 0;
+      }
+      flavorCounts[flavor]++;
 
       if (!weightCounts[weight]) {
         weightCounts[weight] = 0;
@@ -191,8 +207,8 @@ export class TobaccoService {
       products: paginatedProducts,
       counts: {
         total,
-        // brandCounts,
-        // flavorCounts,
+        brandCounts,
+        flavorCounts,
         weightCounts,
         statusCounts,
         prices,

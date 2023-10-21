@@ -29,31 +29,44 @@ export class ProductsService {
     return await this.productRepository.save(product);
   }
 
-  // async updateProduct(productId: number, updateProductDto: UpdateProductDto) {
-  //   const product = await this.productRepository.findOne({
-  //     where: { id: productId },
-  //   });
+  async updateProduct(productId: number, updateProductDto: UpdateProductDto) {
+    const brand = await this.brandService.getBrand(updateProductDto.brand);
 
-  //   if (!product) {
-  //     throw new NotFoundException(`product with id ${productId} not found`);
-  //   }
-  //   const dto = {
-  //     promotion: updateProductDto.promotion || product.promotion,
-  //     status: updateProductDto.status || product.status,
-  //     price: updateProductDto.price || product.price,
-  //     description: updateProductDto.description || product.description,
-  //     brand: updateProductDto.brand || product.brand,
-  //     title: updateProductDto.title || product.title,
-  //     available: updateProductDto.available || product.available,
-  //   };
+    const promotion = await this.promotionService.getPromotion(
+      updateProductDto.promotion,
+    );
 
-  //   await this.productRepository.update(productId, dto);
+    const product = await this.productRepository.findOne({
+      where: { id: productId },
+    });
 
-  //   return await this.productRepository.findOne({
-  //     where: { id: productId },
-  //     relations: ['tobacco', 'hookahs', 'coals', 'accessories'],
-  //   });
-  // }
+    if (!product) {
+      throw new NotFoundException(`product with id ${productId} not found`);
+    }
+    const dto = {
+      promotion: promotion,
+      status: updateProductDto.status || product.status,
+      price: updateProductDto.price || product.price,
+      description: updateProductDto.description || product.description,
+      brand: brand,
+      title: updateProductDto.title || product.title,
+      available: updateProductDto.available || product.available,
+    };
+
+    await this.productRepository.update(productId, dto);
+
+    return await this.productRepository.findOne({
+      where: { id: productId },
+      relations: [
+        'tobacco',
+        'hookahs',
+        'coals',
+        'accessories',
+        'brand',
+        'promotion',
+      ],
+    });
+  }
 
   async findAll(page: number, limit: number) {
     if (!page || isNaN(page) || page <= 0) {
@@ -81,10 +94,48 @@ export class ProductsService {
       where: { id: productId },
       relations: ['tobacco', 'hookahs', 'coals', 'accessories'],
     });
+
     if (!product) {
       throw new NotFoundException(`product with id ${productId} not found`);
     }
-    return product;
+    let response = null;
+    if (product.accessories) {
+      response = await this.productRepository.findOne({
+        where: { id: productId },
+        relations: [
+          'accessories',
+          'accessories.type',
+          'accessories.bowl_type',
+          'brand',
+          'promotion',
+        ],
+      });
+    }
+    if (product.tobacco) {
+      response = await this.productRepository.findOne({
+        where: { id: productId },
+        relations: ['tobacco', 'tobacco.flavor', 'brand', 'promotion'],
+      });
+    }
+    if (product.coals) {
+      response = await this.productRepository.findOne({
+        where: { id: productId },
+        relations: ['coals', 'brand', 'promotion'],
+      });
+    }
+    if (product.hookahs) {
+      response = await this.productRepository.findOne({
+        where: { id: productId },
+        relations: [
+          'hookahs',
+          'hookahs.hookah_size',
+          'hookahs.color',
+          'brand',
+          'promotion',
+        ],
+      });
+    }
+    return response;
   }
 
   async remove(productId: number) {

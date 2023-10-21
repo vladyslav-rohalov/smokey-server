@@ -22,9 +22,9 @@ export class FlavorService {
     return flavors;
   }
 
-  async getFlavor(flavorDto: Flavor) {
+  async getFlavor(flavorDto: string) {
     const flavor = await this.flavorRepository.findOne({
-      where: { flavor: flavorDto.toString() },
+      where: { flavor: flavorDto },
     });
     return flavor;
   }

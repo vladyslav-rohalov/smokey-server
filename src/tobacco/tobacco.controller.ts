@@ -10,16 +10,16 @@ import { UpdateProductDto } from 'src/products/dto/update-product.dto';
 export class TobaccoController {
   constructor(private readonly tobaccoService: TobaccoService) {}
 
-  // @Post()
-  // createProductWithTobacco(
-  //   @Body() createProductDto: CreateProductDto,
-  //   @Body() createTobaccoDto: CreateTobaccoDto,
-  // ) {
-  //   return this.tobaccoService.createProductWithTobacco(
-  //     createProductDto,
-  //     createTobaccoDto,
-  //   );
-  // }
+  @Post()
+  createProductWithTobacco(
+    @Body() createProductDto: CreateProductDto,
+    @Body() createTobaccoDto: CreateTobaccoDto,
+  ) {
+    return this.tobaccoService.createProductWithTobacco(
+      createProductDto,
+      createTobaccoDto,
+    );
+  }
 
   @Get()
   findAll(
@@ -48,18 +48,18 @@ export class TobaccoController {
     });
   }
 
-  // @Patch(':id')
-  // update(
-  //   @Param('id') id: string,
-  //   @Body()
-  //   updateTobaccoDto: UpdateTobaccoDto,
-  //   @Body()
-  //   updateProductDto: UpdateProductDto,
-  // ) {
-  //   return this.tobaccoService.updateProductWithTobacco(
-  //     +id,
-  //     updateProductDto,
-  //     updateTobaccoDto,
-  //   );
-  // }
+  @Patch(':id')
+  update(
+    @Param('id') id: string,
+    @Body()
+    updateTobaccoDto: UpdateTobaccoDto,
+    @Body()
+    updateProductDto: UpdateProductDto,
+  ) {
+    return this.tobaccoService.updateProductWithTobacco(
+      +id,
+      updateProductDto,
+      updateTobaccoDto,
+    );
+  }
 }

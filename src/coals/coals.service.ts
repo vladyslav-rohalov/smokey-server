@@ -25,6 +25,19 @@ export class CoalsService {
     return await this.coalRepository.save(coal);
   }
 
+  async createProductWithCoal(
+    createProductDto: CreateProductDto,
+    createCoalDto: CreateCoalDto,
+  ) {
+    const product = await this.productService.createProduct(createProductDto);
+    const coal = await this.createCoal(createCoalDto);
+
+    product.coals = coal;
+    await this.productRepository.save(product);
+
+    return product;
+  }
+
   async updateCoal(coalId: number, updateCoalDto: UpdateCoalDto) {
     const coal = await this.coalRepository.findOne({
       where: { id: coalId },
@@ -43,66 +56,60 @@ export class CoalsService {
     return await this.coalRepository.findOne({ where: { id: coalId } });
   }
 
-  // async createProductWithCoal(
-  //   createProductDto: CreateProductDto,
-  //   createCoalDto: CreateCoalDto,
-  // ) {
-  //   const product = await this.productService.createProduct(createProductDto);
-  //   const coal = await this.createCoal(createCoalDto);
+  async updateProductWithCoals(
+    productId: number,
+    updateProductDto: UpdateProductDto,
+    UpdateCoalDto: UpdateCoalDto,
+  ) {
+    const updatedProduct = await this.productService.updateProduct(
+      productId,
+      updateProductDto,
+    );
 
-  //   product.coals = coal;
-  //   await this.productRepository.save(product);
+    const updatedCoal = await this.updateCoal(
+      updatedProduct.coals.id,
+      UpdateCoalDto,
+    );
 
-  //   return product;
-  // }
+    updatedProduct.coals = updatedCoal;
+    await this.productRepository.save(updatedProduct);
 
-  // async updateProductWithCoals(
-  //   productId: number,
-  //   updateProductDto: UpdateProductDto,
-  //   UpdateCoalDto: UpdateCoalDto,
-  // ) {
-  //   const updatedProduct = await this.productService.updateProduct(
-  //     productId,
-  //     updateProductDto,
-  //   );
-
-  //   const updatedCoal = await this.updateCoal(
-  //     updatedProduct.coals.id,
-  //     UpdateCoalDto,
-  //   );
-
-  //   updatedProduct.coals = updatedCoal;
-  //   await this.productRepository.save(updatedProduct);
-
-  //   return updatedProduct;
-  // }
+    return updatedProduct;
+  }
 
   async findAllСoals(params: ISearchCoals) {
     const { page, limit, sort, brand, status, coalSize, coalWeight, min, max } =
       params;
 
-    // const brandsArr = await paramToArr(brand);
+    const brandsArr = await paramToArr(brand);
     const weightsArr = await paramToArr(coalWeight);
     const sizesArr = await paramToArr(coalSize);
 
     let query = this.productRepository
       .createQueryBuilder('product')
-      .innerJoinAndSelect('product.coals', 'coals');
+      .innerJoinAndSelect('product.coals', 'coals')
+      .innerJoinAndSelect('product.brand', 'brand')
+      .innerJoinAndSelect('product.promotion', 'promotion');
 
     if (status) {
       query = query.andWhere('product.status = :status', { status });
     }
 
-    // if (brandsArr && brandsArr.length > 0) {
-    //   query = query.andWhere('LOWER(product.brand) IN (:...brandsArr)', {
-    //     brandsArr: brandsArr.map(brand => brand.toLowerCase()),
-    //   });
-    // }
+    if (brandsArr && brandsArr.length > 0) {
+      query = query.andWhere(
+        'product.brand_id IN (SELECT brand_id FROM brand WHERE LOWER(brand) IN (:...brandsArr))',
+        {
+          brandsArr: brandsArr.map(brand => brand.toLowerCase()),
+        },
+      );
+    }
+
     if (sizesArr && sizesArr.length > 0) {
       query = query.andWhere('(coals.coal_size) IN (:...sizesArr)', {
         sizesArr: sizesArr.map(size => +size),
       });
     }
+
     if (weightsArr && weightsArr.length > 0) {
       query = query.andWhere('(coals.coal_weight) IN (:...weightsArr)', {
         weightsArr: weightsArr.map(weight => +weight),
@@ -114,6 +121,7 @@ export class CoalsService {
         query = query.andWhere('product.promotion = :sort', { sort });
       }
     }
+
     if (min && max) {
       query = query.andWhere('product.price BETWEEN :min AND :max', {
         min,
@@ -128,7 +136,7 @@ export class CoalsService {
     const products = await query.getMany();
 
     const total = products.length;
-    // const brandCounts: { [key: string]: number } = {};
+    const brandCounts: { [key: string]: number } = {};
     const sizeCounts: { [key: string]: number } = {};
     const weightCounts: { [key: string]: number } = {};
     const statusCounts: { [key: string]: number } = {};
@@ -138,7 +146,7 @@ export class CoalsService {
       prices.max = 0;
     }
     products.forEach(product => {
-      // const brand = product.brand.toLowerCase();
+      const brand = product.brand.brand.toLowerCase();
       const size = product.coals.coal_size;
       const weight = product.coals.coal_weight;
       const status = product.status.toLocaleLowerCase();
@@ -150,10 +158,10 @@ export class CoalsService {
       if (price > prices.max) {
         prices.max = price;
       }
-      // if (!brandCounts[brand]) {
-      //   brandCounts[brand] = 0;
-      // }
-      // brandCounts[brand]++;
+      if (!brandCounts[brand]) {
+        brandCounts[brand] = 0;
+      }
+      brandCounts[brand]++;
 
       if (!statusCounts[status]) {
         statusCounts[status] = 0;
@@ -178,7 +186,7 @@ export class CoalsService {
       products: paginatedProducts,
       counts: {
         total,
-        // brandCounts,
+        brandCounts,
         sizeCounts,
         weightCounts,
         statusCounts,
