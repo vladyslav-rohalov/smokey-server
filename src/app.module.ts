@@ -49,6 +49,7 @@ import { ColorModule } from './enums/color/color.module';
 import { AccessoryTypeModule } from './enums/accessory-type/accessory-type.module';
 import { BowlTypeModule } from './enums/bowl-type/bowl-type.module';
 import { HookahSizeModule } from './enums/hookah-size/hookah-size.module';
+import { EnumsModule } from './enums/enums.module';
 
 @Module({
   controllers: [],
@@ -118,6 +119,7 @@ import { HookahSizeModule } from './enums/hookah-size/hookah-size.module';
     AccessoryTypeModule,
     BowlTypeModule,
     HookahSizeModule,
+    EnumsModule,
   ],
 })
 export class AppModule {}
