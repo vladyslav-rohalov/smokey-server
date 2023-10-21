@@ -10,16 +10,16 @@ import { UpdateProductDto } from 'src/products/dto/update-product.dto';
 export class HookahsController {
   constructor(private readonly hookahsService: HookahsService) {}
 
-  @Post()
-  createProductWithTobacco(
-    @Body() createProductDto: CreateProductDto,
-    @Body() createHookahDto: CreateHookahDto,
-  ) {
-    return this.hookahsService.createProductWithHookah(
-      createProductDto,
-      createHookahDto,
-    );
-  }
+  // @Post()
+  // createProductWithTobacco(
+  //   @Body() createProductDto: CreateProductDto,
+  //   @Body() createHookahDto: CreateHookahDto,
+  // ) {
+  //   return this.hookahsService.createProductWithHookah(
+  //     createProductDto,
+  //     createHookahDto,
+  //   );
+  // }
 
   @Get()
   findAll(
@@ -46,18 +46,18 @@ export class HookahsController {
     });
   }
 
-  @Patch(':id')
-  update(
-    @Param('id') id: string,
-    @Body()
-    updateHookahDto: UpdateHookahDto,
-    @Body()
-    updateProductDto: UpdateProductDto,
-  ) {
-    return this.hookahsService.updateProductWithHookah(
-      +id,
-      updateProductDto,
-      updateHookahDto,
-    );
-  }
+  // @Patch(':id')
+  // update(
+  //   @Param('id') id: string,
+  //   @Body()
+  //   updateHookahDto: UpdateHookahDto,
+  //   @Body()
+  //   updateProductDto: UpdateProductDto,
+  // ) {
+  //   return this.hookahsService.updateProductWithHookah(
+  //     +id,
+  //     updateProductDto,
+  //     updateHookahDto,
+  //   );
+  // }
 }

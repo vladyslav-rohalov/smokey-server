@@ -22,6 +22,13 @@ export class BowlTypeService {
     return bowlTypes;
   }
 
+  async getBowlType(bowl_typeDto: string) {
+    const bowlType = await this.bowlTypeRepository.findOne({
+      where: { bowl_type: bowl_typeDto },
+    });
+    return bowlType;
+  }
+
   async update(id: number, updateBowlTypeDto: UpdateBowlTypeDto) {
     const bowlType = await this.bowlTypeRepository.findOne({
       where: { id },

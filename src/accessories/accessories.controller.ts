@@ -46,18 +46,18 @@ export class AccessoriesController {
     });
   }
 
-  @Patch(':id')
-  update(
-    @Param('id') id: string,
-    @Body()
-    updateAccessoryDto: UpdateAccessoryDto,
-    @Body()
-    updateProductDto: UpdateProductDto,
-  ) {
-    return this.accessoriesService.updateProductWithAccessory(
-      +id,
-      updateProductDto,
-      updateAccessoryDto,
-    );
-  }
+  // @Patch(':id')
+  // update(
+  //   @Param('id') id: string,
+  //   @Body()
+  //   updateAccessoryDto: UpdateAccessoryDto,
+  //   @Body()
+  //   updateProductDto: UpdateProductDto,
+  // ) {
+  //   return this.accessoriesService.updateAccessory(
+  //     +id,
+  //     updateProductDto,
+  //     updateAccessoryDto,
+  //   );
+  // }
 }

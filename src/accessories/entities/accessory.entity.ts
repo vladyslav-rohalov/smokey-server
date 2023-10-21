@@ -4,13 +4,6 @@ import { Product } from '../../products/entities/product.entity';
 import { AccessoryType } from '../../enums/accessory-type/entities/accessory-type.entity';
 import { BowlType } from '../../enums/bowl-type/entities/bowl-type.entity';
 
-// export enum Bowl_Type {
-//   TURKISH = 'turkish',
-//   PHUNNEL = 'phunnel',
-//   VORTEX = 'vortex',
-//   EVIL = 'evil',
-// }
-
 @Entity({ name: 'accessories' })
 export class Accessory {
   @PrimaryGeneratedColumn({ name: 'accessory_id' })

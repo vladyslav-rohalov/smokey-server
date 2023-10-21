@@ -11,10 +11,15 @@ import { Tobacco } from 'src/tobacco/entities/tobacco.entity';
 import { Coal } from 'src/coals/entities/coal.entity';
 import { Accessory } from 'src/accessories/entities/accessory.entity';
 import { TypeOrmModule } from '@nestjs/typeorm';
+import { BrandService } from 'src/enums/brand/brand.service';
+import { Brand } from 'src/enums/brand/entities/brand.entity';
+// import { BrandModule } from 'src/enums/brand/brand.module';
+import { PromotionService } from 'src/enums/promotion/promotion.service';
+import { Promotion } from 'src/enums/promotion/entities/promotion.entity';
 
 @Module({
   controllers: [ProductsController],
-  providers: [ProductsService],
+  providers: [ProductsService, BrandService, PromotionService],
   imports: [
     TypeOrmModule.forFeature([
       Product,
@@ -26,7 +31,10 @@ import { TypeOrmModule } from '@nestjs/typeorm';
       Tobacco,
       Coal,
       Accessory,
+      Brand,
+      Promotion,
     ]),
+    // BrandModule,
   ],
   exports: [ProductsService],
 })

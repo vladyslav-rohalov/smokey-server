@@ -22,6 +22,13 @@ export class HookahSizeService {
     return hookahSizes;
   }
 
+  async getHookahSize(hookah_sizeDto: HookahSize) {
+    const hookahSize = await this.hookahSizeRepository.findOne({
+      where: { hookah_size: hookah_sizeDto.toString() },
+    });
+    return hookahSize;
+  }
+
   async update(id: number, updateHookahSizeDto: UpdateHookahSizeDto) {
     const hookahSize = await this.hookahSizeRepository.findOne({
       where: { id },

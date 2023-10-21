@@ -8,5 +8,6 @@ import { HookahSize } from './entities/hookah-size.entity';
   imports: [TypeOrmModule.forFeature([HookahSize])],
   controllers: [HookahSizeController],
   providers: [HookahSizeService],
+  exports: [HookahSizeService],
 })
 export class HookahSizeModule {}

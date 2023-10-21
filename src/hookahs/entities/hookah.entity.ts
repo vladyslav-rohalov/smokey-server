@@ -3,12 +3,6 @@ import { JoinColumn, OneToOne, ManyToOne } from 'typeorm';
 import { Product } from '../../products/entities/product.entity';
 import { HookahSize } from '../../enums/hookah-size/entities/hookah-size.entity';
 import { Color } from '../../enums/color/entities/color.entity';
-// export enum Size {
-//   BIG = 'big',
-//   MEDIUM = 'medium',
-//   SMALL = 'small',
-//   PORTABLE = 'portable',
-// }
 
 @Entity({ name: 'hookahs' })
 export class Hookah {

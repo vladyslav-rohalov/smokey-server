@@ -22,6 +22,13 @@ export class AccessoryTypeService {
     return types;
   }
 
+  async getType(typeDto: string) {
+    const type = await this.accessoryTypeRepository.findOne({
+      where: { type: typeDto },
+    });
+    return type;
+  }
+
   async update(id: number, updateAccessoryTypeDto: UpdateAccessoryTypeDto) {
     const type = await this.accessoryTypeRepository.findOne({
       where: { id },

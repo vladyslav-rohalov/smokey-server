@@ -44,39 +44,39 @@ export class TobaccoService {
     return await this.tobaccoRepository.findOne({ where: { id: tobaccoId } });
   }
 
-  async createProductWithTobacco(
-    createProductDto: CreateProductDto,
-    createTobaccoDto: CreateTobaccoDto,
-  ) {
-    const product = await this.productService.createProduct(createProductDto);
-    const tobacco = await this.createTobacco(createTobaccoDto);
+  // async createProductWithTobacco(
+  //   createProductDto: CreateProductDto,
+  //   createTobaccoDto: CreateTobaccoDto,
+  // ) {
+  //   const product = await this.productService.createProduct(createProductDto);
+  //   const tobacco = await this.createTobacco(createTobaccoDto);
 
-    product.tobacco = tobacco;
-    await this.productRepository.save(product);
+  //   product.tobacco = tobacco;
+  //   await this.productRepository.save(product);
 
-    return product;
-  }
+  //   return product;
+  // }
 
-  async updateProductWithTobacco(
-    productId: number,
-    updateProductDto: UpdateProductDto,
-    updateTobaccoDto: UpdateTobaccoDto,
-  ) {
-    const updatedProduct = await this.productService.updateProduct(
-      productId,
-      updateProductDto,
-    );
+  // async updateProductWithTobacco(
+  //   productId: number,
+  //   updateProductDto: UpdateProductDto,
+  //   updateTobaccoDto: UpdateTobaccoDto,
+  // ) {
+  //   const updatedProduct = await this.productService.updateProduct(
+  //     productId,
+  //     updateProductDto,
+  //   );
 
-    const updatedTobacco = await this.updateTobacco(
-      updatedProduct.tobacco.id,
-      updateTobaccoDto,
-    );
+  //   const updatedTobacco = await this.updateTobacco(
+  //     updatedProduct.tobacco.id,
+  //     updateTobaccoDto,
+  //   );
 
-    updatedProduct.tobacco = updatedTobacco;
-    await this.productRepository.save(updatedProduct);
+  //   updatedProduct.tobacco = updatedTobacco;
+  //   await this.productRepository.save(updatedProduct);
 
-    return updatedProduct;
-  }
+  //   return updatedProduct;
+  // }
 
   async findAllTobacco(params: ISearchTobacco) {
     const {

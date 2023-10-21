@@ -43,39 +43,39 @@ export class CoalsService {
     return await this.coalRepository.findOne({ where: { id: coalId } });
   }
 
-  async createProductWithCoal(
-    createProductDto: CreateProductDto,
-    createCoalDto: CreateCoalDto,
-  ) {
-    const product = await this.productService.createProduct(createProductDto);
-    const coal = await this.createCoal(createCoalDto);
+  // async createProductWithCoal(
+  //   createProductDto: CreateProductDto,
+  //   createCoalDto: CreateCoalDto,
+  // ) {
+  //   const product = await this.productService.createProduct(createProductDto);
+  //   const coal = await this.createCoal(createCoalDto);
 
-    product.coals = coal;
-    await this.productRepository.save(product);
+  //   product.coals = coal;
+  //   await this.productRepository.save(product);
 
-    return product;
-  }
+  //   return product;
+  // }
 
-  async updateProductWithCoals(
-    productId: number,
-    updateProductDto: UpdateProductDto,
-    UpdateCoalDto: UpdateCoalDto,
-  ) {
-    const updatedProduct = await this.productService.updateProduct(
-      productId,
-      updateProductDto,
-    );
+  // async updateProductWithCoals(
+  //   productId: number,
+  //   updateProductDto: UpdateProductDto,
+  //   UpdateCoalDto: UpdateCoalDto,
+  // ) {
+  //   const updatedProduct = await this.productService.updateProduct(
+  //     productId,
+  //     updateProductDto,
+  //   );
 
-    const updatedCoal = await this.updateCoal(
-      updatedProduct.coals.id,
-      UpdateCoalDto,
-    );
+  //   const updatedCoal = await this.updateCoal(
+  //     updatedProduct.coals.id,
+  //     UpdateCoalDto,
+  //   );
 
-    updatedProduct.coals = updatedCoal;
-    await this.productRepository.save(updatedProduct);
+  //   updatedProduct.coals = updatedCoal;
+  //   await this.productRepository.save(updatedProduct);
 
-    return updatedProduct;
-  }
+  //   return updatedProduct;
+  // }
 
   async findAllСoals(params: ISearchCoals) {
     const { page, limit, sort, brand, status, coalSize, coalWeight, min, max } =

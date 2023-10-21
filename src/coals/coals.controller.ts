@@ -10,16 +10,16 @@ import { UpdateProductDto } from 'src/products/dto/update-product.dto';
 export class CoalsController {
   constructor(private readonly coalsService: CoalsService) {}
 
-  @Post()
-  createProductWithTobacco(
-    @Body() createProductDto: CreateProductDto,
-    @Body() createCoalDto: CreateCoalDto,
-  ) {
-    return this.coalsService.createProductWithCoal(
-      createProductDto,
-      createCoalDto,
-    );
-  }
+  // @Post()
+  // createProductWithTobacco(
+  //   @Body() createProductDto: CreateProductDto,
+  //   @Body() createCoalDto: CreateCoalDto,
+  // ) {
+  //   return this.coalsService.createProductWithCoal(
+  //     createProductDto,
+  //     createCoalDto,
+  //   );
+  // }
 
   @Get()
   findAll(
@@ -46,18 +46,18 @@ export class CoalsController {
     });
   }
 
-  @Patch(':id')
-  update(
-    @Param('id') id: string,
-    @Body()
-    updateCoalDto: UpdateCoalDto,
-    @Body()
-    updateProductDto: UpdateProductDto,
-  ) {
-    return this.coalsService.updateProductWithCoals(
-      +id,
-      updateProductDto,
-      updateCoalDto,
-    );
-  }
+  // @Patch(':id')
+  // update(
+  //   @Param('id') id: string,
+  //   @Body()
+  //   updateCoalDto: UpdateCoalDto,
+  //   @Body()
+  //   updateProductDto: UpdateProductDto,
+  // ) {
+  //   return this.coalsService.updateProductWithCoals(
+  //     +id,
+  //     updateProductDto,
+  //     updateCoalDto,
+  //   );
+  // }
 }

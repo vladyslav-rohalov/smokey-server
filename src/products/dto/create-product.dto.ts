@@ -1,14 +1,7 @@
 import { IsArray, IsEnum, IsNumber, IsString } from 'class-validator';
 import { IsNotEmpty, IsOptional } from 'class-validator';
-import { Promotion } from 'src/enums/promotion/entities/promotion.entity';
-import { Brand } from 'src/enums/brand/entities/brand.entity';
-
-// enum Promotion {
-//   HOT = 'hot',
-//   SALE = 'sale',
-//   NEW = 'new',
-//   None = 'none',
-// }
+// import { Promotion } from 'src/enums/promotion/entities/promotion.entity';
+// import { Brand } from 'src/enums/brand/entities/brand.entity';
 
 enum Status {
   IN_STOCK = 'in stock',
@@ -18,13 +11,19 @@ enum Status {
 }
 
 export class CreateProductDto {
-  @IsEnum(Promotion)
+  // @IsEnum(Promotion)
+  // @IsNotEmpty()
+  // readonly promotion: Promotion;
+  @IsString()
   @IsNotEmpty()
-  readonly promotion: Promotion;
+  readonly promotion: string;
 
-  @IsEnum(Brand)
+  // @IsEnum(Brand)
+  // @IsNotEmpty()
+  // readonly brand: Brand;
+  @IsString()
   @IsNotEmpty()
-  readonly brand: Brand;
+  readonly brand: string;
 
   @IsEnum(Status)
   @IsNotEmpty()

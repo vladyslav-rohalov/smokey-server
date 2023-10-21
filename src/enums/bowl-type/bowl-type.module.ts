@@ -8,5 +8,6 @@ import { BowlType } from './entities/bowl-type.entity';
   imports: [TypeOrmModule.forFeature([BowlType])],
   controllers: [BowlTypeController],
   providers: [BowlTypeService],
+  exports: [BowlTypeService],
 })
 export class BowlTypeModule {}

@@ -43,39 +43,39 @@ export class HookahsService {
     return await this.hookahRepository.findOne({ where: { id: hookahId } });
   }
 
-  async createProductWithHookah(
-    createProductDto: CreateProductDto,
-    createhookahDto: CreateHookahDto,
-  ) {
-    const product = await this.productService.createProduct(createProductDto);
-    const hookah = await this.createHookah(createhookahDto);
+  // async createProductWithHookah(
+  //   createProductDto: CreateProductDto,
+  //   createhookahDto: CreateHookahDto,
+  // ) {
+  //   const product = await this.productService.createProduct(createProductDto);
+  //   const hookah = await this.createHookah(createhookahDto);
 
-    product.hookahs = hookah;
-    await this.productRepository.save(product);
+  //   product.hookahs = hookah;
+  //   await this.productRepository.save(product);
 
-    return product;
-  }
+  //   return product;
+  // }
 
-  async updateProductWithHookah(
-    productId: number,
-    updateProductDto: UpdateProductDto,
-    updateHookahDto: UpdateHookahDto,
-  ) {
-    const updatedProduct = await this.productService.updateProduct(
-      productId,
-      updateProductDto,
-    );
+  // async updateProductWithHookah(
+  //   productId: number,
+  //   updateProductDto: UpdateProductDto,
+  //   updateHookahDto: UpdateHookahDto,
+  // ) {
+  //   const updatedProduct = await this.productService.updateProduct(
+  //     productId,
+  //     updateProductDto,
+  //   );
 
-    const updatedHookah = await this.updateHookah(
-      updatedProduct.hookahs.id,
-      updateHookahDto,
-    );
+  //   const updatedHookah = await this.updateHookah(
+  //     updatedProduct.hookahs.id,
+  //     updateHookahDto,
+  //   );
 
-    updatedProduct.hookahs = updatedHookah;
-    await this.productRepository.save(updatedProduct);
+  //   updatedProduct.hookahs = updatedHookah;
+  //   await this.productRepository.save(updatedProduct);
 
-    return updatedProduct;
-  }
+  //   return updatedProduct;
+  // }
 
   async findAllHookahs(params: ISearchHookahs) {
     const { page, limit, sort, brand, status, color, hookahSize, min, max } =

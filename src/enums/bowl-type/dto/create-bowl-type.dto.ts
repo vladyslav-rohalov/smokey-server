@@ -1,7 +1,7 @@
-import { IsOptional, IsString } from 'class-validator';
+import { IsNotEmpty, IsString } from 'class-validator';
 
 export class CreateBowlTypeDto {
-  @IsOptional()
+  @IsNotEmpty()
   @IsString()
   bowl_type: string;
 }

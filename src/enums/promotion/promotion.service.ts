@@ -22,6 +22,13 @@ export class PromotionService {
     return promotions;
   }
 
+  async getPromotion(promotionDto: string) {
+    const promotion = await this.promotionRepository.findOne({
+      where: { promotion: promotionDto },
+    });
+    return promotion;
+  }
+
   async update(id: number, updatePromotionDto: UpdatePromotionDto) {
     const promotion = await this.promotionRepository.findOne({
       where: { id },

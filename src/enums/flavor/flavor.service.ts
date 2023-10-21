@@ -22,6 +22,13 @@ export class FlavorService {
     return flavors;
   }
 
+  async getFlavor(flavorDto: Flavor) {
+    const flavor = await this.flavorRepository.findOne({
+      where: { flavor: flavorDto.toString() },
+    });
+    return flavor;
+  }
+
   async update(id: number, updateFlavorDto: UpdateFlavorDto) {
     const flavor = await this.flavorRepository.findOne({
       where: { id },

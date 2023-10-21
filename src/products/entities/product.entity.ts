@@ -12,13 +12,6 @@ import { OrderItem } from '../../order-item/entities/order-item.entity';
 import { Promotion } from '../../enums/promotion/entities/promotion.entity';
 import { Brand } from '../../enums/brand/entities/brand.entity';
 
-// enum Promotion {
-//   HOT = 'hot',
-//   SALE = 'sale',
-//   NEW = 'new',
-//   None = 'none',
-// }
-
 enum Status {
   IN_STOCK = 'in stock',
   OUT_OF_STOCK = 'out of stock',

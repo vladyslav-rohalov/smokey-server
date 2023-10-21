@@ -22,6 +22,13 @@ export class BrandService {
     return brands;
   }
 
+  async getBrand(brandDto: string) {
+    const brand = await this.brandRepository.findOne({
+      where: { brand: brandDto },
+    });
+    return brand;
+  }
+
   async update(id: number, updateBrandDto: UpdateBrandDto) {
     const brand = await this.brandRepository.findOne({
       where: { id },
