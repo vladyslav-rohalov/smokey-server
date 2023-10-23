@@ -7,10 +7,11 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import { ProductsService } from 'src/products/products.service';
 import { BrandModule } from 'src/enums/brand/brand.module';
 import { PromotionModule } from 'src/enums/promotion/promotion.module';
+import { AwsS3Service } from 'src/aws-s3/aws-s3.service';
 
 @Module({
   controllers: [CoalsController],
-  providers: [CoalsService, ProductsService],
+  providers: [CoalsService, ProductsService, AwsS3Service],
   imports: [
     TypeOrmModule.forFeature([Coal, Product]),
     BrandModule,

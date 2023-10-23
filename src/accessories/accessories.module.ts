@@ -11,6 +11,7 @@ import { AccessoryTypeService } from 'src/enums/accessory-type/accessory-type.se
 import { BowlTypeService } from 'src/enums/bowl-type/bowl-type.service';
 import { AccessoryType } from 'src/enums/accessory-type/entities/accessory-type.entity';
 import { BowlType } from 'src/enums/bowl-type/entities/bowl-type.entity';
+import { AwsS3Service } from 'src/aws-s3/aws-s3.service';
 
 @Module({
   controllers: [AccessoriesController],
@@ -19,6 +20,7 @@ import { BowlType } from 'src/enums/bowl-type/entities/bowl-type.entity';
     ProductsService,
     AccessoryTypeService,
     BowlTypeService,
+    AwsS3Service,
   ],
   imports: [
     TypeOrmModule.forFeature([Accessory, Product, AccessoryType, BowlType]),

@@ -13,13 +13,14 @@ import { Accessory } from 'src/accessories/entities/accessory.entity';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { BrandService } from 'src/enums/brand/brand.service';
 import { Brand } from 'src/enums/brand/entities/brand.entity';
-// import { BrandModule } from 'src/enums/brand/brand.module';
 import { PromotionService } from 'src/enums/promotion/promotion.service';
 import { Promotion } from 'src/enums/promotion/entities/promotion.entity';
+import { AwsS3Service } from 'src/aws-s3/aws-s3.service';
+import { AwsS3Module } from 'src/aws-s3/aws-s3.module';
 
 @Module({
   controllers: [ProductsController],
-  providers: [ProductsService, BrandService, PromotionService],
+  providers: [ProductsService, BrandService, PromotionService, AwsS3Service],
   imports: [
     TypeOrmModule.forFeature([
       Product,
@@ -33,8 +34,8 @@ import { Promotion } from 'src/enums/promotion/entities/promotion.entity';
       Accessory,
       Brand,
       Promotion,
+      AwsS3Module,
     ]),
-    // BrandModule,
   ],
   exports: [ProductsService],
 })

@@ -4,6 +4,7 @@ import { Repository, In } from 'typeorm';
 import { Product } from './entities/product.entity';
 import { BrandService } from 'src/enums/brand/brand.service';
 import { PromotionService } from 'src/enums/promotion/promotion.service';
+import { AwsS3Service } from 'src/aws-s3/aws-s3.service';
 import { CreateProductDto } from './dto/create-product.dto';
 import { UpdateProductDto } from './dto/update-product.dto';
 
@@ -13,6 +14,7 @@ export class ProductsService {
     @InjectRepository(Product) private productRepository: Repository<Product>,
     private brandService: BrandService,
     private promotionService: PromotionService,
+    private s3Service: AwsS3Service,
   ) {}
 
   async createProduct(createProductDto: CreateProductDto) {
@@ -145,10 +147,10 @@ export class ProductsService {
     if (!product) {
       throw new NotFoundException(`product with id ${productId} not found`);
     }
+
+    await this.s3Service.deleteImages(product.images);
     await this.productRepository.remove(product);
   }
-
-  async addImages(productId: number, images: string[]) {}
 
   async findAllPromotion() {
     const promoted = await this.productRepository.find({
@@ -159,5 +161,36 @@ export class ProductsService {
     });
 
     return promoted;
+  }
+
+  async addImages(productId: number, images: Express.Multer.File[]) {
+    const product = await this.productRepository.findOne({
+      where: { id: productId },
+    });
+    if (!product) {
+      throw new NotFoundException(`product with id ${productId} not found`);
+    }
+    const uploaded = await this.s3Service.uploadFiles(images);
+    const imagesArr = uploaded.map(file => file.Location);
+    const updatedImages = product.images.concat(imagesArr);
+    await this.productRepository.update(productId, { images: updatedImages });
+
+    return await this.findOne(productId);
+  }
+
+  async removeImages(productId: number, images: string[]) {
+    const product = await this.productRepository.findOne({
+      where: { id: productId },
+    });
+    if (!product) {
+      throw new NotFoundException(`product with id ${productId} not found`);
+    }
+    const updatedImages = product.images.filter(
+      image => !images.includes(image),
+    );
+    await this.s3Service.deleteImages(images);
+    await this.productRepository.update(productId, { images: updatedImages });
+
+    return await this.findOne(productId);
   }
 }

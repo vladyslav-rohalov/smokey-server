@@ -18,18 +18,6 @@ export class AwsS3Service {
     });
   }
 
-  // async uploadFile(
-  //   file: Express.Multer.File,
-  // ): Promise<AWS.S3.ManagedUpload.SendData> {
-  //   const { originalname, buffer, mimetype } = file;
-
-  //   return await this.s3_upload(
-  //     buffer,
-  //     `${this.AWS_S3_BUCKET}/products`,
-  //     `${uuidv4()}-${originalname}`,
-  //     mimetype,
-  //   );
-  // }
   async uploadFiles(
     files: Express.Multer.File[],
   ): Promise<AWS.S3.ManagedUpload.SendData[]> {
@@ -42,7 +30,6 @@ export class AwsS3Service {
         mimetype,
       );
     });
-
     return await Promise.all(uploadPromises);
   }
 
@@ -70,5 +57,29 @@ export class AwsS3Service {
     } catch (e) {
       throw new BadRequestException(`Could not upload file: ${e.message}`);
     }
+  }
+
+  extractKeysFromUrls(urls: string[]): string[] {
+    return urls.map(url => {
+      const segments = url.split('/');
+      return segments[segments.length - 1];
+    });
+  }
+
+  async deleteImages(keys: string[]): Promise<void> {
+    const keysToDelete = this.extractKeysFromUrls(keys);
+    const deletePromises = keysToDelete.map(async key => {
+      try {
+        const params = {
+          Bucket: `${this.AWS_S3_BUCKET}/products`,
+          Key: key,
+        };
+
+        await this.s3.deleteObject(params).promise();
+      } catch (e) {
+        throw new BadRequestException(`Could not delete file: ${e.message}`);
+      }
+    });
+    await Promise.all(deletePromises);
   }
 }

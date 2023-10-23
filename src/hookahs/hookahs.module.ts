@@ -11,10 +11,17 @@ import { HookahSizeService } from 'src/enums/hookah-size/hookah-size.service';
 import { HookahSize } from 'src/enums/hookah-size/entities/hookah-size.entity';
 import { ColorService } from 'src/enums/color/color.service';
 import { Color } from 'src/enums/color/entities/color.entity';
+import { AwsS3Service } from 'src/aws-s3/aws-s3.service';
 
 @Module({
   controllers: [HookahsController],
-  providers: [HookahsService, ProductsService, HookahSizeService, ColorService],
+  providers: [
+    HookahsService,
+    ProductsService,
+    HookahSizeService,
+    ColorService,
+    AwsS3Service,
+  ],
   imports: [
     TypeOrmModule.forFeature([Hookah, Product, HookahSize, Color]),
     BrandModule,
