@@ -1,5 +1,5 @@
 import { IsArray, IsEnum, IsNumber, IsString } from 'class-validator';
-import { IsNotEmpty, IsOptional } from 'class-validator';
+import { IsNotEmpty, IsOptional, IsBoolean } from 'class-validator';
 
 enum Status {
   IN_STOCK = 'in stock',
@@ -40,4 +40,8 @@ export class CreateProductDto {
   @IsNumber()
   @IsNotEmpty()
   readonly available: number;
+
+  @IsBoolean()
+  @IsOptional()
+  readonly publish: boolean;
 }

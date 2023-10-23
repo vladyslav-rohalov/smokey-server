@@ -1,9 +1,7 @@
 import { Controller, Get, Post, Body, Param, Delete } from '@nestjs/common';
-import { Query } from '@nestjs/common';
+import { Query, UploadedFiles, UseInterceptors, Patch } from '@nestjs/common';
 import { ProductsService } from './products.service';
-import { FileInterceptor, FilesInterceptor } from '@nestjs/platform-express';
-import { UploadedFile, UploadedFiles } from '@nestjs/common';
-import { UseInterceptors } from '@nestjs/common';
+import { FilesInterceptor } from '@nestjs/platform-express';
 
 @Controller('api/products')
 export class ProductsController {
@@ -41,5 +39,10 @@ export class ProductsController {
   @Delete('/images/:id')
   removeImages(@Param('id') id: string, @Body() images: string[]) {
     return this.productsService.removeImages(+id, images);
+  }
+
+  @Patch('/publish/:id')
+  publish(@Param('id') id: string) {
+    return this.productsService.publish(+id);
   }
 }

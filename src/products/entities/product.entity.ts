@@ -45,6 +45,9 @@ export class Product {
   @Column({ type: 'smallint', nullable: true })
   rating: number;
 
+  @Column({ type: 'boolean', default: false })
+  publish: boolean;
+
   @ManyToOne(() => Promotion, promotion => promotion.products)
   @JoinColumn({ name: 'promotion_id' })
   promotion: Promotion;

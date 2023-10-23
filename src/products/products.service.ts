@@ -172,7 +172,9 @@ export class ProductsService {
     }
     const uploaded = await this.s3Service.uploadFiles(images);
     const imagesArr = uploaded.map(file => file.Location);
-    const updatedImages = product.images.concat(imagesArr);
+    const updatedImages = product.images
+      ? [...product.images, ...imagesArr]
+      : imagesArr;
     await this.productRepository.update(productId, { images: updatedImages });
 
     return await this.findOne(productId);
@@ -190,6 +192,20 @@ export class ProductsService {
     );
     await this.s3Service.deleteImages(images);
     await this.productRepository.update(productId, { images: updatedImages });
+
+    return await this.findOne(productId);
+  }
+
+  async publish(productId: number) {
+    const product = await this.productRepository.findOne({
+      where: { id: productId },
+    });
+    if (!product) {
+      throw new NotFoundException(`product with id ${productId} not found`);
+    }
+    await this.productRepository.update(productId, {
+      publish: !product.publish,
+    });
 
     return await this.findOne(productId);
   }
