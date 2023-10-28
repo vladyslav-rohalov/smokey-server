@@ -40,6 +40,10 @@ export interface IAllCats {
 }
 
 export interface ISearch {
+  id?: number;
+  images?: boolean;
+  publish?: boolean;
+  promotion?: string;
   page: number;
   limit: number;
   sort: string;

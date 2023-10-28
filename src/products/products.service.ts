@@ -7,6 +7,8 @@ import { PromotionService } from 'src/enums/promotion/promotion.service';
 import { AwsS3Service } from 'src/aws-s3/aws-s3.service';
 import { CreateProductDto } from './dto/create-product.dto';
 import { UpdateProductDto } from './dto/update-product.dto';
+import { ISearch } from 'src/lib/interfaces';
+import { Pagination } from 'src/lib/functions';
 
 @Injectable()
 export class ProductsService {
@@ -70,24 +72,63 @@ export class ProductsService {
     });
   }
 
-  async findAll(page: number, limit: number) {
-    if (!page || isNaN(page) || page <= 0) {
-      page = 1;
-    }
-    if (!limit || isNaN(limit) || limit <= 0) {
-      limit = 10;
-    }
-    const skip = (page - 1) * limit;
+  async findAll(params: ISearch) {
+    let { page, limit, sort, id, images, publish } = params;
+    let { brand, status, min, max, promotion } = params;
+    let query = this.productRepository
+      .createQueryBuilder('product')
+      .innerJoinAndSelect('product.brand', 'brand')
+      .innerJoinAndSelect('product.promotion', 'promotion')
+      .leftJoinAndSelect('product.hookahs', 'hookahs')
+      .leftJoinAndSelect('product.tobacco', 'tobacco')
+      .leftJoinAndSelect('product.coals', 'coals')
+      .leftJoinAndSelect('product.accessories', 'accessories');
 
-    const [products, total] = await this.productRepository.findAndCount({
-      relations: ['tobacco', 'hookahs', 'coals', 'accessories'],
-      take: limit,
-      skip: skip,
-    });
+    if (status) {
+      query = query.andWhere('product.status = :status', { status });
+    }
+    if (id) {
+      query = query.andWhere('product.id = :id', { id });
+    }
+    if (publish) {
+      query = query.andWhere('product.publish = :publish', { publish });
+    }
+    if (images) {
+      if (images === true) {
+        query = query.andWhere('product.images IS NOT NULL');
+      } else if (images === false) {
+        query = query.andWhere('product.images IS NULL');
+      }
+    }
+    if (brand) {
+      query = query.andWhere('LOWER(brand.brand) = :brand', {
+        brand: brand.toLowerCase(),
+      });
+    }
+    if (promotion) {
+      query = query.andWhere('LOWER(promotion.promotion) = :promotion', {
+        promotion: promotion.toLowerCase(),
+      });
+    }
+    if (min && max) {
+      query = query.andWhere('product.price BETWEEN :min AND :max', {
+        min,
+        max,
+      });
+    } else if (min) {
+      query = query.andWhere('product.price >= :min', { min });
+    } else if (max) {
+      query = query.andWhere('product.price <= :max', { max });
+    }
+
+    const products = await query.getMany();
+
+    const total = products.length;
+    const paginatedProducts = await Pagination(products, page, limit);
 
     return {
-      products,
       total,
+      products: paginatedProducts,
     };
   }
 
