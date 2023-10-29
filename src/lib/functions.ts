@@ -22,7 +22,7 @@ export async function Pagination(
     page = 1;
   }
   if (!limit || isNaN(limit) || limit <= 0) {
-    limit = 10;
+    limit = 25;
   }
   const start = (page - 1) * limit;
   const end = start + limit;
@@ -34,4 +34,24 @@ export async function paramToArr(param: string): Promise<string[]> {
   if (param) {
     return param.split(',');
   }
+}
+
+export async function sortProducts(products: Product[], sort: string) {
+  switch (sort) {
+    case 'cheap':
+      products.sort((a, b) => +a.price - +b.price);
+      break;
+    case 'expensive':
+      products.sort((a, b) => +b.price - +a.price);
+      break;
+    case 'old':
+      products.sort((a, b) => +a.createdAt - +b.createdAt);
+      break;
+    case 'new':
+      products.sort((a, b) => +b.createdAt - +a.createdAt);
+      break;
+    default:
+      products;
+  }
+  return products;
 }

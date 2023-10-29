@@ -56,7 +56,7 @@ export interface ISearch {
 export interface ISearchTobacco extends ISearch {
   flavor: string;
   weight: string;
-  strength: number;
+  strength: string;
 }
 
 export interface ISearchHookahs extends ISearch {

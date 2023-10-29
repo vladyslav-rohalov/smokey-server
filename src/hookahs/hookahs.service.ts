@@ -26,6 +26,7 @@ export class HookahsService {
 
   async createHookah(createHookahDto: CreateHookahDto): Promise<Hookah> {
     const color = await this.colorService.getColor(createHookahDto.color);
+    console.log(color);
     const hookah_size = await this.hookahSizeServie.getHookahSize(
       createHookahDto.hookah_size,
     );
@@ -97,8 +98,8 @@ export class HookahsService {
   }
 
   async findAllHookahs(params: ISearchHookahs) {
-    const { page, limit, sort, brand, status, color, hookahSize, min, max } =
-      params;
+    const { page, limit, sort, brand, status, color, hookahSize } = params;
+    const { id, images, publish, promotion, min, max } = params;
 
     const brandsArr = await paramToArr(brand);
     const colorsArr = await paramToArr(color);
@@ -106,11 +107,34 @@ export class HookahsService {
 
     let query = this.productRepository
       .createQueryBuilder('product')
+      .innerJoinAndSelect('product.brand', 'brand')
+      .innerJoinAndSelect('product.promotion', 'promotion')
       .innerJoinAndSelect('product.hookahs', 'hookahs')
       .leftJoinAndSelect('hookahs.color', 'color')
-      .leftJoinAndSelect('hookahs.hookah_size', 'hookah_size')
-      .innerJoinAndSelect('product.brand', 'brand')
-      .innerJoinAndSelect('product.promotion', 'promotion');
+      .leftJoinAndSelect('hookahs.hookah_size', 'hookah_size');
+
+    if (id) {
+      query = query.andWhere('product.id = :id', { id });
+    }
+
+    if (publish) {
+      query = query.andWhere('product.publish = :publish', { publish });
+    }
+
+    if (images) {
+      if (images === true) {
+        query = query.andWhere('product.images IS NOT NULL');
+      } else if (images === false) {
+        query = query.andWhere('product.images IS NULL');
+      }
+    }
+
+    if (promotion) {
+      query = query.andWhere('LOWER(promotion.promotion) = :promotion', {
+        promotion: promotion.toLowerCase(),
+      });
+    }
+
     if (status) {
       query = query.andWhere('product.status = :status', { status });
     }

@@ -26,11 +26,15 @@ export class TobaccoController {
     @Query('page') page: number,
     @Query('limit') limit: number,
     @Query('sort') sort: string,
+    @Query('id') id: number,
+    @Query('images') images: boolean,
+    @Query('publish') publish: boolean,
+    @Query('promotion') promotion: string,
     @Query('brand') brand: string,
     @Query('status') status: string,
     @Query('flavor') flavor: string,
-    @Query('weight') weight: string,
-    @Query('strength') strength: number,
+    @Query('tobacco_weight') weight: string,
+    @Query('strength') strength: string,
     @Query('min') min: number,
     @Query('max') max: number,
   ) {
@@ -45,6 +49,10 @@ export class TobaccoController {
       strength,
       min,
       max,
+      id,
+      images,
+      publish,
+      promotion,
     });
   }
 

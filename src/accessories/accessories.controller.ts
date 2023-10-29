@@ -26,6 +26,10 @@ export class AccessoriesController {
     @Query('page') page: number,
     @Query('limit') limit: number,
     @Query('sort') sort: string,
+    @Query('id') id: number,
+    @Query('images') images: boolean,
+    @Query('publish') publish: boolean,
+    @Query('promotion') promotion: string,
     @Query('brand') brand: string,
     @Query('status') status: string,
     @Query('type') type: string,
@@ -43,6 +47,10 @@ export class AccessoriesController {
       bowlType,
       min,
       max,
+      id,
+      images,
+      publish,
+      promotion,
     });
   }
 

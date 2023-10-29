@@ -8,7 +8,7 @@ import { AwsS3Service } from 'src/aws-s3/aws-s3.service';
 import { CreateProductDto } from './dto/create-product.dto';
 import { UpdateProductDto } from './dto/update-product.dto';
 import { ISearch } from 'src/lib/interfaces';
-import { Pagination } from 'src/lib/functions';
+import { Pagination, sortProducts } from 'src/lib/functions';
 
 @Injectable()
 export class ProductsService {
@@ -122,12 +122,14 @@ export class ProductsService {
     }
 
     const products = await query.getMany();
-
     const total = products.length;
-    const paginatedProducts = await Pagination(products, page, limit);
+    const sortedProducts = await sortProducts(products, sort);
+    const paginatedProducts = await Pagination(sortedProducts, page, limit);
 
     return {
-      total,
+      counts: {
+        total,
+      },
       products: paginatedProducts,
     };
   }

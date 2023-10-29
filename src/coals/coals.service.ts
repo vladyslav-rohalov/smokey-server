@@ -78,8 +78,8 @@ export class CoalsService {
   }
 
   async findAllСoals(params: ISearchCoals) {
-    const { page, limit, sort, brand, status, coalSize, coalWeight, min, max } =
-      params;
+    const { page, limit, sort, brand, status, coalSize, coalWeight } = params;
+    const { id, images, publish, promotion, min, max } = params;
 
     const brandsArr = await paramToArr(brand);
     const weightsArr = await paramToArr(coalWeight);
@@ -90,6 +90,28 @@ export class CoalsService {
       .innerJoinAndSelect('product.coals', 'coals')
       .innerJoinAndSelect('product.brand', 'brand')
       .innerJoinAndSelect('product.promotion', 'promotion');
+
+    if (id) {
+      query = query.andWhere('product.id = :id', { id });
+    }
+
+    if (publish) {
+      query = query.andWhere('product.publish = :publish', { publish });
+    }
+
+    if (images) {
+      if (images === true) {
+        query = query.andWhere('product.images IS NOT NULL');
+      } else if (images === false) {
+        query = query.andWhere('product.images IS NULL');
+      }
+    }
+
+    if (promotion) {
+      query = query.andWhere('LOWER(promotion.promotion) = :promotion', {
+        promotion: promotion.toLowerCase(),
+      });
+    }
 
     if (status) {
       query = query.andWhere('product.status = :status', { status });

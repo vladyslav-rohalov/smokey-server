@@ -86,29 +86,43 @@ export class TobaccoService {
   }
 
   async findAllTobacco(params: ISearchTobacco) {
-    const {
-      page,
-      limit,
-      sort,
-      brand,
-      status,
-      flavor,
-      weight,
-      strength,
-      min,
-      max,
-    } = params;
+    const { page, limit, sort, brand, status, flavor, weight } = params;
+    const { id, images, publish, promotion, min, max, strength } = params;
 
     const brandsArr = await paramToArr(brand);
     const weightsArr = await paramToArr(weight);
+    console.log(strength);
     const flavorsArr = await paramToArr(flavor);
 
     let query = this.productRepository
       .createQueryBuilder('product')
       .innerJoinAndSelect('product.tobacco', 'tobacco')
-      .leftJoinAndSelect('tobacco.flavor', 'flavor')
       .innerJoinAndSelect('product.brand', 'brand')
-      .innerJoinAndSelect('product.promotion', 'promotion');
+      .innerJoinAndSelect('product.promotion', 'promotion')
+      .leftJoinAndSelect('tobacco.flavor', 'flavor');
+
+    if (id) {
+      query = query.andWhere('product.id = :id', { id });
+    }
+
+    if (publish) {
+      query = query.andWhere('product.publish = :publish', { publish });
+    }
+
+    if (images) {
+      if (images === true) {
+        query = query.andWhere('product.images IS NOT NULL');
+      } else if (images === false) {
+        query = query.andWhere('product.images IS NULL');
+      }
+    }
+
+    if (promotion) {
+      query = query.andWhere('LOWER(promotion.promotion) = :promotion', {
+        promotion: promotion.toLowerCase(),
+      });
+    }
+
     if (status) {
       query = query.andWhere('product.status = :status', { status });
     }
@@ -130,19 +144,27 @@ export class TobaccoService {
         },
       );
     }
+
     if (weightsArr && weightsArr.length > 0) {
       query = query.andWhere('(tobacco.tobacco_weight) IN (:...weightsArr)', {
         weightsArr: weightsArr.map(weight => +weight),
       });
     }
+
     if (strength) {
-      query = query.andWhere('tobacco.strength = :strength', { strength });
+      if (strength === 'none') {
+        query = query.andWhere('tobacco.strength IS NULL');
+      } else {
+        query = query.andWhere('tobacco.strength = :strength', { strength });
+      }
     }
+
     if (sort) {
       if (sort === 'new' || sort === 'sale' || sort === 'hot') {
         query = query.andWhere('product.promotion = :sort', { sort });
       }
     }
+
     if (min && max) {
       query = query.andWhere('product.price BETWEEN :min AND :max', {
         min,

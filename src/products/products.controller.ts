@@ -21,18 +21,6 @@ export class ProductsController {
     @Query('max') max: number,
     @Query('promotion') promotion: string,
   ) {
-    // console.log('page ', page);
-    // console.log('limit ', limit);
-    // console.log('sort ', sort);
-    // console.log('id ', id);
-    // console.log('images ', images);
-    // console.log('publish ', publish);
-    // console.log('brand ', brand);
-    // console.log('status ', status);
-    // console.log('min ', min);
-    // console.log('max ', max);
-    // console.log('promotion ', promotion);
-
     return this.productsService.findAll({
       page,
       limit,
