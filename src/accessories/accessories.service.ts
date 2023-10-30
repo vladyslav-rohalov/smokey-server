@@ -11,7 +11,7 @@ import { UpdateProductDto } from 'src/products/dto/update-product.dto';
 import { CreateAccessoryDto } from './dto/create-accessory.dto';
 import { UpdateAccessoryDto } from './dto/update-accessory.dto';
 import { ISearchAccessories } from 'src/lib/interfaces';
-import { sortProductsByPrice, Pagination } from 'src/lib/functions';
+import { sortProducts, Pagination } from 'src/lib/functions';
 import { paramToArr } from 'src/lib/functions';
 
 @Injectable()
@@ -246,7 +246,7 @@ export class AccessoriesService {
       statusCounts[status]++;
     });
 
-    const sortedProducts = await sortProductsByPrice(products, sort);
+    const sortedProducts = await sortProducts(products, sort);
     const paginatedProducts = await Pagination(sortedProducts, page, limit);
 
     return {

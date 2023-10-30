@@ -10,7 +10,7 @@ import { UpdateProductDto } from 'src/products/dto/update-product.dto';
 import { ProductsService } from 'src/products/products.service';
 import { FlavorService } from 'src/enums/flavor/flavor.service';
 import { ISearchTobacco } from 'src/lib/interfaces';
-import { sortProductsByPrice, Pagination } from 'src/lib/functions';
+import { sortProducts, Pagination } from 'src/lib/functions';
 import { paramToArr } from 'src/lib/functions';
 
 @Injectable()
@@ -222,7 +222,7 @@ export class TobaccoService {
       weightCounts[weight]++;
     });
 
-    const sortedProducts = await sortProductsByPrice(products, sort);
+    const sortedProducts = await sortProducts(products, sort);
     const paginatedProducts = await Pagination(sortedProducts, page, limit);
 
     return {

@@ -11,7 +11,7 @@ import { UpdateProductDto } from 'src/products/dto/update-product.dto';
 import { CreateHookahDto } from './dto/create-hookah.dto';
 import { UpdateHookahDto } from './dto/update-hookah.dto';
 import { ISearchHookahs } from 'src/lib/interfaces';
-import { sortProductsByPrice, Pagination } from 'src/lib/functions';
+import { sortProducts, Pagination } from 'src/lib/functions';
 import { paramToArr } from 'src/lib/functions';
 
 @Injectable()
@@ -226,7 +226,7 @@ export class HookahsService {
       hookahSizeCounts[size]++;
     });
 
-    const sortedProducts = await sortProductsByPrice(products, sort);
+    const sortedProducts = await sortProducts(products, sort);
     const paginatedProducts = await Pagination(sortedProducts, page, limit);
 
     return {

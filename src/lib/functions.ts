@@ -44,10 +44,10 @@ export async function sortProducts(products: Product[], sort: string) {
     case 'expensive':
       products.sort((a, b) => +b.price - +a.price);
       break;
-    case 'old':
+    case 'older':
       products.sort((a, b) => +a.createdAt - +b.createdAt);
       break;
-    case 'new':
+    case 'newer':
       products.sort((a, b) => +b.createdAt - +a.createdAt);
       break;
     default:

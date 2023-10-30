@@ -9,7 +9,7 @@ import { CreateProductDto } from 'src/products/dto/create-product.dto';
 import { UpdateProductDto } from 'src/products/dto/update-product.dto';
 import { ProductsService } from 'src/products/products.service';
 import { ISearchCoals } from 'src/lib/interfaces';
-import { sortProductsByPrice, Pagination } from 'src/lib/functions';
+import { Pagination, sortProducts } from 'src/lib/functions';
 import { paramToArr } from 'src/lib/functions';
 
 @Injectable()
@@ -201,7 +201,7 @@ export class CoalsService {
       weightCounts[weight]++;
     });
 
-    const sortedProducts = await sortProductsByPrice(products, sort);
+    const sortedProducts = await sortProducts(products, sort);
     const paginatedProducts = await Pagination(sortedProducts, page, limit);
 
     return {
