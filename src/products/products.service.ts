@@ -82,7 +82,12 @@ export class ProductsService {
       .leftJoinAndSelect('product.hookahs', 'hookahs')
       .leftJoinAndSelect('product.tobacco', 'tobacco')
       .leftJoinAndSelect('product.coals', 'coals')
-      .leftJoinAndSelect('product.accessories', 'accessories');
+      .leftJoinAndSelect('product.accessories', 'accessories')
+      .leftJoinAndSelect('tobacco.flavor', 'flavor')
+      .leftJoinAndSelect('hookahs.color', 'color')
+      .leftJoinAndSelect('hookahs.hookah_size', 'hookah_size')
+      .leftJoinAndSelect('accessories.type', 'type')
+      .leftJoinAndSelect('accessories.bowl_type', 'bowl_type');
 
     if (status) {
       query = query.andWhere('product.status = :status', { status });
