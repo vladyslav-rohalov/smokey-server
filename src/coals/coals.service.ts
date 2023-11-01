@@ -48,8 +48,8 @@ export class CoalsService {
     }
 
     const dto = {
-      coal_size: updateCoalDto.coal_size || coal.coal_size,
-      coal_weight: updateCoalDto.coal_weight || coal.coal_weight,
+      coal_size: updateCoalDto.coal_size,
+      coal_weight: updateCoalDto.coal_weight,
     };
 
     await this.coalRepository.update(coalId, dto);

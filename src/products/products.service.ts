@@ -49,12 +49,13 @@ export class ProductsService {
     }
     const dto = {
       promotion: promotion,
-      status: updateProductDto.status || product.status,
-      price: updateProductDto.price || product.price,
-      description: updateProductDto.description || product.description,
+      status: updateProductDto.status,
+      price: updateProductDto.price,
+      description: updateProductDto.description,
       brand: brand,
-      title: updateProductDto.title || product.title,
-      available: updateProductDto.available || product.available,
+      title: updateProductDto.title,
+      available: updateProductDto.available,
+      publish: updateProductDto.publish,
     };
 
     await this.productRepository.update(productId, dto);
@@ -235,9 +236,10 @@ export class ProductsService {
     if (!product) {
       throw new NotFoundException(`product with id ${productId} not found`);
     }
-    const updatedImages = product.images.filter(
+    const filtredImages = product.images.filter(
       image => !images.includes(image),
     );
+    const updatedImages = filtredImages.length ? filtredImages : null;
     await this.s3Service.deleteImages(images);
     await this.productRepository.update(productId, { images: updatedImages });
 

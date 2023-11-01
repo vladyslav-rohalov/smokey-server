@@ -26,7 +26,6 @@ export class HookahsService {
 
   async createHookah(createHookahDto: CreateHookahDto): Promise<Hookah> {
     const color = await this.colorService.getColor(createHookahDto.color);
-    console.log(color);
     const hookah_size = await this.hookahSizeServie.getHookahSize(
       createHookahDto.hookah_size,
     );
@@ -94,6 +93,8 @@ export class HookahsService {
     updatedProduct.hookahs = updatedHookah;
     await this.productRepository.save(updatedProduct);
 
+    // console.log('DTO =', updateHookahDto);
+    // console.log('UPDATE =', updatedProduct);
     return updatedProduct;
   }
 

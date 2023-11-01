@@ -46,6 +46,7 @@ export class TobaccoService {
 
   async updateTobacco(tobaccoId: number, updateTobaccoDto: UpdateTobaccoDto) {
     const flavor = await this.flavorService.getFlavor(updateTobaccoDto.flavor);
+    console.log(flavor);
     const tobacco = await this.tobaccoRepository.findOne({
       where: { id: tobaccoId },
     });
@@ -56,12 +57,15 @@ export class TobaccoService {
 
     const dto = {
       flavor: flavor,
-      tobacco_weight: updateTobaccoDto.tobacco_weight || tobacco.tobacco_weight,
-      strength: updateTobaccoDto.strength || tobacco.strength,
+      tobacco_weight: updateTobaccoDto.tobacco_weight,
+      strength: updateTobaccoDto.strength,
     };
 
     await this.tobaccoRepository.update(tobaccoId, dto);
-    return await this.tobaccoRepository.findOne({ where: { id: tobaccoId } });
+    return await this.tobaccoRepository.findOne({
+      where: { id: tobaccoId },
+      relations: ['flavor'],
+    });
   }
 
   async updateProductWithTobacco(
@@ -91,7 +95,7 @@ export class TobaccoService {
 
     const brandsArr = await paramToArr(brand);
     const weightsArr = await paramToArr(weight);
-    console.log(strength);
+
     const flavorsArr = await paramToArr(flavor);
 
     let query = this.productRepository
