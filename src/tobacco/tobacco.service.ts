@@ -46,7 +46,6 @@ export class TobaccoService {
 
   async updateTobacco(tobaccoId: number, updateTobaccoDto: UpdateTobaccoDto) {
     const flavor = await this.flavorService.getFlavor(updateTobaccoDto.flavor);
-    console.log(flavor);
     const tobacco = await this.tobaccoRepository.findOne({
       where: { id: tobaccoId },
     });

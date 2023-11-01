@@ -2,9 +2,9 @@ import { Controller, Get, Post, Body, Patch, Param } from '@nestjs/common';
 import { Query } from '@nestjs/common';
 import { TobaccoService } from './tobacco.service';
 import { CreateTobaccoDto } from './dto/create-tobacco.dto';
-import { UpdateTobaccoDto } from './dto/update-tobacco.dto';
 import { CreateProductDto } from 'src/products/dto/create-product.dto';
 import { UpdateProductDto } from 'src/products/dto/update-product.dto';
+import { UpdateTobaccoDto } from './dto/update-tobacco.dto';
 
 @Controller('api/products/tobacco')
 export class TobaccoController {
@@ -60,9 +60,9 @@ export class TobaccoController {
   update(
     @Param('id') id: string,
     @Body()
-    updateTobaccoDto: UpdateTobaccoDto,
+    updateTobaccoDto: CreateTobaccoDto,
     @Body()
-    updateProductDto: UpdateProductDto,
+    updateProductDto: CreateProductDto,
   ) {
     return this.tobaccoService.updateProductWithTobacco(
       +id,

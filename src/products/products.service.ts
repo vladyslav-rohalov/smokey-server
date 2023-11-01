@@ -193,11 +193,15 @@ export class ProductsService {
     const product = await this.productRepository.findOne({
       where: { id: productId },
     });
+
     if (!product) {
       throw new NotFoundException(`product with id ${productId} not found`);
     }
 
-    await this.s3Service.deleteImages(product.images);
+    if (product.images !== null) {
+      await this.s3Service.deleteImages(product.images);
+    }
+
     await this.productRepository.remove(product);
   }
 

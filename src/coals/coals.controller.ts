@@ -2,9 +2,9 @@ import { Controller, Get, Post, Body, Patch, Param } from '@nestjs/common';
 import { Query } from '@nestjs/common';
 import { CoalsService } from './coals.service';
 import { CreateCoalDto } from './dto/create-coal.dto';
-import { UpdateCoalDto } from './dto/update-coal.dto';
 import { CreateProductDto } from 'src/products/dto/create-product.dto';
 import { UpdateProductDto } from 'src/products/dto/update-product.dto';
+import { UpdateCoalDto } from './dto/update-coal.dto';
 
 @Controller('api/products/coals')
 export class CoalsController {
@@ -58,9 +58,9 @@ export class CoalsController {
   update(
     @Param('id') id: string,
     @Body()
-    updateCoalDto: UpdateCoalDto,
+    updateCoalDto: CreateCoalDto,
     @Body()
-    updateProductDto: UpdateProductDto,
+    updateProductDto: CreateProductDto,
   ) {
     return this.coalsService.updateProductWithCoals(
       +id,

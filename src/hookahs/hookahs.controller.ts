@@ -2,9 +2,9 @@ import { Controller, Get, Post, Body, Patch, Param } from '@nestjs/common';
 import { Query } from '@nestjs/common';
 import { HookahsService } from './hookahs.service';
 import { CreateHookahDto } from './dto/create-hookah.dto';
-import { UpdateHookahDto } from './dto/update-hookah.dto';
 import { CreateProductDto } from 'src/products/dto/create-product.dto';
 import { UpdateProductDto } from 'src/products/dto/update-product.dto';
+import { UpdateHookahDto } from './dto/update-hookah.dto';
 
 @Controller('api/products/hookahs')
 export class HookahsController {
@@ -58,9 +58,9 @@ export class HookahsController {
   update(
     @Param('id') id: string,
     @Body()
-    updateHookahDto: UpdateHookahDto,
+    updateHookahDto: CreateHookahDto,
     @Body()
-    updateProductDto: UpdateProductDto,
+    updateProductDto: CreateProductDto,
   ) {
     return this.hookahsService.updateProductWithHookah(
       +id,
