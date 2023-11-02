@@ -7,7 +7,7 @@ import { PromotionService } from 'src/enums/promotion/promotion.service';
 import { AwsS3Service } from 'src/aws-s3/aws-s3.service';
 import { CreateProductDto } from './dto/create-product.dto';
 import { UpdateProductDto } from './dto/update-product.dto';
-import { ISearch } from 'src/lib/interfaces';
+import { ISearch, IOptionsUpload } from 'src/lib/interfaces';
 import { Pagination, sortProducts } from 'src/lib/functions';
 
 @Injectable()
@@ -216,14 +216,18 @@ export class ProductsService {
     return promoted;
   }
 
-  async addImages(productId: number, images: Express.Multer.File[]) {
+  async addImages(
+    productId: number,
+    images: Express.Multer.File[],
+    options: IOptionsUpload,
+  ) {
     const product = await this.productRepository.findOne({
       where: { id: productId },
     });
     if (!product) {
       throw new NotFoundException(`product with id ${productId} not found`);
     }
-    const uploaded = await this.s3Service.uploadFiles(images);
+    const uploaded = await this.s3Service.uploadFiles(images, options);
     const imagesArr = uploaded.map(file => file.Location);
     const updatedImages = product.images
       ? [...product.images, ...imagesArr]

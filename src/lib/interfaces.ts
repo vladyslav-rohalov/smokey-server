@@ -73,3 +73,8 @@ export interface ISearchAccessories extends ISearch {
   type: string;
   bowlType: string;
 }
+
+export interface IOptionsUpload {
+  deleteBG: boolean;
+  trim: boolean;
+}

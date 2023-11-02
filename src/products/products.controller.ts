@@ -3,6 +3,7 @@ import { Query, UploadedFiles, UseInterceptors, Patch } from '@nestjs/common';
 import { ProductsService } from './products.service';
 import { FilesInterceptor } from '@nestjs/platform-express';
 
+
 @Controller('api/products')
 export class ProductsController {
   constructor(private readonly productsService: ProductsService) {}
@@ -56,8 +57,14 @@ export class ProductsController {
   addImages(
     @Param('id') id: string,
     @UploadedFiles() images: Express.Multer.File[],
+    @Body() bgOptions: { id: string; deleteBG: string; trim: string },
   ) {
-    return this.productsService.addImages(+id, images);
+    const options = {
+      deleteBG: bgOptions.deleteBG === 'true',
+      trim: bgOptions.trim === 'true',
+    };
+    console.log(options);
+    return this.productsService.addImages(+id, images, options);
   }
 
   @Delete('/images/:id')

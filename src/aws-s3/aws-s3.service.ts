@@ -1,7 +1,10 @@
 import { Injectable, BadRequestException } from '@nestjs/common';
 import * as AWS from 'aws-sdk';
 import { v4 as uuidv4 } from 'uuid';
+import { Rembg } from 'rembg-node';
+import sharp from 'sharp';
 import 'dotenv/config';
+import { IOptionsUpload } from 'src/lib/interfaces';
 
 const { AWS_BUCKET_NAME, AWS_ACCESS_KEY_ID, AWS_SECRET_ACCESS_KEY } =
   process.env;
@@ -18,20 +21,96 @@ export class AwsS3Service {
     });
   }
 
+  async removeBackground(
+    buffer: Buffer,
+    options: IOptionsUpload,
+  ): Promise<Buffer> {
+    const { deleteBG = false, trim = false } = options;
+    console.log('remove BG');
+    try {
+      const input = sharp(buffer);
+      const rembg = new Rembg();
+      const output = deleteBG ? await rembg.remove(input) : input;
+      const webpBuffer = trim
+        ? await output.trim().webp().toBuffer()
+        : await output.webp().toBuffer();
+      return webpBuffer;
+    } catch (error) {
+      throw new Error(`Error removing background: ${error.message}`);
+    }
+  }
+
   async uploadFiles(
     files: Express.Multer.File[],
+    options: IOptionsUpload,
   ): Promise<AWS.S3.ManagedUpload.SendData[]> {
+    // console.log(options);
     const uploadPromises = files.map(async file => {
-      const { originalname, buffer, mimetype } = file;
-      return await this.s3_upload(
-        buffer,
-        `${this.AWS_S3_BUCKET}/products`,
-        `${uuidv4()}-${originalname}`,
-        mimetype,
-      );
+      const { buffer, mimetype } = file;
+      try {
+        if (options?.deleteBG === true || options?.trim === true) {
+          const webpBuffer = await this.removeBackground(buffer, options);
+          return await this.s3_upload(
+            webpBuffer,
+            `${this.AWS_S3_BUCKET}/products`,
+            `${uuidv4()}.webp`,
+            'image/webp',
+          );
+        } else {
+          return await this.s3_upload(
+            buffer,
+            `${this.AWS_S3_BUCKET}/products`,
+            `${uuidv4()}`,
+            mimetype,
+          );
+        }
+      } catch (error) {
+        throw new Error(`Error uploading file: ${error.message}`);
+      }
     });
     return await Promise.all(uploadPromises);
   }
+
+  // async uploadFiles(
+  //   files: Express.Multer.File[],
+  //   options: IOptionsUpload,
+  // ): Promise<AWS.S3.ManagedUpload.SendData[]> {
+  //   const uploadPromises = files.map(async file => {
+  //     const { buffer, mimetype } = file;
+  //     if (options.deleteBG || options.trim) {
+  //       const webpBuffer = await this.removeBackground(buffer, options);
+  //       return await this.s3_upload(
+  //         webpBuffer,
+  //         `${this.AWS_S3_BUCKET}/products`,
+  //         `${uuidv4()}.webp`,
+  //         'image/webp',
+  //       );
+  //     } else {
+  //       return await this.s3_upload(
+  //         buffer,
+  //         `${this.AWS_S3_BUCKET}/products`,
+  //         `${uuidv4()}`,
+  //         mimetype,
+  //       );
+  //     }
+  //   });
+  //   return await Promise.all(uploadPromises);
+  // }
+
+  // async uploadFiles(
+  //   files: Express.Multer.File[],
+  // ): Promise<AWS.S3.ManagedUpload.SendData[]> {
+  //   const uploadPromises = files.map(async file => {
+  //     const { originalname, buffer, mimetype } = file;
+  // return await this.s3_upload(
+  //   buffer,
+  //   `${this.AWS_S3_BUCKET}/products`,
+  //   `${uuidv4()}-${originalname}`,
+  //   mimetype,
+  // );
+  //   });
+  //   return await Promise.all(uploadPromises);
+  // }
 
   private async s3_upload(
     file: Buffer,
