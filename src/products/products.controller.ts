@@ -3,7 +3,6 @@ import { Query, UploadedFiles, UseInterceptors, Patch } from '@nestjs/common';
 import { ProductsService } from './products.service';
 import { FilesInterceptor } from '@nestjs/platform-express';
 
-
 @Controller('api/products')
 export class ProductsController {
   constructor(private readonly productsService: ProductsService) {}
@@ -63,7 +62,6 @@ export class ProductsController {
       deleteBG: bgOptions.deleteBG === 'true',
       trim: bgOptions.trim === 'true',
     };
-    console.log(options);
     return this.productsService.addImages(+id, images, options);
   }
 

@@ -93,8 +93,6 @@ export class HookahsService {
     updatedProduct.hookahs = updatedHookah;
     await this.productRepository.save(updatedProduct);
 
-    // console.log('DTO =', updateHookahDto);
-    // console.log('UPDATE =', updatedProduct);
     return updatedProduct;
   }
 
@@ -185,7 +183,10 @@ export class HookahsService {
 
     const total = products.length;
     const brandCounts: { [key: string]: number } = {};
-    const colorCounts: { [key: string]: number } = {};
+    const colorCounts: {
+      [key: string]: { count: number; colorValue: string };
+    } = {};
+
     const hookahSizeCounts: { [key: string]: number } = {};
     const statusCounts: { [key: string]: number } = {};
     const prices = { min: Number.MAX_VALUE, max: Number.MIN_VALUE };
@@ -196,6 +197,7 @@ export class HookahsService {
     products.forEach(product => {
       const brand = product.brand.brand.toLowerCase();
       const color = product.hookahs.color.color.toLocaleLowerCase();
+      const colorValue = product.hookahs.color.color_value.toLocaleLowerCase();
       const size = product.hookahs.hookah_size.hookah_size.toLocaleLowerCase();
       const status = product.status.toLocaleLowerCase();
       const price = +product.price;
@@ -217,9 +219,9 @@ export class HookahsService {
       statusCounts[status]++;
 
       if (!colorCounts[color]) {
-        colorCounts[color] = 0;
+        colorCounts[color] = { count: 0, colorValue };
       }
-      colorCounts[color]++;
+      colorCounts[color].count++;
 
       if (!hookahSizeCounts[size]) {
         hookahSizeCounts[size] = 0;

@@ -1,6 +1,6 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Repository, In } from 'typeorm';
+import { Repository } from 'typeorm';
 import { Product } from './entities/product.entity';
 import { BrandService } from 'src/enums/brand/brand.service';
 import { PromotionService } from 'src/enums/promotion/promotion.service';
@@ -206,12 +206,24 @@ export class ProductsService {
   }
 
   async findAllPromotion() {
-    const promoted = await this.productRepository.find({
-      where: {
-        promotion: In(['hot', 'sale', 'new']),
-      },
-      relations: ['tobacco', 'hookahs', 'coals', 'accessories'],
-    });
+    const promoted = this.productRepository
+      .createQueryBuilder('product')
+      .innerJoinAndSelect('product.brand', 'brand')
+      .innerJoinAndSelect('product.promotion', 'promotion')
+      .leftJoinAndSelect('product.hookahs', 'hookahs')
+      .leftJoinAndSelect('product.tobacco', 'tobacco')
+      .leftJoinAndSelect('product.coals', 'coals')
+      .leftJoinAndSelect('product.accessories', 'accessories')
+      .leftJoinAndSelect('tobacco.flavor', 'flavor')
+      .leftJoinAndSelect('hookahs.color', 'color')
+      .leftJoinAndSelect('hookahs.hookah_size', 'hookah_size')
+      .leftJoinAndSelect('accessories.type', 'type')
+      .leftJoinAndSelect('accessories.bowl_type', 'bowl_type')
+      .where('promotion.promotion IN (:...values)', {
+        values: ['hot', 'sale', 'new'],
+      })
+      .andWhere('product.publish = :publish', { publish: true })
+      .getMany();
 
     return promoted;
   }
