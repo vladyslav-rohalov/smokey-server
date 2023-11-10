@@ -210,7 +210,16 @@ export class AccessoriesService {
       prices.max = 0;
     }
 
-    products.forEach(product => {
+    const categoryProducts = await this.productRepository
+      .createQueryBuilder('product')
+      .innerJoinAndSelect('product.accessories', 'accessories')
+      .leftJoinAndSelect('accessories.type', 'type')
+      .leftJoinAndSelect('accessories.bowl_type', 'bowl_type')
+      .innerJoinAndSelect('product.brand', 'brand')
+      .innerJoinAndSelect('product.promotion', 'promotion')
+      .getMany();
+
+    categoryProducts.forEach(product => {
       const brand = product.brand.brand.toLowerCase();
       const type = product.accessories?.type?.type?.toLowerCase();
       const bowlType = product.accessories?.bowl_type?.bowl_type?.toLowerCase();

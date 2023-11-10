@@ -194,7 +194,17 @@ export class HookahsService {
       prices.min = 0;
       prices.max = 0;
     }
-    products.forEach(product => {
+
+    const categoryProducts = await this.productRepository
+      .createQueryBuilder('product')
+      .innerJoinAndSelect('product.brand', 'brand')
+      .innerJoinAndSelect('product.promotion', 'promotion')
+      .innerJoinAndSelect('product.hookahs', 'hookahs')
+      .leftJoinAndSelect('hookahs.color', 'color')
+      .leftJoinAndSelect('hookahs.hookah_size', 'hookah_size')
+      .getMany();
+
+    categoryProducts.forEach(product => {
       const brand = product.brand.brand.toLowerCase();
       const color = product.hookahs.color.color.toLocaleLowerCase();
       const colorValue = product.hookahs.color.color_value.toLocaleLowerCase();

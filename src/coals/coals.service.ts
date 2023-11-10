@@ -167,7 +167,15 @@ export class CoalsService {
       prices.min = 0;
       prices.max = 0;
     }
-    products.forEach(product => {
+
+    const categoryProducts = await this.productRepository
+      .createQueryBuilder('product')
+      .innerJoinAndSelect('product.coals', 'coals')
+      .innerJoinAndSelect('product.brand', 'brand')
+      .innerJoinAndSelect('product.promotion', 'promotion')
+      .getMany();
+
+    categoryProducts.forEach(product => {
       const brand = product.brand.brand.toLowerCase();
       const size = product.coals.coal_size;
       const weight = product.coals.coal_weight;

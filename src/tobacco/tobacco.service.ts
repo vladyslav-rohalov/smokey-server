@@ -191,7 +191,16 @@ export class TobaccoService {
       prices.min = 0;
       prices.max = 0;
     }
-    products.forEach(product => {
+
+    const categoryProducts = await this.productRepository
+      .createQueryBuilder('product')
+      .innerJoinAndSelect('product.tobacco', 'tobacco')
+      .innerJoinAndSelect('product.brand', 'brand')
+      .innerJoinAndSelect('product.promotion', 'promotion')
+      .leftJoinAndSelect('tobacco.flavor', 'flavor')
+      .getMany();
+
+    categoryProducts.forEach(product => {
       const brand = product.brand.brand.toLowerCase();
       const flavor = product.tobacco.flavor.flavor.toLowerCase();
       const weight = product.tobacco.tobacco_weight;
