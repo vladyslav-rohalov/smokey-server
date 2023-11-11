@@ -181,11 +181,6 @@ export class AccessoriesService {
       );
     }
 
-    if (sort) {
-      if (sort === 'new' || sort === 'sale' || sort === 'hot') {
-        query = query.andWhere('product.promotion = :sort', { sort });
-      }
-    }
     if (min && max) {
       query = query.andWhere('product.price BETWEEN :min AND :max', {
         min,
