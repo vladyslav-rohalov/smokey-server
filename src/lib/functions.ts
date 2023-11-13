@@ -35,7 +35,7 @@ export async function paramToArr(param: string): Promise<string[]> {
     return param.split(',');
   }
 }
-
+// need to add additional sort by available
 export async function sortProducts(products: Product[], sort: string) {
   switch (sort) {
     case 'cheap':

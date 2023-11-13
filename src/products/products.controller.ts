@@ -36,6 +36,11 @@ export class ProductsController {
     });
   }
 
+  @Get('/related/:id')
+  findRelated(@Param('id') id: string) {
+    return this.productsService.findRelatedById(+id);
+  }
+
   @Delete(':id')
   remove(@Param('id') id: string) {
     return this.productsService.remove(+id);

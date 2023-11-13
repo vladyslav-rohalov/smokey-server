@@ -189,6 +189,104 @@ export class ProductsService {
     return response;
   }
 
+  async findRelatedById(productId: number) {
+    const product = await this.productRepository
+      .createQueryBuilder('product')
+      .innerJoinAndSelect('product.brand', 'brand')
+      .innerJoinAndSelect('product.promotion', 'promotion')
+      .leftJoinAndSelect('product.hookahs', 'hookahs')
+      .leftJoinAndSelect('product.tobacco', 'tobacco')
+      .leftJoinAndSelect('product.coals', 'coals')
+      .leftJoinAndSelect('product.accessories', 'accessories')
+      .leftJoinAndSelect('tobacco.flavor', 'flavor')
+      .leftJoinAndSelect('hookahs.color', 'color')
+      .leftJoinAndSelect('hookahs.hookah_size', 'hookah_size')
+      .leftJoinAndSelect('accessories.type', 'type')
+      .leftJoinAndSelect('accessories.bowl_type', 'bowl_type')
+      .andWhere('product.id = :productId', { productId })
+      .getOne();
+
+    if (!product) {
+      throw new NotFoundException(`product with id ${productId} not found`);
+    }
+    let response = null;
+
+    if (product.accessories) {
+      response = await this.productRepository
+        .createQueryBuilder('product')
+        .innerJoinAndSelect('product.brand', 'brand')
+        .innerJoinAndSelect('product.promotion', 'promotion')
+        .leftJoinAndSelect('product.accessories', 'accessories')
+        .leftJoinAndSelect('accessories.type', 'type')
+        .leftJoinAndSelect('accessories.bowl_type', 'bowl_type')
+        .andWhere('accessories.type = :type_id', {
+          type_id: product.accessories.type.id,
+        })
+        .andWhere('product.id != :productId', {
+          productId,
+        })
+        .getMany();
+    }
+    if (product.tobacco) {
+      response = await this.productRepository
+        .createQueryBuilder('product')
+        .innerJoinAndSelect('product.brand', 'brand')
+        .innerJoinAndSelect('product.promotion', 'promotion')
+        .leftJoinAndSelect('product.tobacco', 'tobacco')
+        .leftJoinAndSelect('tobacco.flavor', 'flavor')
+        .andWhere('product.brand = :brand_id', {
+          brand_id: product.brand.id,
+        })
+        .andWhere('tobacco.tobacco_weight = :weight', {
+          weight: product.tobacco.tobacco_weight,
+        })
+        .andWhere('product.id != :productId', {
+          productId,
+        })
+        .getMany();
+    }
+    if (product.coals) {
+      response = await this.productRepository
+        .createQueryBuilder('product')
+        .innerJoinAndSelect('product.brand', 'brand')
+        .innerJoinAndSelect('product.promotion', 'promotion')
+        .leftJoinAndSelect('product.coals', 'coals')
+        .andWhere('coals.coal_size = :coal_size', {
+          coal_size: product.coals.coal_size,
+        })
+        .andWhere('coals.coal_weight = :weight', {
+          weight: product.coals.coal_weight,
+        })
+        .andWhere('product.id != :productId', {
+          productId,
+        })
+        .getMany();
+    }
+    const priceThreshold = 0.2;
+    if (product.hookahs) {
+      const basePrice = product.price;
+      response = await this.productRepository
+        .createQueryBuilder('product')
+        .innerJoinAndSelect('product.brand', 'brand')
+        .innerJoinAndSelect('product.promotion', 'promotion')
+        .leftJoinAndSelect('product.hookahs', 'hookahs')
+        .leftJoinAndSelect('hookahs.color', 'color')
+        .leftJoinAndSelect('hookahs.hookah_size', 'hookah_size')
+        .where('hookahs.id IS NOT NULL')
+        .andWhere('product.price >= :minPrice', {
+          minPrice: basePrice * (1 - priceThreshold),
+        })
+        .andWhere('product.price <= :maxPrice', {
+          maxPrice: basePrice * (1 + priceThreshold),
+        })
+        .andWhere('product.id != :productId', {
+          productId,
+        })
+        .getMany();
+    }
+    return response;
+  }
+
   async remove(productId: number) {
     const product = await this.productRepository.findOne({
       where: { id: productId },
