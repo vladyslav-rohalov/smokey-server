@@ -51,6 +51,11 @@ export class ProductsController {
     return this.productsService.findOne(+id);
   }
 
+  @Get('ids/:ids')
+  findIds(@Param('ids') ids: string) {
+    return this.productsService.findIds(ids);
+  }
+
   @Get('/promotion')
   findAllPromotion() {
     return this.productsService.findAllPromotion();

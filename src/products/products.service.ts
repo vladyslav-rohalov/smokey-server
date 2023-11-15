@@ -304,7 +304,7 @@ export class ProductsService {
   }
 
   async findAllPromotion() {
-    const promoted = this.productRepository
+    const promoted = await this.productRepository
       .createQueryBuilder('product')
       .innerJoinAndSelect('product.brand', 'brand')
       .innerJoinAndSelect('product.promotion', 'promotion')
@@ -376,5 +376,29 @@ export class ProductsService {
     });
 
     return await this.findOne(productId);
+  }
+
+  async findIds(ids: string) {
+    const idsArr = ids.split(',');
+
+    const products = await this.productRepository
+      .createQueryBuilder('product')
+      .innerJoinAndSelect('product.brand', 'brand')
+      .innerJoinAndSelect('product.promotion', 'promotion')
+      .leftJoinAndSelect('product.hookahs', 'hookahs')
+      .leftJoinAndSelect('product.tobacco', 'tobacco')
+      .leftJoinAndSelect('product.coals', 'coals')
+      .leftJoinAndSelect('product.accessories', 'accessories')
+      .leftJoinAndSelect('tobacco.flavor', 'flavor')
+      .leftJoinAndSelect('hookahs.color', 'color')
+      .leftJoinAndSelect('hookahs.hookah_size', 'hookah_size')
+      .leftJoinAndSelect('accessories.type', 'type')
+      .leftJoinAndSelect('accessories.bowl_type', 'bowl_type')
+      .where('product.id IN (:...idsArr)', {
+        idsArr,
+      })
+      .getMany();
+
+    return products;
   }
 }
