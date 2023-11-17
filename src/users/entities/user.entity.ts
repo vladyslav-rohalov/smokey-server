@@ -39,7 +39,7 @@ export class User {
   address: Address;
 
   @OneToOne(() => Cart, cart => cart.user)
-  @JoinColumn({ name: 'cart_id', referencedColumnName: 'id' })
+  // @JoinColumn({ name: 'cart_id', referencedColumnName: 'id' })
   cart: Cart[];
 
   @OneToMany(() => Order, order => order.user)

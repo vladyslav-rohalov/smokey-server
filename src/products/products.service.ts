@@ -379,6 +379,7 @@ export class ProductsService {
   }
 
   async findIds(ids: string) {
+    if (ids === 'empty') return [];
     const idsArr = ids.split(',');
 
     const products = await this.productRepository

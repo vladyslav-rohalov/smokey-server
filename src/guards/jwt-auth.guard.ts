@@ -14,8 +14,9 @@ export class JwtAuthGuard implements CanActivate {
     const req = context.switchToHttp().getRequest();
     try {
       const authHeader = req.headers.authorization;
+
       const bearer = authHeader.split(' ')[0];
-      const token = authHeader.split(' ')[1];
+      const token = authHeader.split(' ')[1].trim();
 
       if (bearer !== 'Bearer' || !token) {
         throw new UnauthorizedException({
@@ -29,8 +30,7 @@ export class JwtAuthGuard implements CanActivate {
       if (isTokenBlacklisted) {
         throw new UnauthorizedException({ message: 'Token is blacklisted' });
       }
-
-      const user = this.jwtService.verify(token);
+      const user = await this.jwtService.verify(token);
       req.user = { ...user, token };
       return true;
     } catch (error) {
