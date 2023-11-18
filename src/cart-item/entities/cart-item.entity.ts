@@ -1,5 +1,5 @@
 import { Entity, PrimaryGeneratedColumn, Column, ManyToOne } from 'typeorm';
-import { CreateDateColumn, UpdateDateColumn } from 'typeorm';
+import { CreateDateColumn, UpdateDateColumn, JoinColumn } from 'typeorm';
 import { Cart } from '../../cart/entities/cart.entity';
 import { Product } from '../../products/entities/product.entity';
 
@@ -11,7 +11,11 @@ export class CartItem {
   @Column()
   quantity: number;
 
-  @ManyToOne(() => Cart, cart => cart.items)
+  @ManyToOne(() => Cart, cart => cart.items, {
+    cascade: true,
+    onDelete: 'CASCADE',
+  })
+  @JoinColumn({ name: 'cart_id' })
   cart: Cart;
 
   @ManyToOne(() => Product, product => product.cartItems)

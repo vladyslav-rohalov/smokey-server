@@ -13,6 +13,7 @@ export class CartItemService {
     @InjectRepository(CartItem)
     private cartItemRepository: Repository<CartItem>,
   ) {}
+
   async create(createCartItemDto: CreateCartItemDto[], cartId: number) {
     const cartItems = createCartItemDto.map(async itemDto => {
       const cartItem = this.cartItemRepository.create(itemDto);
@@ -30,6 +31,13 @@ export class CartItemService {
     const savedCartItems = await Promise.all(cartItems);
 
     return savedCartItems;
+  }
+
+  async remove(cartId: number, productId: number) {
+    await this.cartItemRepository.delete({
+      cart: { id: cartId },
+      product: { id: productId },
+    });
   }
 }
 

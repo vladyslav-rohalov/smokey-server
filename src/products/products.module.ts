@@ -2,7 +2,6 @@ import { Module } from '@nestjs/common';
 import { ProductsService } from './products.service';
 import { ProductsController } from './products.controller';
 import { Product } from './entities/product.entity';
-import { CartItem } from 'src/cart-item/entities/cart-item.entity';
 import { OrderItem } from 'src/order-item/entities/order-item.entity';
 import { Favorite } from 'src/favorites/entities/favorite.entity';
 import { Review } from 'src/reviews/entities/review.entity';
@@ -24,7 +23,6 @@ import { AwsS3Module } from 'src/aws-s3/aws-s3.module';
   imports: [
     TypeOrmModule.forFeature([
       Product,
-      CartItem,
       OrderItem,
       Favorite,
       Review,
@@ -37,6 +35,6 @@ import { AwsS3Module } from 'src/aws-s3/aws-s3.module';
       AwsS3Module,
     ]),
   ],
-  exports: [ProductsService],
+  exports: [ProductsService, ProductsModule],
 })
 export class ProductsModule {}

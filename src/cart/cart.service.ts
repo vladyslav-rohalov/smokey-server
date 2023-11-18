@@ -1,9 +1,8 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { Cart } from './entities/cart.entity';
 import { User } from 'src/users/entities/user.entity';
-import { CartItem } from 'src/cart-item/entities/cart-item.entity';
 import { CartItemService } from 'src/cart-item/cart-item.service';
 import { CreateCartDto } from './dto/create-cart.dto';
 import { UpdateCartDto } from './dto/update-cart.dto';
@@ -13,8 +12,6 @@ export class CartService {
   constructor(
     @InjectRepository(Cart)
     private cartRepository: Repository<Cart>,
-    @InjectRepository(CartItem)
-    private cartItemRepository: Repository<CartItem>,
     private cartItemService: CartItemService,
   ) {}
 
@@ -24,7 +21,7 @@ export class CartService {
     });
 
     if (!cart) {
-      const newCart = await this.create(userId);
+      const newCart = await this.createCart(userId);
       const items = await this.cartItemService.create(
         createCartDto.items,
         newCart.id,
@@ -39,7 +36,30 @@ export class CartService {
     }
   }
 
-  async create(userId: number) {
+  async getCartProducts(userId: number) {
+    const cart = await this.cartRepository.find({
+      where: { user: { id: userId } },
+      relations: ['items', 'items.product'],
+    });
+    if (!cart) {
+      throw new NotFoundException(`Cart wasn't found`);
+    }
+    const products = cart[0].items.map(item => item.product);
+    return products;
+  }
+
+  async removeFromCart(userId: number, productId: number) {
+    const cart = await this.cartRepository.findOne({
+      where: { user: { id: userId } },
+    });
+    if (!cart) {
+      throw new NotFoundException(`Cart wasn't found`);
+    }
+
+    await this.cartItemService.remove(cart.id, productId);
+  }
+
+  async createCart(userId: number) {
     const user: Partial<User> = { id: userId };
     const cart = this.cartRepository.create({
       user: user as User,

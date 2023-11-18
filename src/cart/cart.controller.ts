@@ -16,15 +16,24 @@ export class CartController {
 
   @UseGuards(JwtAuthGuard)
   @Post()
-  addToCart(@Req() req: IRequest, @Body() createCartDto: CreateCartDto) {
+  create(@Req() req: IRequest, @Body() createCartDto: CreateCartDto) {
     const userId = req.user.id;
     return this.cartService.addToCart(userId, createCartDto);
   }
 
-  // @Get()
-  // findAll() {
-  //   return this.cartService.findAll();
-  // }
+  @UseGuards(JwtAuthGuard)
+  @Get()
+  findAll(@Req() req: IRequest) {
+    const userId = req.user.id;
+    return this.cartService.getCartProducts(userId);
+  }
+
+  @UseGuards(JwtAuthGuard)
+  @Delete(':id')
+  remove(@Req() req: IRequest, @Param('id') id: string) {
+    const userId = req.user.id;
+    return this.cartService.removeFromCart(userId, +id);
+  }
 
   // @Get(':id')
   // findOne(@Param('id') id: string) {

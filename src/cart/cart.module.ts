@@ -6,7 +6,6 @@ import { User } from 'src/users/entities/user.entity';
 import { CartItem } from 'src/cart-item/entities/cart-item.entity';
 import { CartItemService } from 'src/cart-item/cart-item.service';
 import { TypeOrmModule } from '@nestjs/typeorm';
-import { JwtModule } from '@nestjs/jwt';
 import { AuthModule } from 'src/auth/auth.module';
 import { BlacklistedTokensModule } from 'src/blacklisted-tokens/blacklisted-tokens.module';
 
@@ -14,9 +13,10 @@ import { BlacklistedTokensModule } from 'src/blacklisted-tokens/blacklisted-toke
   controllers: [CartController],
   providers: [CartService, CartItemService],
   imports: [
-    TypeOrmModule.forFeature([User, Cart, CartItem, JwtModule]),
+    TypeOrmModule.forFeature([User, Cart, CartItem]),
     forwardRef(() => AuthModule),
     BlacklistedTokensModule,
   ],
+  exports: [CartModule],
 })
 export class CartModule {}
