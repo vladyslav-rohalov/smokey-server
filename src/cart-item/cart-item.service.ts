@@ -39,6 +39,16 @@ export class CartItemService {
       product: { id: productId },
     });
   }
+
+  async update(cartId: number, updateCartItemDto: UpdateCartItemDto) {
+    return await this.cartItemRepository.update(
+      {
+        cart: { id: cartId },
+        product: { id: updateCartItemDto.productId },
+      },
+      { quantity: updateCartItemDto.quantity },
+    );
+  }
 }
 
 // findAll() {
@@ -47,10 +57,6 @@ export class CartItemService {
 
 // findOne(id: number) {
 //   return `This action returns a #${id} cartItem`;
-// }
-
-// update(id: number, updateCartItemDto: UpdateCartItemDto) {
-//   return `This action updates a #${id} cartItem`;
 // }
 
 // remove(id: number) {

@@ -23,9 +23,16 @@ export class CartController {
 
   @UseGuards(JwtAuthGuard)
   @Get()
-  findAll(@Req() req: IRequest) {
+  find(@Req() req: IRequest) {
     const userId = req.user.id;
     return this.cartService.getCartProducts(userId);
+  }
+
+  @UseGuards(JwtAuthGuard)
+  @Patch()
+  update(@Req() req: IRequest, @Body() updateCartDto: UpdateCartDto) {
+    const userId = req.user.id;
+    return this.cartService.updateCartQuantity(userId, updateCartDto);
   }
 
   @UseGuards(JwtAuthGuard)
@@ -34,19 +41,4 @@ export class CartController {
     const userId = req.user.id;
     return this.cartService.removeFromCart(userId, +id);
   }
-
-  // @Get(':id')
-  // findOne(@Param('id') id: string) {
-  //   return this.cartService.findOne(+id);
-  // }
-
-  // @Patch(':id')
-  // update(@Param('id') id: string, @Body() updateCartDto: UpdateCartDto) {
-  //   return this.cartService.update(+id, updateCartDto);
-  // }
-
-  // @Delete(':id')
-  // remove(@Param('id') id: string) {
-  //   return this.cartService.remove(+id);
-  // }
 }

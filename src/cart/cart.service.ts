@@ -36,6 +36,17 @@ export class CartService {
     }
   }
 
+  async updateCartQuantity(userId: number, updateCartDto: UpdateCartDto) {
+    const cart = await this.cartRepository.findOne({
+      where: { user: { id: userId } },
+    });
+    if (!cart) {
+      throw new NotFoundException(`Cart wasn't found`);
+    }
+
+    return await this.cartItemService.update(cart.id, updateCartDto.items[0]);
+  }
+
   async getCartProducts(userId: number) {
     const cart = await this.cartRepository.find({
       where: { user: { id: userId } },
