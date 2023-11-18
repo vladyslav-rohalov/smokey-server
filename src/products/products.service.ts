@@ -1,12 +1,13 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Repository } from 'typeorm';
+import { Repository, In } from 'typeorm';
 import { Product } from './entities/product.entity';
 import { BrandService } from 'src/enums/brand/brand.service';
 import { PromotionService } from 'src/enums/promotion/promotion.service';
 import { AwsS3Service } from 'src/aws-s3/aws-s3.service';
 import { CreateProductDto } from './dto/create-product.dto';
 import { UpdateProductDto } from './dto/update-product.dto';
+import { CreateCartDto } from 'src/cart/dto/create-cart.dto';
 import { ISearch, IOptionsUpload } from 'src/lib/interfaces';
 import { Pagination, sortProducts } from 'src/lib/functions';
 
@@ -378,28 +379,19 @@ export class ProductsService {
     return await this.findOne(productId);
   }
 
-  async findIds(ids: string) {
-    if (ids === 'empty') return [];
-    const idsArr = ids.split(',');
+  async findCart(createCartDto: CreateCartDto): Promise<Product[]> {
+    const productIds = createCartDto.items.map(item => item.productId);
 
-    const products = await this.productRepository
-      .createQueryBuilder('product')
-      .innerJoinAndSelect('product.brand', 'brand')
-      .innerJoinAndSelect('product.promotion', 'promotion')
-      .leftJoinAndSelect('product.hookahs', 'hookahs')
-      .leftJoinAndSelect('product.tobacco', 'tobacco')
-      .leftJoinAndSelect('product.coals', 'coals')
-      .leftJoinAndSelect('product.accessories', 'accessories')
-      .leftJoinAndSelect('tobacco.flavor', 'flavor')
-      .leftJoinAndSelect('hookahs.color', 'color')
-      .leftJoinAndSelect('hookahs.hookah_size', 'hookah_size')
-      .leftJoinAndSelect('accessories.type', 'type')
-      .leftJoinAndSelect('accessories.bowl_type', 'bowl_type')
-      .where('product.id IN (:...idsArr)', {
-        idsArr,
-      })
-      .getMany();
+    const products = await this.productRepository.findBy({
+      id: In(productIds),
+    });
 
-    return products;
+    return products.map(product => {
+      const item = createCartDto.items.find(
+        item => item.productId === product.id,
+      );
+
+      return item ? { ...product, quantity: item.quantity } : product;
+    });
   }
 }

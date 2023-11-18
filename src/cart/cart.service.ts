@@ -6,6 +6,7 @@ import { User } from 'src/users/entities/user.entity';
 import { CartItemService } from 'src/cart-item/cart-item.service';
 import { CreateCartDto } from './dto/create-cart.dto';
 import { UpdateCartDto } from './dto/update-cart.dto';
+import { Product } from 'src/products/entities/product.entity';
 
 @Injectable()
 export class CartService {
@@ -22,18 +23,11 @@ export class CartService {
 
     if (!cart) {
       const newCart = await this.createCart(userId);
-      const items = await this.cartItemService.create(
-        createCartDto.items,
-        newCart.id,
-      );
-      return items;
+      await this.cartItemService.create(createCartDto.items, newCart.id);
     } else {
-      const items = await this.cartItemService.create(
-        createCartDto.items,
-        cart.id,
-      );
-      return items;
+      await this.cartItemService.create(createCartDto.items, cart.id);
     }
+    return await this.getCartProductsWithQuantity(userId);
   }
 
   async updateCartQuantity(userId: number, updateCartDto: UpdateCartDto) {
@@ -43,8 +37,9 @@ export class CartService {
     if (!cart) {
       throw new NotFoundException(`Cart wasn't found`);
     }
+    await this.cartItemService.update(cart.id, updateCartDto.items[0]);
 
-    return await this.cartItemService.update(cart.id, updateCartDto.items[0]);
+    return await this.getCartProductsWithQuantity(userId);
   }
 
   async getCartProducts(userId: number) {
@@ -55,8 +50,7 @@ export class CartService {
     if (!cart) {
       throw new NotFoundException(`Cart wasn't found`);
     }
-    const products = cart[0].items.map(item => item.product);
-    return products;
+    return await this.getCartProductsWithQuantity(userId);
   }
 
   async removeFromCart(userId: number, productId: number) {
@@ -68,6 +62,8 @@ export class CartService {
     }
 
     await this.cartItemService.remove(cart.id, productId);
+
+    return await this.getCartProductsWithQuantity(userId);
   }
 
   async createCart(userId: number) {
@@ -77,5 +73,22 @@ export class CartService {
     });
     await this.cartRepository.save(cart);
     return cart;
+  }
+
+  async getCartProductsWithQuantity(userId: number): Promise<Product[]> {
+    const cart = await this.cartRepository.find({
+      where: { user: { id: userId } },
+      relations: ['items', 'items.product'],
+    });
+    if (!cart) {
+      throw new NotFoundException(`Cart wasn't found`);
+    }
+    return cart[0].items.map(item => {
+      const product = item.product;
+      return {
+        ...product,
+        quantity: item.quantity,
+      };
+    });
   }
 }
