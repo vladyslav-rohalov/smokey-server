@@ -15,20 +15,28 @@ export class CartItemService {
   ) {}
 
   async create(createCartItemDto: CreateCartItemDto[], cartId: number) {
-    const cartItems = createCartItemDto.map(async itemDto => {
-      const cartItem = this.cartItemRepository.create(itemDto);
+    const savedCartItems: CartItem[] = [];
 
-      const cart: Partial<Cart> = { id: cartId };
-      cartItem.cart = cart as Cart;
+    createCartItemDto.forEach(async itemDto => {
+      const existingCartItem = await this.cartItemRepository.findOne({
+        where: {
+          cart: { id: cartId },
+          product: { id: itemDto.productId },
+        },
+      });
 
-      const product: Partial<Product> = { id: itemDto.productId };
-      cartItem.product = product as Product;
+      if (!existingCartItem) {
+        const cartItem = this.cartItemRepository.create(itemDto);
+        const cart: Partial<Cart> = { id: cartId };
+        const product: Partial<Product> = { id: itemDto.productId };
 
-      await this.cartItemRepository.save(cartItem);
+        cartItem.cart = cart as Cart;
+        cartItem.product = product as Product;
 
-      return cartItem;
+        await this.cartItemRepository.save(cartItem);
+        savedCartItems.push(cartItem);
+      }
     });
-    const savedCartItems = await Promise.all(cartItems);
 
     return savedCartItems;
   }
@@ -50,15 +58,3 @@ export class CartItemService {
     );
   }
 }
-
-// findAll() {
-//   return `This action returns all cartItem`;
-// }
-
-// findOne(id: number) {
-//   return `This action returns a #${id} cartItem`;
-// }
-
-// remove(id: number) {
-//   return `This action removes a #${id} cartItem`;
-// }
