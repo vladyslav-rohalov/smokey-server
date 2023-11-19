@@ -62,8 +62,6 @@ export class CartService {
     }
 
     await this.cartItemService.remove(cart.id, productId);
-
-    return await this.getCartProductsWithQuantity(userId);
   }
 
   async createCart(userId: number) {
@@ -85,9 +83,11 @@ export class CartService {
     }
     return cart[0].items.map(item => {
       const product = item.product;
+      const quantity =
+        item.quantity > product.available ? product.available : item.quantity;
       return {
         ...product,
-        quantity: item.quantity,
+        quantity,
       };
     });
   }

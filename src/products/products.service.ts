@@ -390,8 +390,9 @@ export class ProductsService {
       const item = createCartDto.items.find(
         item => item.productId === product.id,
       );
-
-      return item ? { ...product, quantity: item.quantity } : product;
+      const quantity =
+        item.quantity > product.available ? product.available : item.quantity;
+      return item ? { ...product, quantity } : product;
     });
   }
 }

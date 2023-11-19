@@ -1,4 +1,4 @@
-import { Controller, Get, Post, Body, Req } from '@nestjs/common';
+import { Controller, Get, Post, Body, Req, HttpCode } from '@nestjs/common';
 import { UseGuards, Patch, Param, Delete } from '@nestjs/common';
 import { Request } from 'express';
 import { JwtAuthGuard } from 'src/guards/jwt-auth.guard';
@@ -36,6 +36,7 @@ export class CartController {
   }
 
   @UseGuards(JwtAuthGuard)
+  @HttpCode(204)
   @Delete(':id')
   remove(@Req() req: IRequest, @Param('id') id: string) {
     const userId = req.user.id;

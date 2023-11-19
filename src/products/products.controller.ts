@@ -1,5 +1,6 @@
 import { Controller, Get, Post, Body, Param, Delete } from '@nestjs/common';
 import { Query, UploadedFiles, UseInterceptors, Patch } from '@nestjs/common';
+import { HttpCode } from '@nestjs/common';
 import { ProductsService } from './products.service';
 import { FilesInterceptor } from '@nestjs/platform-express';
 import { CreateCartDto } from 'src/cart/dto/create-cart.dto';
@@ -52,7 +53,8 @@ export class ProductsController {
     return this.productsService.findOne(+id);
   }
 
-  @Get('cart')
+  @Post('cart')
+  @HttpCode(200)
   findIds(@Body() createCartDto: CreateCartDto) {
     return this.productsService.findCart(createCartDto);
   }
