@@ -17,7 +17,7 @@ export class CartItemService {
   async create(createCartItemDto: CreateCartItemDto[], cartId: number) {
     const savedCartItems: CartItem[] = [];
 
-    createCartItemDto.forEach(async itemDto => {
+    for (const itemDto of createCartItemDto) {
       const existingCartItem = await this.cartItemRepository.findOne({
         where: {
           cart: { id: cartId },
@@ -36,7 +36,7 @@ export class CartItemService {
         await this.cartItemRepository.save(cartItem);
         savedCartItems.push(cartItem);
       }
-    });
+    }
 
     return savedCartItems;
   }
