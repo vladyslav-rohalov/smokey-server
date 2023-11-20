@@ -1,45 +1,43 @@
-import {
-  Controller,
-  Get,
-  Post,
-  Body,
-  Patch,
-  Param,
-  Delete,
-} from '@nestjs/common';
+import { Controller, Get, Post, Param, Delete } from '@nestjs/common';
+import { UseGuards, Req, HttpCode } from '@nestjs/common';
+import { Request } from 'express';
 import { FavoritesService } from './favorites.service';
-import { CreateFavoriteDto } from './dto/create-favorite.dto';
-import { UpdateFavoriteDto } from './dto/update-favorite.dto';
+import { JwtAuthGuard } from 'src/guards/jwt-auth.guard';
 
-@Controller('favorites')
+interface IRequest extends Request {
+  user: { id: number };
+}
+
+@Controller('api/')
 export class FavoritesController {
   constructor(private readonly favoritesService: FavoritesService) {}
 
-  @Post()
-  create(@Body() createFavoriteDto: CreateFavoriteDto) {
-    return this.favoritesService.create(createFavoriteDto);
+  @UseGuards(JwtAuthGuard)
+  @Get('products/favorites')
+  findFavoritesProducts(@Req() req: IRequest) {
+    const userId = req.user.id;
+    return this.favoritesService.findFavoriteProducts(userId);
   }
 
-  @Get()
-  findAll() {
-    return this.favoritesService.findAll();
+  @UseGuards(JwtAuthGuard)
+  @Get('favorites')
+  findFavorite(@Req() req: IRequest) {
+    const userId = req.user.id;
+    return this.favoritesService.findFavorite(userId);
   }
 
-  @Get(':id')
-  findOne(@Param('id') id: string) {
-    return this.favoritesService.findOne(+id);
+  @UseGuards(JwtAuthGuard)
+  @Post('favorites/:id')
+  addToFavorite(@Req() req: IRequest, @Param('id') id: string) {
+    const userId = req.user.id;
+    return this.favoritesService.addToFavorite(userId, +id);
   }
 
-  @Patch(':id')
-  update(
-    @Param('id') id: string,
-    @Body() updateFavoriteDto: UpdateFavoriteDto,
-  ) {
-    return this.favoritesService.update(+id, updateFavoriteDto);
-  }
-
-  @Delete(':id')
-  remove(@Param('id') id: string) {
-    return this.favoritesService.remove(+id);
+  @UseGuards(JwtAuthGuard)
+  @HttpCode(204)
+  @Delete('favorites/:id')
+  removeFromFavorite(@Req() req: IRequest, @Param('id') id: string) {
+    const userId = req.user.id;
+    return this.favoritesService.removeFromFavorite(userId, +id);
   }
 }
