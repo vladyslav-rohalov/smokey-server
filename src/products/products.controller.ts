@@ -87,4 +87,9 @@ export class ProductsController {
   publish(@Param('id') id: string) {
     return this.productsService.publish(+id);
   }
+
+  @Get('/tabs')
+  getTabs() {
+    return this.productsService.getTabs();
+  }
 }

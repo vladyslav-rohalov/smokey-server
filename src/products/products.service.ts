@@ -74,7 +74,7 @@ export class ProductsService {
     });
   }
 
-  async findAll(params: ISearch) {
+  async findAll(params: Partial<ISearch>) {
     let { page, limit, sort, id, images, publish } = params;
     let { brand, status, min, max, promotion } = params;
     let query = this.productRepository
@@ -394,5 +394,36 @@ export class ProductsService {
         item.quantity > product.available ? product.available : item.quantity;
       return item ? { ...product, quantity } : product;
     });
+  }
+
+  async getTabs() {
+    const response = await this.findAll({ limit: 10000 });
+    const hookahBrands = [];
+    const tobaccoBrands = [];
+    const coalBrands = [];
+    const accessoryBrands = [];
+
+    response.products.forEach(product => {
+      const { brand, hookahs, tobacco, coals, accessories } = product;
+
+      if (hookahs) {
+        hookahBrands.push(brand.brand);
+      } else if (tobacco) {
+        tobaccoBrands.push(brand.brand);
+      } else if (coals) {
+        coalBrands.push(brand.brand);
+      } else if (accessories) {
+        accessoryBrands.push(brand.brand);
+      }
+    });
+
+    const productBrands = [
+      { name: 'hookahs', brands: Array.from(new Set(hookahBrands)) },
+      { name: 'tobacco', brands: Array.from(new Set(tobaccoBrands)) },
+      { name: 'coals', brands: Array.from(new Set(coalBrands)) },
+      { name: 'accessories', brands: Array.from(new Set(accessoryBrands)) },
+    ];
+
+    return productBrands;
   }
 }
