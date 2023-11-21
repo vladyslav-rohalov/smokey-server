@@ -399,31 +399,64 @@ export class ProductsService {
   async getTabs() {
     const response = await this.findAll({ limit: 10000 });
     const hookahBrands = [];
+    const hookahColors = [];
+    const hookahSizes = [];
     const tobaccoBrands = [];
+    const tobaccoFlavors = [];
+    const tobaccoWeights = [];
     const coalBrands = [];
+    const coalSizes = [];
+    const coalWeights = [];
     const accessoryBrands = [];
+    const accessoryTypes = [];
 
     response.products.forEach(product => {
       const { brand, hookahs, tobacco, coals, accessories } = product;
 
       if (hookahs) {
         hookahBrands.push(brand.brand);
+        hookahColors.push(hookahs.color.color);
+        hookahSizes.push(hookahs.hookah_size.hookah_size);
       } else if (tobacco) {
         tobaccoBrands.push(brand.brand);
+        tobaccoFlavors.push(tobacco.flavor.flavor);
+        tobaccoWeights.push(tobacco.tobacco_weight);
       } else if (coals) {
         coalBrands.push(brand.brand);
+        coalSizes.push(coals.coal_size);
+        coalWeights.push(coals.coal_weight);
       } else if (accessories) {
         accessoryBrands.push(brand.brand);
+        accessoryTypes.push(accessories.type.type);
       }
     });
 
-    const productBrands = [
-      { name: 'hookahs', brands: Array.from(new Set(hookahBrands)) },
-      { name: 'tobacco', brands: Array.from(new Set(tobaccoBrands)) },
-      { name: 'coals', brands: Array.from(new Set(coalBrands)) },
-      { name: 'accessories', brands: Array.from(new Set(accessoryBrands)) },
+    const productTabs = [
+      {
+        name: 'hookahs',
+        brands: Array.from(new Set(hookahBrands)),
+        colors: Array.from(new Set(hookahColors)),
+        hookahSizes: Array.from(new Set(hookahSizes)),
+      },
+      {
+        name: 'tobacco',
+        brands: Array.from(new Set(tobaccoBrands)),
+        flavors: Array.from(new Set(tobaccoFlavors)),
+        tobaccoWeights: Array.from(new Set(tobaccoWeights)),
+      },
+      {
+        name: 'coals',
+        brands: Array.from(new Set(coalBrands)),
+        coalSizes: Array.from(new Set(coalSizes)),
+        coalWeights: Array.from(new Set(coalWeights)),
+      },
+      {
+        name: 'accessories',
+        brands: Array.from(new Set(accessoryBrands)),
+        types: Array.from(new Set(accessoryTypes)),
+      },
     ];
 
-    return productBrands;
+    return productTabs;
   }
 }
