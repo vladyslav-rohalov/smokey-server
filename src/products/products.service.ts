@@ -459,4 +459,34 @@ export class ProductsService {
 
     return productTabs;
   }
+
+  async getSuggestion(search: string) {
+    const response = await this.productRepository
+      .createQueryBuilder('product')
+      .innerJoinAndSelect('product.brand', 'brand')
+      .leftJoinAndSelect('product.hookahs', 'hookahs')
+      .leftJoinAndSelect('product.tobacco', 'tobacco')
+      .leftJoinAndSelect('product.coals', 'coals')
+      .leftJoinAndSelect('product.accessories', 'accessories')
+      .getMany();
+
+    const searchWords = search.toLowerCase().split(/\s+/);
+    const filteredProducts = response.filter(product => {
+      const productTitle = product.title.toLowerCase();
+      return searchWords.every(word => productTitle.includes(word));
+    });
+
+    const mappedProducts = filteredProducts.map(product => {
+      let category;
+      if (product.hookahs !== null) category = 'hookahs';
+      if (product.tobacco !== null) category = 'tobacco';
+      if (product.coals !== null) category = 'coals';
+      if (product.accessories !== null) category = 'accessories';
+      return { id: product.id, title: product.title, category };
+    });
+
+    const slicedProducts = mappedProducts.slice(0, 9);
+
+    return slicedProducts;
+  }
 }

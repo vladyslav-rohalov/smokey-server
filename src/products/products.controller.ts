@@ -92,4 +92,9 @@ export class ProductsController {
   getTabs() {
     return this.productsService.getTabs();
   }
+
+  @Get('/suggestion')
+  getSuggestion(@Query('search') search: string) {
+    return this.productsService.getSuggestion(search);
+  }
 }
