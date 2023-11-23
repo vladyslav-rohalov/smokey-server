@@ -16,7 +16,7 @@ export class Review {
   @PrimaryGeneratedColumn({ name: 'review_id' })
   id: number;
 
-  @Column()
+  @Column({ type: 'text' })
   text: string;
 
   @Column()
@@ -25,7 +25,7 @@ export class Review {
   @Column()
   cons: string;
 
-  @Column({ type: 'varchar', array: true })
+  @Column({ type: 'varchar', array: true, nullable: true })
   images: string[];
 
   @Column()
