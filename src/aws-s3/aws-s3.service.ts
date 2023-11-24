@@ -44,7 +44,6 @@ export class AwsS3Service {
     files: Express.Multer.File[],
     options: IOptionsUpload,
   ): Promise<AWS.S3.ManagedUpload.SendData[]> {
-    // console.log(options);
     const uploadPromises = files.map(async file => {
       const { buffer, mimetype } = file;
       try {
@@ -71,46 +70,24 @@ export class AwsS3Service {
     return await Promise.all(uploadPromises);
   }
 
-  // async uploadFiles(
-  //   files: Express.Multer.File[],
-  //   options: IOptionsUpload,
-  // ): Promise<AWS.S3.ManagedUpload.SendData[]> {
-  //   const uploadPromises = files.map(async file => {
-  //     const { buffer, mimetype } = file;
-  //     if (options.deleteBG || options.trim) {
-  //       const webpBuffer = await this.removeBackground(buffer, options);
-  //       return await this.s3_upload(
-  //         webpBuffer,
-  //         `${this.AWS_S3_BUCKET}/products`,
-  //         `${uuidv4()}.webp`,
-  //         'image/webp',
-  //       );
-  //     } else {
-  //       return await this.s3_upload(
-  //         buffer,
-  //         `${this.AWS_S3_BUCKET}/products`,
-  //         `${uuidv4()}`,
-  //         mimetype,
-  //       );
-  //     }
-  //   });
-  //   return await Promise.all(uploadPromises);
-  // }
-
-  // async uploadFiles(
-  //   files: Express.Multer.File[],
-  // ): Promise<AWS.S3.ManagedUpload.SendData[]> {
-  //   const uploadPromises = files.map(async file => {
-  //     const { originalname, buffer, mimetype } = file;
-  // return await this.s3_upload(
-  //   buffer,
-  //   `${this.AWS_S3_BUCKET}/products`,
-  //   `${uuidv4()}-${originalname}`,
-  //   mimetype,
-  // );
-  //   });
-  //   return await Promise.all(uploadPromises);
-  // }
+  async uploadReviewFiles(
+    files: Express.Multer.File[],
+  ): Promise<AWS.S3.ManagedUpload.SendData[]> {
+    const uploadPromises = files.map(async file => {
+      const { buffer, mimetype } = file;
+      try {
+        return await this.s3_upload(
+          buffer,
+          `${this.AWS_S3_BUCKET}/reviews`,
+          `${uuidv4()}`,
+          mimetype,
+        );
+      } catch (error) {
+        throw new Error(`Error uploading file: ${error.message}`);
+      }
+    });
+    return await Promise.all(uploadPromises);
+  }
 
   private async s3_upload(
     file: Buffer,

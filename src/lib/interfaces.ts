@@ -1,3 +1,16 @@
+import { Request } from 'express';
+import { Product } from 'src/products/entities/product.entity';
+import { Review } from 'src/reviews/entities/review.entity';
+
+export interface IUserRequest extends Request {
+  user: { id: number };
+}
+
+export interface IProductReviews {
+  product: Product;
+  reviews: Omit<Review, 'user'>[];
+}
+
 export interface IAuthResponse {
   user: {
     firstName: string;
