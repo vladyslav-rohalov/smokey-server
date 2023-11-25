@@ -8,7 +8,7 @@ import { AwsS3Service } from 'src/aws-s3/aws-s3.service';
 import { CreateProductDto } from './dto/create-product.dto';
 import { UpdateProductDto } from './dto/update-product.dto';
 import { CreateCartDto } from 'src/cart/dto/create-cart.dto';
-import { ISearch, IOptionsUpload } from 'src/lib/interfaces';
+import { ISearch, IOptionsUpload, IProducts } from 'src/lib/interfaces';
 import { Pagination, sortProducts } from 'src/lib/functions';
 
 @Injectable()
@@ -74,13 +74,14 @@ export class ProductsService {
     });
   }
 
-  async findAll(params: Partial<ISearch>) {
+  async findAll(params: Partial<ISearch>): Promise<IProducts> {
     let { page, limit, sort, id, images, publish } = params;
     let { brand, status, min, max, promotion } = params;
     let query = this.productRepository
       .createQueryBuilder('product')
       .innerJoinAndSelect('product.brand', 'brand')
       .innerJoinAndSelect('product.promotion', 'promotion')
+      .leftJoinAndSelect('product.reviews', 'reviews')
       .leftJoinAndSelect('product.hookahs', 'hookahs')
       .leftJoinAndSelect('product.tobacco', 'tobacco')
       .leftJoinAndSelect('product.coals', 'coals')
@@ -129,24 +130,28 @@ export class ProductsService {
     }
 
     const products = await query.getMany();
+
     const total = products.length;
     const sortedProducts = await sortProducts(products, sort);
     const paginatedProducts = await Pagination(sortedProducts, page, limit);
-
+    const updatedProducts = paginatedProducts.map(product => {
+      const { reviews, ...rest } = product;
+      const numberOfReviews = Array.isArray(reviews) ? reviews.length : 0;
+      return { ...rest, numberOfReviews };
+    });
     return {
       counts: {
         total,
       },
-      products: paginatedProducts,
+      products: updatedProducts,
     };
   }
 
   async findOne(productId: number) {
     const product = await this.productRepository.findOne({
       where: { id: productId },
-      relations: ['tobacco', 'hookahs', 'coals', 'accessories'],
+      relations: ['tobacco', 'hookahs', 'coals', 'accessories', 'reviews'],
     });
-
     if (!product) {
       throw new NotFoundException(`product with id ${productId} not found`);
     }
@@ -186,6 +191,12 @@ export class ProductsService {
           'promotion',
         ],
       });
+    }
+    if (product.reviews) {
+      const numberOfReviews = Array.isArray(product.reviews)
+        ? product.reviews.length
+        : 0;
+      response = { ...response, numberOfReviews };
     }
     return response;
   }
@@ -488,5 +499,10 @@ export class ProductsService {
     const slicedProducts = mappedProducts.slice(0, 9);
 
     return slicedProducts;
+  }
+
+  async updateRating(productId: number, rating: number) {
+    await this.productRepository.update(productId, { rating });
+    return await this.findOne(productId);
   }
 }

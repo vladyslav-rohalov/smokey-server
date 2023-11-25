@@ -9,7 +9,7 @@ import { CreateProductDto } from 'src/products/dto/create-product.dto';
 import { UpdateProductDto } from 'src/products/dto/update-product.dto';
 import { ProductsService } from 'src/products/products.service';
 import { FlavorService } from 'src/enums/flavor/flavor.service';
-import { ISearchTobacco } from 'src/lib/interfaces';
+import { ISearchTobacco, ITobaccoProducts } from 'src/lib/interfaces';
 import { sortProducts, Pagination } from 'src/lib/functions';
 import { paramToArr } from 'src/lib/functions';
 
@@ -88,7 +88,7 @@ export class TobaccoService {
     return updatedProduct;
   }
 
-  async findAllTobacco(params: ISearchTobacco) {
+  async findAllTobacco(params: ISearchTobacco): Promise<ITobaccoProducts> {
     const { page, limit, sort, brand, status, flavor, weight } = params;
     const { id, images, publish, promotion, min, max, strength } = params;
 
@@ -102,6 +102,7 @@ export class TobaccoService {
       .innerJoinAndSelect('product.tobacco', 'tobacco')
       .innerJoinAndSelect('product.brand', 'brand')
       .innerJoinAndSelect('product.promotion', 'promotion')
+      .leftJoinAndSelect('product.reviews', 'reviews')
       .leftJoinAndSelect('tobacco.flavor', 'flavor');
 
     if (id) {
@@ -230,9 +231,13 @@ export class TobaccoService {
 
     const sortedProducts = await sortProducts(products, sort);
     const paginatedProducts = await Pagination(sortedProducts, page, limit);
-
+    const updatedProducts = paginatedProducts.map(product => {
+      const { reviews, ...rest } = product;
+      const numberOfReviews = Array.isArray(reviews) ? reviews.length : 0;
+      return { ...rest, numberOfReviews };
+    });
     return {
-      products: paginatedProducts,
+      products: updatedProducts,
       counts: {
         total,
         brandCounts,

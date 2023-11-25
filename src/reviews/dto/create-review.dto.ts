@@ -13,10 +13,6 @@ export class CreateReviewDto {
   @IsNotEmpty()
   readonly cons: string;
 
-  @IsArray()
-  @IsOptional()
-  readonly images: string[];
-
   @IsString()
   @IsNotEmpty()
   rating: number;

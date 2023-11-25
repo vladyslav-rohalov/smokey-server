@@ -10,7 +10,7 @@ import { CreateProductDto } from 'src/products/dto/create-product.dto';
 import { UpdateProductDto } from 'src/products/dto/update-product.dto';
 import { CreateAccessoryDto } from './dto/create-accessory.dto';
 import { UpdateAccessoryDto } from './dto/update-accessory.dto';
-import { ISearchAccessories } from 'src/lib/interfaces';
+import { ISearchAccessories, IAccessoryProducts } from 'src/lib/interfaces';
 import { sortProducts, Pagination } from 'src/lib/functions';
 import { paramToArr } from 'src/lib/functions';
 
@@ -112,7 +112,7 @@ export class AccessoriesService {
     return updatedProduct;
   }
 
-  async findAllAccessories(params: ISearchAccessories) {
+  async findAllAccessories(params: ISearchAccessories): Promise<IAccessoryProducts> {
     const { page, limit, sort, brand, status, type, bowlType } = params;
     const { id, images, publish, promotion, min, max } = params;
 
@@ -123,6 +123,7 @@ export class AccessoriesService {
     let query = this.productRepository
       .createQueryBuilder('product')
       .innerJoinAndSelect('product.accessories', 'accessories')
+      .leftJoinAndSelect('product.reviews', 'reviews')
       .leftJoinAndSelect('accessories.type', 'type')
       .leftJoinAndSelect('accessories.bowl_type', 'bowl_type')
       .innerJoinAndSelect('product.brand', 'brand')
@@ -252,9 +253,13 @@ export class AccessoriesService {
 
     const sortedProducts = await sortProducts(products, sort);
     const paginatedProducts = await Pagination(sortedProducts, page, limit);
-
+    const updatedProducts = paginatedProducts.map(product => {
+      const { reviews, ...rest } = product;
+      const numberOfReviews = Array.isArray(reviews) ? reviews.length : 0;
+      return { ...rest, numberOfReviews };
+    });
     return {
-      products: paginatedProducts,
+      products: updatedProducts,
       counts: {
         total,
         brandCounts,

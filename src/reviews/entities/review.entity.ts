@@ -28,7 +28,7 @@ export class Review {
   @Column({ type: 'varchar', array: true, nullable: true })
   images: string[];
 
-  @Column()
+  @Column({ type: 'numeric', precision: 2, scale: 1 })
   rating: number;
 
   @ManyToOne(() => User, user => user.reviews)

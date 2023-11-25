@@ -27,6 +27,11 @@ export class ReviewsController {
     @Req() req: IUserRequest,
   ) {
     const userId = req.user.id;
-    return this.reviewsService.addProductReview(+id, createReviewDto, userId, images);
+    return this.reviewsService.addProductReview(
+      +id,
+      createReviewDto,
+      userId,
+      images,
+    );
   }
 }

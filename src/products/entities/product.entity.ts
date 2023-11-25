@@ -42,7 +42,7 @@ export class Product {
   @Column({ type: 'smallint' })
   available: number;
 
-  @Column({ type: 'smallint', nullable: true })
+  @Column({ type: 'numeric', precision: 2, scale: 1, nullable: true })
   rating: number;
 
   @Column({ type: 'boolean', default: false })

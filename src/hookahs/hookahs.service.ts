@@ -10,7 +10,7 @@ import { CreateProductDto } from 'src/products/dto/create-product.dto';
 import { UpdateProductDto } from 'src/products/dto/update-product.dto';
 import { CreateHookahDto } from './dto/create-hookah.dto';
 import { UpdateHookahDto } from './dto/update-hookah.dto';
-import { ISearchHookahs } from 'src/lib/interfaces';
+import { ISearchHookahs, IHookahProducts } from 'src/lib/interfaces';
 import { sortProducts, Pagination } from 'src/lib/functions';
 import { paramToArr } from 'src/lib/functions';
 
@@ -96,7 +96,7 @@ export class HookahsService {
     return updatedProduct;
   }
 
-  async findAllHookahs(params: ISearchHookahs) {
+  async findAllHookahs(params: ISearchHookahs): Promise<IHookahProducts> {
     const { page, limit, sort, brand, status, color, hookahSize } = params;
     const { id, images, publish, promotion, min, max } = params;
 
@@ -109,6 +109,7 @@ export class HookahsService {
       .innerJoinAndSelect('product.brand', 'brand')
       .innerJoinAndSelect('product.promotion', 'promotion')
       .innerJoinAndSelect('product.hookahs', 'hookahs')
+      .leftJoinAndSelect('product.reviews', 'reviews')
       .leftJoinAndSelect('hookahs.color', 'color')
       .leftJoinAndSelect('hookahs.hookah_size', 'hookah_size');
 
@@ -237,9 +238,14 @@ export class HookahsService {
 
     const sortedProducts = await sortProducts(products, sort);
     const paginatedProducts = await Pagination(sortedProducts, page, limit);
+    const updatedProducts = paginatedProducts.map(product => {
+      const { reviews, ...rest } = product;
+      const numberOfReviews = Array.isArray(reviews) ? reviews.length : 0;
+      return { ...rest, numberOfReviews };
+    });
 
     return {
-      products: paginatedProducts,
+      products: updatedProducts,
       counts: {
         total,
         brandCounts,

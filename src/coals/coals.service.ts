@@ -8,7 +8,7 @@ import { Coal } from './entities/coal.entity';
 import { CreateProductDto } from 'src/products/dto/create-product.dto';
 import { UpdateProductDto } from 'src/products/dto/update-product.dto';
 import { ProductsService } from 'src/products/products.service';
-import { ISearchCoals } from 'src/lib/interfaces';
+import { ISearchCoals, ICoalProducts } from 'src/lib/interfaces';
 import { Pagination, sortProducts } from 'src/lib/functions';
 import { paramToArr } from 'src/lib/functions';
 
@@ -77,7 +77,7 @@ export class CoalsService {
     return updatedProduct;
   }
 
-  async findAllСoals(params: ISearchCoals) {
+  async findAllСoals(params: ISearchCoals): Promise<ICoalProducts> {
     const { page, limit, sort, brand, status, coalSize, coalWeight } = params;
     const { id, images, publish, promotion, min, max } = params;
 
@@ -89,7 +89,8 @@ export class CoalsService {
       .createQueryBuilder('product')
       .innerJoinAndSelect('product.coals', 'coals')
       .innerJoinAndSelect('product.brand', 'brand')
-      .innerJoinAndSelect('product.promotion', 'promotion');
+      .innerJoinAndSelect('product.promotion', 'promotion')
+      .leftJoinAndSelect('product.reviews', 'reviews');
 
     if (id) {
       query = query.andWhere('product.id = :id', { id });
@@ -205,9 +206,13 @@ export class CoalsService {
 
     const sortedProducts = await sortProducts(products, sort);
     const paginatedProducts = await Pagination(sortedProducts, page, limit);
-
+    const updatedProducts = paginatedProducts.map(product => {
+      const { reviews, ...rest } = product;
+      const numberOfReviews = Array.isArray(reviews) ? reviews.length : 0;
+      return { ...rest, numberOfReviews };
+    });
     return {
-      products: paginatedProducts,
+      products: updatedProducts,
       counts: {
         total,
         brandCounts,

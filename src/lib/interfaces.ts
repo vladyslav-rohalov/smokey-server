@@ -2,6 +2,65 @@ import { Request } from 'express';
 import { Product } from 'src/products/entities/product.entity';
 import { Review } from 'src/reviews/entities/review.entity';
 
+export interface IProductWithReviews extends Partial<Product> {
+  numberOfReviews: number;
+}
+
+export interface IProducts {
+  counts: {
+    total: number;
+  };
+  products: IProductWithReviews[];
+}
+
+export interface IAccessoryProducts {
+  counts: {
+    total: number;
+    brandCounts: any;
+    typeCounts: any;
+    bowlTypeCounts: any;
+    statusCounts: any;
+    prices: any;
+  };
+  products: IProductWithReviews[];
+}
+
+export interface IHookahProducts {
+  counts: {
+    total: number;
+    brandCounts: any;
+    colorCounts: any;
+    hookahSizeCounts: any;
+    statusCounts: any;
+    prices: any;
+  };
+  products: IProductWithReviews[];
+}
+
+export interface ICoalProducts {
+  counts: {
+    total: number;
+    brandCounts: any;
+    sizeCounts: any;
+    weightCounts: any;
+    statusCounts: any;
+    prices: any;
+  };
+  products: IProductWithReviews[];
+}
+
+export interface ITobaccoProducts {
+  counts: {
+    total: number;
+    brandCounts: any;
+    flavorCounts: any;
+    weightCounts: any;
+    statusCounts: any;
+    prices: any;
+  };
+  products: IProductWithReviews[];
+}
+
 export interface IUserRequest extends Request {
   user: { id: number };
 }
