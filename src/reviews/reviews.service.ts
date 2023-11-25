@@ -1,4 +1,8 @@
-import { Injectable } from '@nestjs/common';
+import {
+  Injectable,
+  NotFoundException,
+  ForbiddenException,
+} from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { Review } from './entities/review.entity';
@@ -17,6 +21,23 @@ export class ReviewsService {
     private productsService: ProductsService,
     private s3Service: AwsS3Service,
   ) {}
+
+  async findUserReviews(userId: number) {
+    const reviews = await this.reviewRepository.find({
+      where: {
+        user: { id: userId },
+      },
+      relations: ['user'],
+    });
+
+    const updatedReviews = reviews.map(review => ({
+      ...review,
+      user: {
+        firstName: review.user.firstName,
+      },
+    }));
+    return updatedReviews;
+  }
 
   async findProductReviews(id: number): Promise<IProductReviews> {
     const productReviews = await this.reviewRepository.find({
@@ -85,6 +106,34 @@ export class ReviewsService {
     };
 
     return { product: updatedProduct, review: updatedReview };
+  }
+
+  async deleteProductReview(reviewId: number, userId: number) {
+    const review = await this.reviewRepository.findOne({
+      where: {
+        id: reviewId,
+      },
+      relations: ['user', 'product'],
+    });
+
+    if (!review) {
+      throw new NotFoundException(`Review with id ${reviewId} wasn't found`);
+    }
+
+    if (review.user.id !== userId) {
+      throw new ForbiddenException();
+    }
+
+    if (review.product.images) {
+      await this.s3Service.deleteImages(review.images, 'reviews');
+    }
+    await this.reviewRepository.remove(review);
+    const averageRating = await this.calculateAverageRating(review.product.id);
+    const roundedAverageRating = Math.round(averageRating * 10) / 10;
+    await this.productsService.updateRating(
+      review.product.id,
+      roundedAverageRating,
+    );
   }
 
   private async calculateAverageRating(productId: number): Promise<number> {

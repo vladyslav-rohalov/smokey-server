@@ -1,4 +1,4 @@
-import { Controller, Get, Post, Body, Patch, Param } from '@nestjs/common';
+import { Controller, Get, Post, Body, Delete, Param } from '@nestjs/common';
 import { UploadedFiles, UseInterceptors } from '@nestjs/common';
 import { ReviewsService } from './reviews.service';
 import { UseGuards, Req, HttpCode } from '@nestjs/common';
@@ -11,6 +11,13 @@ import { IProductReviews, IUserRequest } from 'src/lib/interfaces';
 @Controller('api/products/reviews')
 export class ReviewsController {
   constructor(private readonly reviewsService: ReviewsService) {}
+
+  @UseGuards(JwtAuthGuard)
+  @Get()
+  findUserReviews(@Req() req: IUserRequest) {
+    const userId = req.user.id;
+    return this.reviewsService.findUserReviews(userId);
+  }
 
   @Get(':id')
   findProductReviews(@Param('id') id: string): Promise<IProductReviews> {
@@ -33,5 +40,13 @@ export class ReviewsController {
       userId,
       images,
     );
+  }
+
+  @UseGuards(JwtAuthGuard)
+  @Delete(':id')
+  @HttpCode(204)
+  deleteProductReview(@Param('id') id: string, @Req() req: IUserRequest) {
+    const userId = req.user.id;
+    return this.reviewsService.deleteProductReview(+id, userId);
   }
 }

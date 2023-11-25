@@ -309,7 +309,7 @@ export class ProductsService {
     }
 
     if (product.images !== null) {
-      await this.s3Service.deleteImages(product.images);
+      await this.s3Service.deleteImages(product.images, 'products');
     }
 
     await this.productRepository.remove(product);
@@ -370,7 +370,7 @@ export class ProductsService {
       image => !images.includes(image),
     );
     const updatedImages = filtredImages.length ? filtredImages : null;
-    await this.s3Service.deleteImages(images);
+    await this.s3Service.deleteImages(images, 'products');
     await this.productRepository.update(productId, { images: updatedImages });
 
     return await this.findOne(productId);

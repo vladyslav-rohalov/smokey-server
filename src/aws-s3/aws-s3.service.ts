@@ -122,12 +122,13 @@ export class AwsS3Service {
     });
   }
 
-  async deleteImages(keys: string[]): Promise<void> {
+  async deleteImages(keys: string[], bucket: string): Promise<void> {
     const keysToDelete = this.extractKeysFromUrls(keys);
     const deletePromises = keysToDelete.map(async key => {
       try {
         const params = {
-          Bucket: `${this.AWS_S3_BUCKET}/products`,
+          // Bucket: `${this.AWS_S3_BUCKET}/products`,
+          Bucket: `${this.AWS_S3_BUCKET}/${bucket}`,
           Key: key,
         };
 
