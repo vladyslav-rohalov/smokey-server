@@ -9,6 +9,7 @@ import { CreateProductDto } from './dto/create-product.dto';
 import { UpdateProductDto } from './dto/update-product.dto';
 import { CreateCartDto } from 'src/cart/dto/create-cart.dto';
 import { ISearch, IOptionsUpload, IProducts } from 'src/lib/interfaces';
+import { IProductWithReviews } from 'src/lib/interfaces';
 import { Pagination, sortProducts } from 'src/lib/functions';
 
 @Injectable()
@@ -228,6 +229,7 @@ export class ProductsService {
         .createQueryBuilder('product')
         .innerJoinAndSelect('product.brand', 'brand')
         .innerJoinAndSelect('product.promotion', 'promotion')
+        .leftJoinAndSelect('product.reviews', 'reviews')
         .leftJoinAndSelect('product.accessories', 'accessories')
         .leftJoinAndSelect('accessories.type', 'type')
         .leftJoinAndSelect('accessories.bowl_type', 'bowl_type')
@@ -244,6 +246,7 @@ export class ProductsService {
         .createQueryBuilder('product')
         .innerJoinAndSelect('product.brand', 'brand')
         .innerJoinAndSelect('product.promotion', 'promotion')
+        .leftJoinAndSelect('product.reviews', 'reviews')
         .leftJoinAndSelect('product.tobacco', 'tobacco')
         .leftJoinAndSelect('tobacco.flavor', 'flavor')
         .andWhere('product.brand = :brand_id', {
@@ -263,6 +266,7 @@ export class ProductsService {
         .innerJoinAndSelect('product.brand', 'brand')
         .innerJoinAndSelect('product.promotion', 'promotion')
         .leftJoinAndSelect('product.coals', 'coals')
+        .leftJoinAndSelect('product.reviews', 'reviews')
         .andWhere('coals.coal_size = :coal_size', {
           coal_size: product.coals.coal_size,
         })
@@ -281,6 +285,7 @@ export class ProductsService {
         .createQueryBuilder('product')
         .innerJoinAndSelect('product.brand', 'brand')
         .innerJoinAndSelect('product.promotion', 'promotion')
+        .leftJoinAndSelect('product.reviews', 'reviews')
         .leftJoinAndSelect('product.hookahs', 'hookahs')
         .leftJoinAndSelect('hookahs.color', 'color')
         .leftJoinAndSelect('hookahs.hookah_size', 'hookah_size')
@@ -296,7 +301,12 @@ export class ProductsService {
         })
         .getMany();
     }
-    return response;
+    const updatedProducts = response.map(product => {
+      const { reviews, ...rest } = product;
+      const numberOfReviews = Array.isArray(reviews) ? reviews.length : 0;
+      return { ...rest, numberOfReviews };
+    });
+    return updatedProducts;
   }
 
   async remove(productId: number) {
@@ -315,11 +325,12 @@ export class ProductsService {
     await this.productRepository.remove(product);
   }
 
-  async findAllPromotion() {
+  async findAllPromotion(): Promise<IProductWithReviews[]> {
     const promoted = await this.productRepository
       .createQueryBuilder('product')
       .innerJoinAndSelect('product.brand', 'brand')
       .innerJoinAndSelect('product.promotion', 'promotion')
+      .leftJoinAndSelect('product.reviews', 'reviews')
       .leftJoinAndSelect('product.hookahs', 'hookahs')
       .leftJoinAndSelect('product.tobacco', 'tobacco')
       .leftJoinAndSelect('product.coals', 'coals')
@@ -335,7 +346,12 @@ export class ProductsService {
       .andWhere('product.publish = :publish', { publish: true })
       .getMany();
 
-    return promoted;
+    const updatedProducts = promoted.map(product => {
+      const { reviews, ...rest } = product;
+      const numberOfReviews = Array.isArray(reviews) ? reviews.length : 0;
+      return { ...rest, numberOfReviews };
+    });
+    return updatedProducts;
   }
 
   async addImages(
