@@ -1,5 +1,5 @@
 import { Controller, Get, Post, Body, Delete, Param } from '@nestjs/common';
-import { UploadedFiles, UseInterceptors } from '@nestjs/common';
+import { UploadedFiles, UseInterceptors, Patch } from '@nestjs/common';
 import { ReviewsService } from './reviews.service';
 import { UseGuards, Req, HttpCode } from '@nestjs/common';
 import { JwtAuthGuard } from 'src/guards/jwt-auth.guard';
@@ -48,5 +48,23 @@ export class ReviewsController {
   deleteProductReview(@Param('id') id: string, @Req() req: IUserRequest) {
     const userId = req.user.id;
     return this.reviewsService.deleteProductReview(+id, userId);
+  }
+
+  @UseGuards(JwtAuthGuard)
+  @Patch(':id')
+  @UseInterceptors(FilesInterceptor('images'))
+  editProductReview(
+    @Param('id') id: string,
+    @UploadedFiles() images: Express.Multer.File[],
+    @Body() updateReviewDto: UpdateReviewDto,
+    @Req() req: IUserRequest,
+  ) {
+    const userId = req.user.id;
+    return this.reviewsService.updateProductReview(
+      +id,
+      updateReviewDto,
+      userId,
+      images,
+    );
   }
 }

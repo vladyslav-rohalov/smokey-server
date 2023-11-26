@@ -91,12 +91,7 @@ export class ReviewsService {
       relations: ['user'],
     });
 
-    const averageRating = await this.calculateAverageRating(id);
-    const roundedAverageRating = Math.round(averageRating * 10) / 10;
-    const updatedProduct = await this.productsService.updateRating(
-      id,
-      roundedAverageRating,
-    );
+    const updatedProduct = await this.updateProductRating(id);
 
     const updatedReview = {
       ...review,
@@ -128,12 +123,69 @@ export class ReviewsService {
       await this.s3Service.deleteImages(review.images, 'reviews');
     }
     await this.reviewRepository.remove(review);
-    const averageRating = await this.calculateAverageRating(review.product.id);
-    const roundedAverageRating = Math.round(averageRating * 10) / 10;
-    await this.productsService.updateRating(
-      review.product.id,
-      roundedAverageRating,
+
+    await this.updateProductRating(review.product.id);
+  }
+
+  async updateProductReview(
+    id: number,
+    updateReviewDto: UpdateReviewDto,
+    userId: number,
+    images: Express.Multer.File[],
+  ) {
+    const updatedDto = {
+      text: updateReviewDto.text,
+      pros: updateReviewDto.pros,
+      cons: updateReviewDto.cons,
+      rating: +updateReviewDto.rating,
+    };
+    const review = await this.reviewRepository.findOne({
+      where: { id: id, user: { id: userId } },
+      relations: ['user', 'product'],
+    });
+    if (!review) {
+      throw new NotFoundException();
+    }
+
+    const updatedReview = {
+      ...review,
+      ...updatedDto,
+      user: {
+        firstName: review.user.firstName,
+      },
+    };
+
+    if (!Array.isArray(updatedReview.images)) {
+      updatedReview.images = [];
+    }
+
+    const reqImageNames = images.map(img => img.originalname);
+
+    const imagesToDelete = updatedReview.images.filter(
+      img => !reqImageNames.includes(img),
     );
+    if (imagesToDelete.length) {
+      await this.s3Service.deleteImages(imagesToDelete, 'reviews');
+      updatedReview.images = updatedReview.images.filter(
+        img => !imagesToDelete.includes(img),
+      );
+    }
+
+    const imagesToAdd = images.filter(
+      img => !updatedReview.images.includes(img.originalname),
+    );
+    if (imagesToAdd.length) {
+      const uploaded = await this.s3Service.uploadReviewFiles(imagesToAdd);
+      const imagesArr = uploaded.map(file => file?.Key.split('/')[1]);
+
+      updatedReview.images = [...updatedReview.images, ...imagesArr];
+    }
+
+    await this.reviewRepository.save(updatedReview);
+
+    const updatedProduct = await this.updateProductRating(review.product.id);
+
+    return { product: updatedProduct, review: updatedReview };
   }
 
   private async calculateAverageRating(productId: number): Promise<number> {
@@ -144,5 +196,16 @@ export class ReviewsService {
       .getRawMany();
 
     return result.averageRating || null;
+  }
+
+  private async updateProductRating(productId: number) {
+    const averageRating = await this.calculateAverageRating(productId);
+    const roundedAverageRating =
+      averageRating === null ? null : Math.round(averageRating * 10) / 10;
+
+    return await this.productsService.updateRating(
+      productId,
+      roundedAverageRating,
+    );
   }
 }
