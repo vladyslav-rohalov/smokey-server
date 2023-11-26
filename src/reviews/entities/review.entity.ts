@@ -1,14 +1,6 @@
-import {
-  Entity,
-  PrimaryGeneratedColumn,
-  Column,
-  ManyToOne,
-  OneToMany,
-} from 'typeorm';
+import { Entity, PrimaryGeneratedColumn, Column, ManyToOne } from 'typeorm';
 import { CreateDateColumn, UpdateDateColumn } from 'typeorm';
 import { User } from '../../users/entities/user.entity';
-import { Comment } from '../../comments/entities/comment.entity';
-import { ReviewRating } from '../../review-rating/entities/review-rating.entity';
 import { Product } from '../../products/entities/product.entity';
 
 @Entity({ name: 'reviews' })
@@ -33,12 +25,6 @@ export class Review {
 
   @ManyToOne(() => User, user => user.reviews)
   user: User;
-
-  @OneToMany(() => Comment, comment => comment.review)
-  comments: Comment[];
-
-  @OneToMany(() => ReviewRating, rating => rating.review)
-  reviewRatings: Review[];
 
   @ManyToOne(() => Product, product => product.reviews)
   product: Product;

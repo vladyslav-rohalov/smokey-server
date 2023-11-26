@@ -6,8 +6,6 @@ import { User } from './entities/user.entity';
 import { Address } from 'src/addresses/entities/address.entity';
 import { Order } from 'src/orders/entities/order.entity';
 import { Review } from 'src/reviews/entities/review.entity';
-import { Comment } from 'src/comments/entities/comment.entity';
-import { ReviewRating } from 'src/review-rating/entities/review-rating.entity';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { JwtModule } from '@nestjs/jwt/dist';
 import { AuthModule } from 'src/auth/auth.module';
@@ -17,15 +15,7 @@ import { BlacklistedTokensModule } from 'src/blacklisted-tokens/blacklisted-toke
   controllers: [UsersController],
   providers: [UsersService, AddressesService],
   imports: [
-    TypeOrmModule.forFeature([
-      User,
-      Address,
-      Order,
-      Review,
-      Comment,
-      ReviewRating,
-      JwtModule,
-    ]),
+    TypeOrmModule.forFeature([User, Address, Order, Review, JwtModule]),
 
     forwardRef(() => AuthModule),
     BlacklistedTokensModule,

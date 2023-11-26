@@ -5,8 +5,6 @@ import { Order } from '../../orders/entities/order.entity';
 import { Address } from '../../addresses/entities/address.entity';
 import { Cart } from '../../cart/entities/cart.entity';
 import { Review } from '../../reviews/entities/review.entity';
-import { Comment } from '../../comments/entities/comment.entity';
-import { ReviewRating } from '../../review-rating/entities/review-rating.entity';
 import { Favorite } from '../../favorites/entities/favorite.entity';
 
 @Entity({ name: 'users' })
@@ -39,7 +37,6 @@ export class User {
   address: Address;
 
   @OneToOne(() => Cart, cart => cart.user)
-  // @JoinColumn({ name: 'cart_id', referencedColumnName: 'id' })
   cart: Cart[];
 
   @OneToMany(() => Order, order => order.user)
@@ -50,12 +47,6 @@ export class User {
 
   @OneToMany(() => Review, review => review.user)
   reviews: Review[];
-
-  @OneToMany(() => Comment, comment => comment.user)
-  comments: Comment[];
-
-  @OneToMany(() => ReviewRating, rating => rating.user)
-  reviewRatings: ReviewRating[];
 
   @CreateDateColumn()
   createdAt: Date;

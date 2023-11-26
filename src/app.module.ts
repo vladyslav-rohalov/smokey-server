@@ -14,8 +14,6 @@ import { Coal } from './coals/entities/coal.entity';
 import { CartItem } from './cart-item/entities/cart-item.entity';
 import { OrderItem } from './order-item/entities/order-item.entity';
 import { Accessory } from './accessories/entities/accessory.entity';
-import { Comment } from './comments/entities/comment.entity';
-import { ReviewRating } from './review-rating/entities/review-rating.entity';
 import { BlacklistedToken } from './blacklisted-tokens/entities/blacklisted-token.entity';
 import { Promotion } from './enums/promotion/entities/promotion.entity';
 import { Brand } from './enums/brand/entities/brand.entity';
@@ -38,8 +36,6 @@ import { CoalsModule } from './coals/coals.module';
 import { AccessoriesModule } from './accessories/accessories.module';
 import { CartItemModule } from './cart-item/cart-item.module';
 import { OrderItemModule } from './order-item/order-item.module';
-import { CommentsModule } from './comments/comments.module';
-import { ReviewRatingModule } from './review-rating/review-rating.module';
 import { BlacklistedTokensModule } from './blacklisted-tokens/blacklisted-tokens.module';
 import { AwsS3Module } from './aws-s3/aws-s3.module';
 import { PromotionModule } from './enums/promotion/promotion.module';
@@ -79,8 +75,6 @@ import { EnumsModule } from './enums/enums.module';
           Accessory,
           CartItem,
           OrderItem,
-          Comment,
-          ReviewRating,
           BlacklistedToken,
           Promotion,
           Brand,
@@ -108,8 +102,6 @@ import { EnumsModule } from './enums/enums.module';
     AccessoriesModule,
     CartItemModule,
     OrderItemModule,
-    CommentsModule,
-    ReviewRatingModule,
     BlacklistedTokensModule,
     AwsS3Module,
     PromotionModule,

@@ -14,8 +14,6 @@ import { Coal } from './coals/entities/coal.entity';
 import { Accessory } from './accessories/entities/accessory.entity';
 import { CartItem } from './cart-item/entities/cart-item.entity';
 import { OrderItem } from './order-item/entities/order-item.entity';
-import { Comment } from './comments/entities/comment.entity';
-import { ReviewRating } from './review-rating/entities/review-rating.entity';
 import { BlacklistedToken } from './blacklisted-tokens/entities/blacklisted-token.entity';
 import { Promotion } from './enums/promotion/entities/promotion.entity';
 import { Brand } from './enums/brand/entities/brand.entity';
@@ -56,8 +54,6 @@ export const AppDataSource = new DataSource({
     Accessory,
     CartItem,
     OrderItem,
-    Comment,
-    ReviewRating,
     BlacklistedToken,
     Promotion,
     Brand,
