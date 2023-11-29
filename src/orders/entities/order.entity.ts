@@ -9,7 +9,7 @@ enum OrderStatus {
   PROCESSING = 'order processing',
   SHIPPED = 'order shipped',
   COMPLETED = 'order completed',
-  CANCELLED = 'corder cancelled',
+  CANCELLED = 'order cancelled',
 }
 
 @Entity({ name: 'orders' })
@@ -24,8 +24,8 @@ export class Order {
   })
   status: OrderStatus;
 
-  @Column()
-  quantity: number;
+  @Column({ type: 'decimal', precision: 7, scale: 2 })
+  total: number;
 
   @ManyToOne(() => User, user => user.orders)
   @JoinColumn({ name: 'user_id', referencedColumnName: 'id' })

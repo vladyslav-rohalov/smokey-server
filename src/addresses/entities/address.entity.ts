@@ -1,6 +1,6 @@
 import { Entity, PrimaryGeneratedColumn, Column } from 'typeorm';
 import { CreateDateColumn, UpdateDateColumn, OneToOne } from 'typeorm';
-import { JoinColumn, ManyToOne } from 'typeorm';
+import { OneToMany } from 'typeorm';
 import { User } from '../../users/entities/user.entity';
 
 @Entity({ name: 'addresses' })
