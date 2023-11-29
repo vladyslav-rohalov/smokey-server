@@ -21,7 +21,7 @@ export class OrderItem {
   @JoinColumn({ name: 'order_id', referencedColumnName: 'id' })
   order: Order;
 
-  @ManyToOne(() => Product, product => product.cartItems)
+  @ManyToOne(() => Product, product => product.orderItems)
   product: Product;
 
   @CreateDateColumn()

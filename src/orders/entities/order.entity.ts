@@ -4,12 +4,12 @@ import { OneToMany } from 'typeorm';
 import { User } from '../../users/entities/user.entity';
 import { OrderItem } from '../../order-item/entities/order-item.entity';
 
-enum OrderStatus {
-  PENDING = 'order pending',
-  PROCESSING = 'order processing',
-  SHIPPED = 'order shipped',
-  COMPLETED = 'order completed',
-  CANCELLED = 'order cancelled',
+export enum OrderStatus {
+  PENDING = 'pending',
+  PROCESSING = 'processing',
+  SHIPPED = 'shipped',
+  COMPLETED = 'completed',
+  CANCELLED = 'canceled',
 }
 
 @Entity({ name: 'orders' })
