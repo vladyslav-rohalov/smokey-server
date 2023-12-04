@@ -1,4 +1,5 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+import { Injectable } from '@nestjs/common';
+import { NotFoundException, BadRequestException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { Cart } from './entities/cart.entity';
@@ -100,6 +101,7 @@ export class CartService {
     if (!cart) {
       throw new NotFoundException(`Cart wasn't found`);
     }
+
     return cart[0].items.map(item => {
       const product = item.product;
       const quantity =
@@ -120,6 +122,20 @@ export class CartService {
     }
 
     await this.cartItemService.remove(cart.id, productId);
+  }
+
+  async clearCart(userId: number) {
+    const cart = await this.cartRepository.findOne({
+      where: { user: { id: userId } },
+      relations: ['items'],
+    });
+
+    if (!cart) {
+      throw new NotFoundException(`Cart wasn't found`);
+    }
+
+    await this.cartItemService.removeAll(cart.id);
+    await this.cartRepository.save(cart);
   }
 
   async createCart(userId: number) {

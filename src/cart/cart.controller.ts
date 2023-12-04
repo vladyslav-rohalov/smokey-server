@@ -42,4 +42,12 @@ export class CartController {
     const userId = req.user.id;
     return this.cartService.removeFromCart(userId, +id);
   }
+
+  @UseGuards(JwtAuthGuard)
+  @HttpCode(204)
+  @Delete()
+  clearCart(@Req() req: IRequest) {
+    const userId = req.user.id;
+    return this.cartService.clearCart(userId);
+  }
 }

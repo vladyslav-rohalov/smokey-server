@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { CartItem } from './entities/cart-item.entity';
 import { Product } from 'src/products/entities/product.entity';
@@ -56,5 +56,17 @@ export class CartItemService {
       },
       { quantity: updateCartItemDto.quantity },
     );
+  }
+
+  async removeAll(cartId: number): Promise<void> {
+    const cartItems = await this.cartItemRepository.find({
+      where: { cart: { id: cartId } },
+    });
+
+    if (!cartItems || cartItems.length === 0) {
+      throw new NotFoundException('Cart have no products');
+    }
+
+    await this.cartItemRepository.remove(cartItems);
   }
 }
