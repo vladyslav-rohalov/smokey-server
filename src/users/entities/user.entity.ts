@@ -36,16 +36,25 @@ export class User {
   @JoinColumn({ name: 'address_id', referencedColumnName: 'id' })
   address: Address;
 
-  @OneToOne(() => Cart, cart => cart.user)
-  cart: Cart[];
+  @OneToOne(() => Cart, cart => cart.user, {
+    onDelete: 'CASCADE',
+  })
+  @JoinColumn({ name: 'cart_id', referencedColumnName: 'id' })
+  cart: Cart;
 
-  @OneToMany(() => Order, order => order.user)
+  @OneToMany(() => Order, order => order.user, {
+    onDelete: 'CASCADE',
+  })
   orders: Order[];
 
-  @OneToMany(() => Favorite, favarite => favarite.user)
+  @OneToMany(() => Favorite, favarite => favarite.user, {
+    onDelete: 'CASCADE',
+  })
   favorites: Favorite[];
 
-  @OneToMany(() => Review, review => review.user)
+  @OneToMany(() => Review, review => review.user, {
+    onDelete: 'CASCADE',
+  })
   reviews: Review[];
 
   @CreateDateColumn()

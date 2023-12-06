@@ -4,6 +4,7 @@ import { LoginUserDto } from './login-user.dto';
 import { UsersService } from '../users/users.service';
 import { JwtService } from '@nestjs/jwt/dist';
 import { BlacklistedTokensService } from 'src/blacklisted-tokens/blacklisted-tokens.service';
+import { CartService } from 'src/cart/cart.service';
 import { ConflictException } from '@nestjs/common/exceptions';
 import { UnauthorizedException } from '@nestjs/common/exceptions';
 import * as bcrypt from 'bcryptjs';
@@ -16,6 +17,7 @@ export class AuthService {
     private userService: UsersService,
     private jwtService: JwtService,
     private blTokensService: BlacklistedTokensService,
+    private cartService: CartService,
   ) {}
 
   async registration(createUserDto: CreateUserDto): Promise<IAuthResponse> {
@@ -33,6 +35,7 @@ export class AuthService {
       role: 'user',
     });
 
+    await this.cartService.createCart(user.id);
     const token = await this.generateToken(user);
 
     return {

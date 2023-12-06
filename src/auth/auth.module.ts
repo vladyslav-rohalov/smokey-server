@@ -1,18 +1,22 @@
-import { Module } from '@nestjs/common';
+import { Module, forwardRef } from '@nestjs/common';
 import { AuthController } from './auth.controller';
 import { AuthService } from './auth.service';
 import { UsersModule } from '../users/users.module';
 import { JwtModule } from '@nestjs/jwt';
 import { BlacklistedTokensModule } from 'src/blacklisted-tokens/blacklisted-tokens.module';
-import { forwardRef } from '@nestjs/common/utils';
+import { CartService } from 'src/cart/cart.service';
+import { Cart } from 'src/cart/entities/cart.entity';
+import { CartItemService } from 'src/cart-item/cart-item.service';
+import { CartItem } from 'src/cart-item/entities/cart-item.entity';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import 'dotenv/config';
 
 @Module({
   controllers: [AuthController],
-  providers: [AuthService],
+  providers: [AuthService, CartService, CartItemService],
   imports: [
     BlacklistedTokensModule,
+    TypeOrmModule.forFeature([Cart, CartItem]),
     forwardRef(() => UsersModule),
     JwtModule.register({
       secret: process.env.SECRET_KEY,

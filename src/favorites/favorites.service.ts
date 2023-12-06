@@ -33,7 +33,15 @@ export class FavoritesService {
       where: {
         user: { id: userId },
       },
-      relations: ['product', 'product.brand', 'product.promotion'],
+      relations: [
+        'product',
+        'product.brand',
+        'product.promotion',
+        'product.tobacco',
+        'product.hookahs',
+        'product.coals',
+        'product.accessories',
+      ],
     });
     if (favorite) {
       favorite.forEach(item => favoriteProducts.push(item.product));

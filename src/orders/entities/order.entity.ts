@@ -27,7 +27,9 @@ export class Order {
   @Column({ type: 'decimal', precision: 7, scale: 2 })
   total: number;
 
-  @ManyToOne(() => User, user => user.orders)
+  @ManyToOne(() => User, user => user.orders, {
+    onDelete: 'CASCADE',
+  })
   @JoinColumn({ name: 'user_id', referencedColumnName: 'id' })
   user: User;
 

@@ -63,10 +63,12 @@ export class UsersService {
       );
     }
 
-    const isTwin = await this.findOneByEmail(updateUserDto.email);
-    if (isTwin) {
-      if (isTwin.email !== user.email) {
-        throw new ConflictException('This email is already in use');
+    if (updateUserDto.email) {
+      const isTwin = await this.findOneByEmail(updateUserDto.email);
+      if (isTwin) {
+        if (isTwin.email !== user.email) {
+          throw new ConflictException('This email is already in use');
+        }
       }
     }
 

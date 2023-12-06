@@ -8,7 +8,9 @@ export class Favorite {
   @PrimaryGeneratedColumn({ name: 'favorite_id' })
   id: number;
 
-  @ManyToOne(() => User, user => user.favorites)
+  @ManyToOne(() => User, user => user.favorites, {
+    onDelete: 'CASCADE',
+  })
   user: User;
 
   @ManyToOne(() => Product, product => product.favorites)
