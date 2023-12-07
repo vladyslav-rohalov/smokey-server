@@ -32,4 +32,10 @@ export class AuthController {
     const token = req.user.token;
     return this.authService.logout(token);
   }
+
+  @HttpCode(200)
+  @Post('admin/login')
+  loginAdmin(@Body() loginUserDto: LoginUserDto) {
+    return this.authService.loginAdmin(loginUserDto);
+  }
 }

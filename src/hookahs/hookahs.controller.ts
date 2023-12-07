@@ -1,15 +1,17 @@
 import { Controller, Get, Post, Body, Patch, Param } from '@nestjs/common';
 import { Query } from '@nestjs/common';
+import { UseGuards } from '@nestjs/common/decorators';
+import { JwtAuthGuard } from 'src/guards/jwt-auth.guard';
+import { RolesGuard } from 'src/guards/role.guard';
 import { HookahsService } from './hookahs.service';
 import { CreateHookahDto } from './dto/create-hookah.dto';
 import { CreateProductDto } from 'src/products/dto/create-product.dto';
-import { UpdateProductDto } from 'src/products/dto/update-product.dto';
-import { UpdateHookahDto } from './dto/update-hookah.dto';
 
 @Controller('api/products/hookahs')
 export class HookahsController {
   constructor(private readonly hookahsService: HookahsService) {}
 
+  @UseGuards(JwtAuthGuard, RolesGuard)
   @Post()
   createProductWithTobacco(
     @Body() createProductDto: CreateProductDto,
@@ -54,6 +56,7 @@ export class HookahsController {
     });
   }
 
+  @UseGuards(JwtAuthGuard, RolesGuard)
   @Patch(':id')
   update(
     @Param('id') id: string,

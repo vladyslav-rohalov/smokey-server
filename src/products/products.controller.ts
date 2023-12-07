@@ -3,6 +3,9 @@ import { Query, UploadedFiles, UseInterceptors, Patch } from '@nestjs/common';
 import { HttpCode } from '@nestjs/common';
 import { ProductsService } from './products.service';
 import { FilesInterceptor } from '@nestjs/platform-express';
+import { UseGuards } from '@nestjs/common/decorators';
+import { JwtAuthGuard } from 'src/guards/jwt-auth.guard';
+import { RolesGuard } from 'src/guards/role.guard';
 import { CreateCartDto } from 'src/cart/dto/create-cart.dto';
 
 @Controller('api/products')
@@ -43,6 +46,7 @@ export class ProductsController {
     return this.productsService.findRelatedById(+id);
   }
 
+  @UseGuards(JwtAuthGuard, RolesGuard)
   @Delete(':id')
   remove(@Param('id') id: string) {
     return this.productsService.remove(+id);
@@ -64,6 +68,7 @@ export class ProductsController {
     return this.productsService.findAllPromotion();
   }
 
+  @UseGuards(JwtAuthGuard, RolesGuard)
   @Post('/images/:id')
   @UseInterceptors(FilesInterceptor('images'))
   addImages(
@@ -78,11 +83,13 @@ export class ProductsController {
     return this.productsService.addImages(+id, images, options);
   }
 
+  @UseGuards(JwtAuthGuard, RolesGuard)
   @Delete('/images/:id')
   removeImages(@Param('id') id: string, @Body() images: string[]) {
     return this.productsService.removeImages(+id, images);
   }
 
+  @UseGuards(JwtAuthGuard, RolesGuard)
   @Patch('/publish/:id')
   publish(@Param('id') id: string) {
     return this.productsService.publish(+id);

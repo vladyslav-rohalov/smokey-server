@@ -4,6 +4,7 @@ import { Request } from 'express';
 import { UsersService } from './users.service';
 import { AddressesService } from 'src/addresses/addresses.service';
 import { JwtAuthGuard } from 'src/guards/jwt-auth.guard';
+import { RolesGuard } from 'src/guards/role.guard';
 import { UpdateUserDto } from './dto/update-user.dto';
 import { CreateAddressDto } from 'src/addresses/dto/create-address.dto';
 
@@ -22,6 +23,14 @@ export class UsersController {
   @HttpCode(200)
   @Get('current')
   findOneById(@Req() req: IRequest) {
+    const authenticatedUserId = req.user.id;
+    return this.usersService.findOneByID(authenticatedUserId);
+  }
+
+  @UseGuards(JwtAuthGuard, RolesGuard)
+  @HttpCode(200)
+  @Get('admin/current')
+  getCurrentAdmin(@Req() req: IRequest) {
     const authenticatedUserId = req.user.id;
     return this.usersService.findOneByID(authenticatedUserId);
   }

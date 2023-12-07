@@ -31,6 +31,7 @@ export class JwtAuthGuard implements CanActivate {
         throw new UnauthorizedException({ message: 'Token is blacklisted' });
       }
       const user = await this.jwtService.verify(token);
+
       req.user = { ...user, token };
       return true;
     } catch (error) {

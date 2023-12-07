@@ -1,4 +1,4 @@
-import { Module } from '@nestjs/common';
+import { Module, forwardRef } from '@nestjs/common';
 import { ProductsService } from './products.service';
 import { ProductsController } from './products.controller';
 import { Product } from './entities/product.entity';
@@ -16,6 +16,9 @@ import { PromotionService } from 'src/enums/promotion/promotion.service';
 import { Promotion } from 'src/enums/promotion/entities/promotion.entity';
 import { AwsS3Service } from 'src/aws-s3/aws-s3.service';
 import { AwsS3Module } from 'src/aws-s3/aws-s3.module';
+import { JwtModule } from '@nestjs/jwt/dist';
+import { AuthModule } from 'src/auth/auth.module';
+import { BlacklistedTokensModule } from 'src/blacklisted-tokens/blacklisted-tokens.module';
 
 @Module({
   controllers: [ProductsController],
@@ -33,7 +36,10 @@ import { AwsS3Module } from 'src/aws-s3/aws-s3.module';
       Brand,
       Promotion,
       AwsS3Module,
+      JwtModule,
     ]),
+    forwardRef(() => AuthModule),
+    BlacklistedTokensModule,
   ],
   exports: [ProductsService, ProductsModule],
 })

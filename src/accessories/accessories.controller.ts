@@ -1,15 +1,18 @@
 import { Controller, Get, Post, Body, Patch, Param } from '@nestjs/common';
 import { Query } from '@nestjs/common';
+import { UseGuards } from '@nestjs/common/decorators';
+import { JwtAuthGuard } from 'src/guards/jwt-auth.guard';
+import { RolesGuard } from 'src/guards/role.guard';
 import { AccessoriesService } from './accessories.service';
 import { CreateAccessoryDto } from './dto/create-accessory.dto';
 import { CreateProductDto } from 'src/products/dto/create-product.dto';
-import { UpdateProductDto } from 'src/products/dto/update-product.dto';
-import { UpdateAccessoryDto } from './dto/update-accessory.dto';
+
 
 @Controller('api/products/accessories')
 export class AccessoriesController {
   constructor(private readonly accessoriesService: AccessoriesService) {}
 
+  @UseGuards(JwtAuthGuard, RolesGuard)
   @Post()
   createProductWithTobacco(
     @Body() createAccessoryDto: CreateAccessoryDto,
@@ -54,6 +57,7 @@ export class AccessoriesController {
     });
   }
 
+  @UseGuards(JwtAuthGuard, RolesGuard)
   @Patch(':id')
   update(
     @Param('id') id: string,

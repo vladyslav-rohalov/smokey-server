@@ -1,11 +1,16 @@
 import { Injectable } from '@nestjs/common';
+import { InjectRepository } from '@nestjs/typeorm';
+import { Repository } from 'typeorm';
 import { CreateUserDto } from '../users/dto/create-user.dto';
 import { LoginUserDto } from './login-user.dto';
 import { UsersService } from '../users/users.service';
 import { JwtService } from '@nestjs/jwt/dist';
 import { BlacklistedTokensService } from 'src/blacklisted-tokens/blacklisted-tokens.service';
 import { CartService } from 'src/cart/cart.service';
-import { ConflictException } from '@nestjs/common/exceptions';
+import {
+  ConflictException,
+  ForbiddenException,
+} from '@nestjs/common/exceptions';
 import { UnauthorizedException } from '@nestjs/common/exceptions';
 import * as bcrypt from 'bcryptjs';
 import { User } from '../users/entities/user.entity';
@@ -14,6 +19,8 @@ import { IAuthResponse } from 'src/lib/interfaces';
 @Injectable()
 export class AuthService {
   constructor(
+    @InjectRepository(User)
+    private readonly userRepository: Repository<User>,
     private userService: UsersService,
     private jwtService: JwtService,
     private blTokensService: BlacklistedTokensService,
@@ -35,7 +42,12 @@ export class AuthService {
       role: 'user',
     });
 
-    await this.cartService.createCart(user.id);
+    const cart = await this.cartService.createCart(user.id);
+
+    user.cart = cart;
+
+    await this.userRepository.save(user);
+
     const token = await this.generateToken(user);
 
     return {
@@ -83,6 +95,26 @@ export class AuthService {
   async generateToken(user: User): Promise<string> {
     const payload = { id: user.id, role: user.role };
     return this.jwtService.sign(payload);
+  }
+
+  async loginAdmin(loginUserDto: LoginUserDto): Promise<IAuthResponse> {
+    const user = await this.validateUser(loginUserDto);
+
+    if (user.role === 'user') {
+      throw new ForbiddenException();
+    }
+
+    const token = await this.generateToken(user);
+
+    return {
+      user: {
+        firstName: user.firstName,
+        lastName: user.lastName,
+        phone: user.phone,
+        email: user.email,
+      },
+      token,
+    };
   }
 
   private async validateUser(loginUserDto: LoginUserDto) {

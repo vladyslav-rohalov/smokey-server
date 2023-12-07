@@ -1,4 +1,4 @@
-import { Module } from '@nestjs/common';
+import { Module, forwardRef } from '@nestjs/common';
 import { AccessoriesService } from './accessories.service';
 import { AccessoriesController } from './accessories.controller';
 import { Accessory } from './entities/accessory.entity';
@@ -12,6 +12,9 @@ import { BowlTypeService } from 'src/enums/bowl-type/bowl-type.service';
 import { AccessoryType } from 'src/enums/accessory-type/entities/accessory-type.entity';
 import { BowlType } from 'src/enums/bowl-type/entities/bowl-type.entity';
 import { AwsS3Service } from 'src/aws-s3/aws-s3.service';
+import { JwtModule } from '@nestjs/jwt/dist';
+import { AuthModule } from 'src/auth/auth.module';
+import { BlacklistedTokensModule } from 'src/blacklisted-tokens/blacklisted-tokens.module';
 
 @Module({
   controllers: [AccessoriesController],
@@ -23,9 +26,11 @@ import { AwsS3Service } from 'src/aws-s3/aws-s3.service';
     AwsS3Service,
   ],
   imports: [
-    TypeOrmModule.forFeature([Accessory, Product, AccessoryType, BowlType]),
+    TypeOrmModule.forFeature([Accessory, Product, AccessoryType, BowlType, JwtModule]),
     BrandModule,
     PromotionModule,
+    forwardRef(() => AuthModule),
+    BlacklistedTokensModule,
   ],
 })
 export class AccessoriesModule {}

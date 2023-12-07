@@ -1,6 +1,9 @@
 import { Controller, Body, Param } from '@nestjs/common';
 import { Get, Post, Patch, Delete } from '@nestjs/common';
 import { HookahSizeService } from './hookah-size.service';
+import { UseGuards } from '@nestjs/common/decorators';
+import { JwtAuthGuard } from 'src/guards/jwt-auth.guard';
+import { RolesGuard } from 'src/guards/role.guard';
 import { CreateHookahSizeDto } from './dto/create-hookah-size.dto';
 import { UpdateHookahSizeDto } from './dto/update-hookah-size.dto';
 
@@ -8,6 +11,7 @@ import { UpdateHookahSizeDto } from './dto/update-hookah-size.dto';
 export class HookahSizeController {
   constructor(private readonly hookahSizeService: HookahSizeService) {}
 
+  @UseGuards(JwtAuthGuard, RolesGuard)
   @Post()
   create(@Body() createHookahSizeDto: CreateHookahSizeDto) {
     return this.hookahSizeService.create(createHookahSizeDto);
@@ -18,6 +22,7 @@ export class HookahSizeController {
     return this.hookahSizeService.findAll();
   }
 
+  @UseGuards(JwtAuthGuard, RolesGuard)
   @Patch(':id')
   update(
     @Param('id') id: string,
@@ -26,6 +31,7 @@ export class HookahSizeController {
     return this.hookahSizeService.update(+id, updateHookahSizeDto);
   }
 
+  @UseGuards(JwtAuthGuard, RolesGuard)
   @Delete(':id')
   remove(@Param('id') id: string) {
     return this.hookahSizeService.remove(+id);

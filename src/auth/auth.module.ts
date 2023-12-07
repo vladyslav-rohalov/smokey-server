@@ -8,6 +8,7 @@ import { CartService } from 'src/cart/cart.service';
 import { Cart } from 'src/cart/entities/cart.entity';
 import { CartItemService } from 'src/cart-item/cart-item.service';
 import { CartItem } from 'src/cart-item/entities/cart-item.entity';
+import { User } from 'src/users/entities/user.entity';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import 'dotenv/config';
 
@@ -16,7 +17,7 @@ import 'dotenv/config';
   providers: [AuthService, CartService, CartItemService],
   imports: [
     BlacklistedTokensModule,
-    TypeOrmModule.forFeature([Cart, CartItem]),
+    TypeOrmModule.forFeature([Cart, CartItem, User]),
     forwardRef(() => UsersModule),
     JwtModule.register({
       secret: process.env.SECRET_KEY,
