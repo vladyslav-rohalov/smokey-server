@@ -15,20 +15,23 @@ export class User {
   @Column()
   firstName: string;
 
-  @Column()
+  @Column({ nullable: true })
   lastName: string;
 
-  @Column()
+  @Column({ nullable: true })
   phone: string;
 
   @Column()
   email: string;
 
-  @Column()
+  @Column({ nullable: true })
   password: string;
 
   @Column({ default: 'user' })
   role: string;
+
+  @Column({ nullable: true })
+  googleId: string;
 
   @OneToOne(() => Address, address => address.user, {
     onDelete: 'CASCADE',

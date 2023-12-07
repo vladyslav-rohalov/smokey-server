@@ -1,10 +1,11 @@
-import { Body, Controller, Post, HttpCode } from '@nestjs/common';
+import { Body, Controller, Post, HttpCode, Get } from '@nestjs/common';
 import { CreateUserDto } from '../users/dto/create-user.dto';
 import { LoginUserDto } from './login-user.dto';
 import { AuthService } from './auth.service';
-import { UseGuards, Req } from '@nestjs/common';
+import { UseGuards, Req, Res } from '@nestjs/common';
 import { JwtAuthGuard } from 'src/guards/jwt-auth.guard';
 import { Request } from 'express';
+import { GoogleOAuthGuard } from 'src/guards/google-oauth.guard';
 
 interface IRequest extends Request {
   user: { id: number; token: string };
@@ -37,5 +38,16 @@ export class AuthController {
   @Post('admin/login')
   loginAdmin(@Body() loginUserDto: LoginUserDto) {
     return this.authService.loginAdmin(loginUserDto);
+  }
+
+  @Get('google')
+  @UseGuards(GoogleOAuthGuard)
+  async googleAuth(@Req() req) {}
+
+  @Get('google/callback')
+  @UseGuards(GoogleOAuthGuard)
+  googleAuthRedirect(@Req() req, @Res() res) {
+    const reqUser = req.user;
+    this.authService.googleLogin(reqUser, res);
   }
 }

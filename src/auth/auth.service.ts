@@ -117,6 +117,59 @@ export class AuthService {
     };
   }
 
+  async googleLogin(reqUser: User, res) {
+    const user = await this.userRepository.findOne({
+      where: { id: reqUser.id },
+      relations: ['cart'],
+    });
+    if (!user.cart) {
+      const cart = await this.cartService.createCart(user.id);
+
+      user.cart = cart;
+
+      await this.userRepository.save(user);
+    }
+    const token = await this.generateToken(user);
+
+    const responseData = {
+      user: {
+        firstName: user.firstName,
+        lastName: user.lastName,
+        phone: user.phone,
+        email: user.email,
+        address: {
+          city: user.address?.city || null,
+          street: user.address?.street || null,
+          house: user.address?.house || null,
+          apartment: user.address?.apartment || null,
+        },
+      },
+      token,
+    };
+    return responseData;
+  }
+
+  async validateGoogleLogin(profile: any): Promise<any> {
+    const { id, emails, name, displayName } = profile;
+    const firstName = name?.givenName ? name.givenName : displayName;
+    const lastName = name?.firstName ? name.firstName : null;
+    const email = emails[0].value;
+
+    let user = await this.userService.findOneByEmail(email);
+
+    if (!user) {
+      user = this.userRepository.create({
+        googleId: id,
+        email,
+        firstName,
+        lastName,
+      });
+
+      await this.userRepository.save(user);
+    }
+    return user;
+  }
+
   private async validateUser(loginUserDto: LoginUserDto) {
     const user = await this.userService.findOneByEmail(loginUserDto.email);
     if (!user) {
