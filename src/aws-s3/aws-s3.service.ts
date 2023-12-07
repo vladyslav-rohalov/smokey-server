@@ -6,18 +6,18 @@ import sharp from 'sharp';
 import 'dotenv/config';
 import { IOptionsUpload } from 'src/lib/interfaces';
 
-const { AWS_BUCKET_NAME, AWS_ACCESS_KEY_ID, AWS_SECRET_ACCESS_KEY } =
+const { AWS_BUCKET_NAME2, AWS_ACCESS_KEY_ID2, AWS_SECRET_ACCESS_KEY2 } =
   process.env;
 
 @Injectable()
 export class AwsS3Service {
-  private readonly AWS_S3_BUCKET: string = AWS_BUCKET_NAME;
+  private readonly AWS_S3_BUCKET: string = AWS_BUCKET_NAME2;
   private readonly s3: AWS.S3;
 
   constructor() {
     this.s3 = new AWS.S3({
-      accessKeyId: AWS_ACCESS_KEY_ID,
-      secretAccessKey: AWS_SECRET_ACCESS_KEY,
+      accessKeyId: AWS_ACCESS_KEY_ID2,
+      secretAccessKey: AWS_SECRET_ACCESS_KEY2,
     });
   }
 
@@ -127,7 +127,6 @@ export class AwsS3Service {
     const deletePromises = keysToDelete.map(async key => {
       try {
         const params = {
-          // Bucket: `${this.AWS_S3_BUCKET}/products`,
           Bucket: `${this.AWS_S3_BUCKET}/${bucket}`,
           Key: key,
         };

@@ -366,7 +366,8 @@ export class ProductsService {
       throw new NotFoundException(`product with id ${productId} not found`);
     }
     const uploaded = await this.s3Service.uploadFiles(images, options);
-    const imagesArr = uploaded.map(file => file.Location);
+    // const imagesArr = uploaded.map(file => file.Location);
+    const imagesArr = uploaded.map(file => file?.Key.split('/')[1]);
     const updatedImages = product.images
       ? [...product.images, ...imagesArr]
       : imagesArr;
