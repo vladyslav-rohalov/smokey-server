@@ -7,10 +7,8 @@ import { UsersService } from '../users/users.service';
 import { JwtService } from '@nestjs/jwt/dist';
 import { BlacklistedTokensService } from 'src/blacklisted-tokens/blacklisted-tokens.service';
 import { CartService } from 'src/cart/cart.service';
-import {
-  ConflictException,
-  ForbiddenException,
-} from '@nestjs/common/exceptions';
+import { ConflictException } from '@nestjs/common/exceptions';
+import { ForbiddenException } from '@nestjs/common/exceptions';
 import { UnauthorizedException } from '@nestjs/common/exceptions';
 import * as bcrypt from 'bcryptjs';
 import { User } from '../users/entities/user.entity';
@@ -117,11 +115,12 @@ export class AuthService {
     };
   }
 
-  async googleLogin(reqUser: User, res) {
+  async googleLogin(reqUser: User) {
     const user = await this.userRepository.findOne({
       where: { id: reqUser.id },
       relations: ['cart'],
     });
+
     if (!user.cart) {
       const cart = await this.cartService.createCart(user.id);
 
@@ -130,23 +129,7 @@ export class AuthService {
       await this.userRepository.save(user);
     }
     const token = await this.generateToken(user);
-
-    const responseData = {
-      user: {
-        firstName: user.firstName,
-        lastName: user.lastName,
-        phone: user.phone,
-        email: user.email,
-        address: {
-          city: user.address?.city || null,
-          street: user.address?.street || null,
-          house: user.address?.house || null,
-          apartment: user.address?.apartment || null,
-        },
-      },
-      token,
-    };
-    return responseData;
+    return token;
   }
 
   async validateGoogleLogin(profile: any): Promise<any> {
@@ -185,3 +168,4 @@ export class AuthService {
     return user;
   }
 }
+
