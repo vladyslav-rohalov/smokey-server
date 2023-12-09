@@ -19,12 +19,12 @@ export class EmailService {
     });
   }
 
-  async sendEmail(to: string, subject: string, text: string) {
+  async sendEmail(to: string, subject: string, letter: string) {
     const mailOptions = {
       from: this.configService.get('EMAIL_NAME'),
       to,
       subject,
-      text,
+      html: letter,
     };
 
     try {

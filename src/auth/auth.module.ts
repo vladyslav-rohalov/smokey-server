@@ -13,7 +13,6 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import { GoogleStrategy } from '../strategies/google.strategy';
 import { PassportModule } from '@nestjs/passport';
 import { EmailService } from 'src/services/email/email.servise';
-// import { EmailModule } from 'src/services/email/email.module';
 import 'dotenv/config';
 
 @Module({

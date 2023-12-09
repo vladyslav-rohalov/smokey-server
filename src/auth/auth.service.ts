@@ -8,12 +8,15 @@ import { JwtService } from '@nestjs/jwt/dist';
 import { BlacklistedTokensService } from 'src/blacklisted-tokens/blacklisted-tokens.service';
 import { CartService } from 'src/cart/cart.service';
 import { ConflictException } from '@nestjs/common/exceptions';
+import { NotFoundException } from '@nestjs/common/exceptions';
 import { ForbiddenException } from '@nestjs/common/exceptions';
 import { UnauthorizedException } from '@nestjs/common/exceptions';
 import * as bcrypt from 'bcryptjs';
 import { User } from '../users/entities/user.entity';
 import { IAuthResponse } from 'src/lib/interfaces';
 import { EmailService } from 'src/services/email/email.servise';
+import { generateConfirmLetter } from 'src/services/email/generateHtml';
+import { randomBytes } from 'crypto';
 
 @Injectable()
 export class AuthService {
@@ -27,12 +30,35 @@ export class AuthService {
     private readonly emailService: EmailService,
   ) {}
 
-  async registration(createUserDto: CreateUserDto): Promise<IAuthResponse> {
+  async registration(
+    createUserDto: CreateUserDto,
+  ): Promise<Partial<IAuthResponse>> {
     const candidate = await this.userService.findOneByEmail(
       createUserDto.email,
     );
     if (candidate) {
-      throw new ConflictException({ message: 'Email in use' });
+      if (candidate.isVerify) {
+        throw new ConflictException({ message: 'Email in use' });
+      } else {
+        const vCode = this.generateRandomCode(10);
+        candidate.v_code = candidate.v_code
+          ? [...candidate.v_code, vCode]
+          : [vCode];
+        const letter = generateConfirmLetter(candidate.firstName, vCode);
+        await this.emailService.sendEmail(
+          candidate.email,
+          'Confirm registration',
+          letter,
+        );
+        return {
+          user: {
+            firstName: candidate.firstName,
+            lastName: candidate.lastName,
+            phone: candidate.phone,
+            email: candidate.email,
+          },
+        };
+      }
     }
     const hashPassword = await bcrypt.hash(createUserDto.password, 10);
 
@@ -43,19 +69,52 @@ export class AuthService {
     });
 
     const cart = await this.cartService.createCart(user.id);
+    const vCode = this.generateRandomCode(10);
 
     user.cart = cart;
+    user.v_code = [vCode];
 
     await this.userRepository.save(user);
 
+    const letter = generateConfirmLetter(user.firstName, vCode);
+
+    // await this.emailService.sendEmail(
+    //   user.email,
+    //   'Confirm registration',
+    //   letter,
+    // );
+
+    return {
+      user: {
+        firstName: user.firstName,
+        lastName: user.lastName,
+        phone: user.phone,
+        email: user.email,
+      },
+    };
+  }
+
+  async verify(code: string): Promise<IAuthResponse> {
+    const user = await this.userRepository
+      .createQueryBuilder('user')
+      .where(`ARRAY[:code]::varchar[] @> user.v_code`, { code })
+      .getOne();
+    console.log(code);
+    console.log(user);
+    if (!user) {
+      throw new NotFoundException();
+    }
+    if (!user.v_code.includes(code)) {
+      throw new ForbiddenException('Wrong code!');
+    }
+
     const token = await this.generateToken(user);
 
-    await this.emailService.sendEmail(
-      user.email,
-      'Mailbox confirmations',
-      'Hi. Congratulations on your registration',
-    );
-    
+    user.isVerify = true;
+    user.v_code = null;
+
+    await this.userRepository.save(user);
+
     return {
       user: {
         firstName: user.firstName,
@@ -70,6 +129,35 @@ export class AuthService {
         },
       },
       token,
+    };
+  }
+
+  async resendCode(email: string): Promise<Partial<IAuthResponse>> {
+    console.log(email);
+    const user = await this.userService.findOneByEmail(email);
+
+    if (!user) {
+      throw new NotFoundException();
+    }
+
+    if (user.isVerify) {
+      // console.log(user);
+      throw new ForbiddenException('Already verified');
+    }
+
+    const vCode = this.generateRandomCode(10);
+
+    user.v_code.push(vCode);
+
+    await this.userRepository.save(user);
+
+    return {
+      user: {
+        firstName: user.firstName,
+        lastName: user.lastName,
+        phone: user.phone,
+        email: user.email,
+      },
     };
   }
 
@@ -174,5 +262,10 @@ export class AuthService {
       throw new UnauthorizedException({ message: 'Wrong email or password' });
     }
     return user;
+  }
+
+  private generateRandomCode(length: number) {
+    const buffer = randomBytes(length);
+    return buffer.toString('hex').toUpperCase().substring(0, length);
   }
 }

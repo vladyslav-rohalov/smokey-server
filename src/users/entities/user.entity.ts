@@ -33,6 +33,12 @@ export class User {
   @Column({ nullable: true })
   googleId: string;
 
+  @Column({ type: 'varchar', array: true, nullable: true })
+  v_code: string[] | null;
+
+  @Column({ type: 'boolean', default: false })
+  isVerify: boolean;
+
   @OneToOne(() => Address, address => address.user, {
     onDelete: 'CASCADE',
   })
