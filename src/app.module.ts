@@ -37,7 +37,7 @@ import { AccessoriesModule } from './accessories/accessories.module';
 import { CartItemModule } from './cart-item/cart-item.module';
 import { OrderItemModule } from './order-item/order-item.module';
 import { BlacklistedTokensModule } from './blacklisted-tokens/blacklisted-tokens.module';
-import { AwsS3Module } from './aws-s3/aws-s3.module';
+import { AwsS3Module } from './services/aws-s3/aws-s3.module';
 import { PromotionModule } from './enums/promotion/promotion.module';
 import { BrandModule } from './enums/brand/brand.module';
 import { FlavorModule } from './enums/flavor/flavor.module';

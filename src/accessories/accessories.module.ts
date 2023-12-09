@@ -11,7 +11,7 @@ import { AccessoryTypeService } from 'src/enums/accessory-type/accessory-type.se
 import { BowlTypeService } from 'src/enums/bowl-type/bowl-type.service';
 import { AccessoryType } from 'src/enums/accessory-type/entities/accessory-type.entity';
 import { BowlType } from 'src/enums/bowl-type/entities/bowl-type.entity';
-import { AwsS3Service } from 'src/aws-s3/aws-s3.service';
+import { AwsS3Service } from 'src/services/aws-s3/aws-s3.service';
 import { JwtModule } from '@nestjs/jwt/dist';
 import { AuthModule } from 'src/auth/auth.module';
 import { BlacklistedTokensModule } from 'src/blacklisted-tokens/blacklisted-tokens.module';
@@ -26,7 +26,13 @@ import { BlacklistedTokensModule } from 'src/blacklisted-tokens/blacklisted-toke
     AwsS3Service,
   ],
   imports: [
-    TypeOrmModule.forFeature([Accessory, Product, AccessoryType, BowlType, JwtModule]),
+    TypeOrmModule.forFeature([
+      Accessory,
+      Product,
+      AccessoryType,
+      BowlType,
+      JwtModule,
+    ]),
     BrandModule,
     PromotionModule,
     forwardRef(() => AuthModule),

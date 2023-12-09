@@ -25,6 +25,9 @@ export class UsersService {
       where: { id: id },
       relations: ['address'],
     });
+    if (!user) {
+      throw new NotFoundException('User was not found');
+    }
     return {
       user: {
         firstName: user.firstName,

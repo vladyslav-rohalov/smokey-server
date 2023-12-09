@@ -4,7 +4,7 @@ import { Repository, In } from 'typeorm';
 import { Product } from './entities/product.entity';
 import { BrandService } from 'src/enums/brand/brand.service';
 import { PromotionService } from 'src/enums/promotion/promotion.service';
-import { AwsS3Service } from 'src/aws-s3/aws-s3.service';
+import { AwsS3Service } from 'src/services/aws-s3/aws-s3.service';
 import { CreateProductDto } from './dto/create-product.dto';
 import { UpdateProductDto } from './dto/update-product.dto';
 import { CreateCartDto } from 'src/cart/dto/create-cart.dto';

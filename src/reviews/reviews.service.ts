@@ -9,7 +9,7 @@ import { Review } from './entities/review.entity';
 import { Product } from 'src/products/entities/product.entity';
 import { User } from 'src/users/entities/user.entity';
 import { ProductsService } from 'src/products/products.service';
-import { AwsS3Service } from 'src/aws-s3/aws-s3.service';
+import { AwsS3Service } from 'src/services/aws-s3/aws-s3.service';
 import { CreateReviewDto } from './dto/create-review.dto';
 import { UpdateReviewDto } from './dto/update-review.dto';
 import { IProductReviews } from 'src/lib/interfaces';

@@ -9,8 +9,8 @@ import { AuthModule } from 'src/auth/auth.module';
 import { BlacklistedTokensModule } from 'src/blacklisted-tokens/blacklisted-tokens.module';
 import { ProductsService } from 'src/products/products.service';
 import { ProductsModule } from 'src/products/products.module';
-import { AwsS3Service } from 'src/aws-s3/aws-s3.service';
-import { AwsS3Module } from 'src/aws-s3/aws-s3.module';
+import { AwsS3Service } from 'src/services/aws-s3/aws-s3.service';
+import { AwsS3Module } from 'src/services/aws-s3/aws-s3.module';
 import { BrandModule } from 'src/enums/brand/brand.module';
 import { PromotionModule } from 'src/enums/promotion/promotion.module';
 

@@ -13,6 +13,7 @@ import { UnauthorizedException } from '@nestjs/common/exceptions';
 import * as bcrypt from 'bcryptjs';
 import { User } from '../users/entities/user.entity';
 import { IAuthResponse } from 'src/lib/interfaces';
+import { EmailService } from 'src/services/email/email.servise';
 
 @Injectable()
 export class AuthService {
@@ -23,6 +24,7 @@ export class AuthService {
     private jwtService: JwtService,
     private blTokensService: BlacklistedTokensService,
     private cartService: CartService,
+    private readonly emailService: EmailService,
   ) {}
 
   async registration(createUserDto: CreateUserDto): Promise<IAuthResponse> {
@@ -48,6 +50,12 @@ export class AuthService {
 
     const token = await this.generateToken(user);
 
+    await this.emailService.sendEmail(
+      user.email,
+      'Mailbox confirmations',
+      'Hi. Congratulations on your registration',
+    );
+    
     return {
       user: {
         firstName: user.firstName,
@@ -168,4 +176,3 @@ export class AuthService {
     return user;
   }
 }
-

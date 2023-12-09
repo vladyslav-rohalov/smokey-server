@@ -10,13 +10,21 @@ import { CartItemService } from 'src/cart-item/cart-item.service';
 import { CartItem } from 'src/cart-item/entities/cart-item.entity';
 import { User } from 'src/users/entities/user.entity';
 import { TypeOrmModule } from '@nestjs/typeorm';
-import { GoogleStrategy } from './google.strategy';
+import { GoogleStrategy } from '../strategies/google.strategy';
 import { PassportModule } from '@nestjs/passport';
+import { EmailService } from 'src/services/email/email.servise';
+// import { EmailModule } from 'src/services/email/email.module';
 import 'dotenv/config';
 
 @Module({
   controllers: [AuthController],
-  providers: [AuthService, CartService, CartItemService, GoogleStrategy],
+  providers: [
+    AuthService,
+    CartService,
+    CartItemService,
+    GoogleStrategy,
+    EmailService,
+  ],
   imports: [
     BlacklistedTokensModule,
     TypeOrmModule.forFeature([Cart, CartItem, User]),

@@ -9,7 +9,7 @@ import { FlavorService } from 'src/enums/flavor/flavor.service';
 import { BrandModule } from 'src/enums/brand/brand.module';
 import { PromotionModule } from 'src/enums/promotion/promotion.module';
 import { Flavor } from 'src/enums/flavor/entities/flavor.entity';
-import { AwsS3Service } from 'src/aws-s3/aws-s3.service';
+import { AwsS3Service } from 'src/services/aws-s3/aws-s3.service';
 import { JwtModule } from '@nestjs/jwt/dist';
 import { AuthModule } from 'src/auth/auth.module';
 import { BlacklistedTokensModule } from 'src/blacklisted-tokens/blacklisted-tokens.module';
