@@ -21,12 +21,14 @@ export class AuthController {
     return this.authService.registration(createUserDto);
   }
 
+  @HttpCode(200)
   @Post('resend')
   resendCode(@Body() updateUserDto: UpdateUserDto) {
     const { email } = updateUserDto;
     return this.authService.resendCode(email);
   }
 
+  @HttpCode(200)
   @Post('verify')
   verify(@Body() body: { code: string }) {
     return this.authService.verify(body.code);

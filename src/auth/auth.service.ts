@@ -50,6 +50,7 @@ export class AuthService {
           'Confirm registration',
           letter,
         );
+        await this.userRepository.save(candidate);
         return {
           user: {
             firstName: candidate.firstName,
@@ -78,11 +79,11 @@ export class AuthService {
 
     const letter = generateConfirmLetter(user.firstName, vCode);
 
-    // await this.emailService.sendEmail(
-    //   user.email,
-    //   'Confirm registration',
-    //   letter,
-    // );
+    await this.emailService.sendEmail(
+      user.email,
+      'Confirm registration',
+      letter,
+    );
 
     return {
       user: {
@@ -97,14 +98,10 @@ export class AuthService {
   async verify(code: string): Promise<IAuthResponse> {
     const user = await this.userRepository
       .createQueryBuilder('user')
-      .where(`ARRAY[:code]::varchar[] @> user.v_code`, { code })
+      .where(`:code = ANY (user.v_code)`, { code })
       .getOne();
-    console.log(code);
-    console.log(user);
+
     if (!user) {
-      throw new NotFoundException();
-    }
-    if (!user.v_code.includes(code)) {
       throw new ForbiddenException('Wrong code!');
     }
 
@@ -133,7 +130,6 @@ export class AuthService {
   }
 
   async resendCode(email: string): Promise<Partial<IAuthResponse>> {
-    console.log(email);
     const user = await this.userService.findOneByEmail(email);
 
     if (!user) {
@@ -141,7 +137,6 @@ export class AuthService {
     }
 
     if (user.isVerify) {
-      // console.log(user);
       throw new ForbiddenException('Already verified');
     }
 
