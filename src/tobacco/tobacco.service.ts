@@ -1,17 +1,17 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
-import { Product } from 'src/products/entities/product.entity';
+import { Product } from '../products/entities/product.entity';
 import { Tobacco } from './entities/tobacco.entity';
 import { CreateTobaccoDto } from './dto/create-tobacco.dto';
 import { UpdateTobaccoDto } from './dto/update-tobacco.dto';
-import { CreateProductDto } from 'src/products/dto/create-product.dto';
-import { UpdateProductDto } from 'src/products/dto/update-product.dto';
-import { ProductsService } from 'src/products/products.service';
-import { FlavorService } from 'src/enums/flavor/flavor.service';
-import { ISearchTobacco, ITobaccoProducts } from 'src/lib/interfaces';
-import { sortProducts, Pagination } from 'src/lib/functions';
-import { paramToArr } from 'src/lib/functions';
+import { CreateProductDto } from '../products/dto/create-product.dto';
+import { UpdateProductDto } from '../products/dto/update-product.dto';
+import { ProductsService } from '../products/products.service';
+import { FlavorService } from '../enums/flavor/flavor.service';
+import { ISearchTobacco, ITobaccoProducts } from '../lib/interfaces';
+import { sortProducts, Pagination } from '../lib/functions';
+import { paramToArr } from '../lib/functions';
 
 @Injectable()
 export class TobaccoService {

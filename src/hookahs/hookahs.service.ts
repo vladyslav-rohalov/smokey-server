@@ -1,18 +1,18 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
-import { Product } from 'src/products/entities/product.entity';
+import { Product } from '../products/entities/product.entity';
 import { Hookah } from './entities/hookah.entity';
-import { ColorService } from 'src/enums/color/color.service';
-import { HookahSizeService } from 'src/enums/hookah-size/hookah-size.service';
-import { ProductsService } from 'src/products/products.service';
-import { CreateProductDto } from 'src/products/dto/create-product.dto';
-import { UpdateProductDto } from 'src/products/dto/update-product.dto';
+import { ColorService } from '../enums/color/color.service';
+import { HookahSizeService } from '../enums/hookah-size/hookah-size.service';
+import { ProductsService } from '../products/products.service';
+import { CreateProductDto } from '../products/dto/create-product.dto';
+import { UpdateProductDto } from '../products/dto/update-product.dto';
 import { CreateHookahDto } from './dto/create-hookah.dto';
 import { UpdateHookahDto } from './dto/update-hookah.dto';
-import { ISearchHookahs, IHookahProducts } from 'src/lib/interfaces';
-import { sortProducts, Pagination } from 'src/lib/functions';
-import { paramToArr } from 'src/lib/functions';
+import { ISearchHookahs, IHookahProducts } from '../lib/interfaces';
+import { sortProducts, Pagination } from '../lib/functions';
+import { paramToArr } from '../lib/functions';
 
 @Injectable()
 export class HookahsService {

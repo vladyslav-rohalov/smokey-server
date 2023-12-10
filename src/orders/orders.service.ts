@@ -3,8 +3,8 @@ import { NotFoundException, ForbiddenException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { Order } from './entities/order.entity';
-import { User } from 'src/users/entities/user.entity';
-import { OrderItemService } from 'src/order-item/order-item.service';
+import { User } from '../users/entities/user.entity';
+import { OrderItemService } from '../order-item/order-item.service';
 import { CreateOrderDto } from './dto/create-order.dto';
 import { OrderStatus } from './entities/order.entity';
 

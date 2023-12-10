@@ -2,11 +2,11 @@ import { Controller, Get, Post, Body, Delete, Param } from '@nestjs/common';
 import { UploadedFiles, UseInterceptors, Patch } from '@nestjs/common';
 import { ReviewsService } from './reviews.service';
 import { UseGuards, Req, HttpCode } from '@nestjs/common';
-import { JwtAuthGuard } from 'src/guards/jwt-auth.guard';
+import { JwtAuthGuard } from '../guards/jwt-auth.guard';
 import { FilesInterceptor } from '@nestjs/platform-express';
 import { CreateReviewDto } from './dto/create-review.dto';
 import { UpdateReviewDto } from './dto/update-review.dto';
-import { IProductReviews, IUserRequest } from 'src/lib/interfaces';
+import { IProductReviews, IUserRequest } from '../lib/interfaces';
 
 @Controller('api/products/reviews')
 export class ReviewsController {

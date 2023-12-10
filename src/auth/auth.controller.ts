@@ -1,12 +1,12 @@
 import { Body, Controller, Post, HttpCode, Get } from '@nestjs/common';
-import { UseGuards, Req, Res, Param } from '@nestjs/common';
+import { UseGuards, Req, Res } from '@nestjs/common';
 import { CreateUserDto } from '../users/dto/create-user.dto';
 import { LoginUserDto } from './login-user.dto';
 import { AuthService } from './auth.service';
-import { JwtAuthGuard } from 'src/guards/jwt-auth.guard';
+import { JwtAuthGuard } from '../guards/jwt-auth.guard';
 import { Request } from 'express';
-import { GoogleOAuthGuard } from 'src/guards/google-oauth.guard';
-import { UpdateUserDto } from 'src/users/dto/update-user.dto';
+import { GoogleOAuthGuard } from '../guards/google-oauth.guard';
+import { UpdateUserDto } from '../users/dto/update-user.dto';
 
 interface IRequest extends Request {
   user: { id: number; token: string };
@@ -64,6 +64,6 @@ export class AuthController {
     const reqUser = req.user;
     const token = await this.authService.googleLogin(reqUser);
     res.cookie('token', token, { httpOnly: false });
-    res.redirect('http://localhost:3000/');
+    res.redirect('https://smokey.top/');
   }
 }

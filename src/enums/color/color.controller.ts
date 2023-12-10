@@ -2,8 +2,8 @@ import { Controller, Body, Param } from '@nestjs/common';
 import { Get, Post, Patch, Delete } from '@nestjs/common';
 import { ColorService } from './color.service';
 import { UseGuards } from '@nestjs/common/decorators';
-import { JwtAuthGuard } from 'src/guards/jwt-auth.guard';
-import { RolesGuard } from 'src/guards/role.guard';
+import { JwtAuthGuard } from '../../guards/jwt-auth.guard';
+import { RolesGuard } from '../../guards/role.guard';
 import { CreateColorDto } from './dto/create-color.dto';
 import { UpdateColorDto } from './dto/update-color.dto';
 

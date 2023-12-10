@@ -1,7 +1,7 @@
 import { Controller, Get, Post, Body, Req, HttpCode } from '@nestjs/common';
 import { UseGuards, Patch, Param, Delete } from '@nestjs/common';
 import { Request } from 'express';
-import { JwtAuthGuard } from 'src/guards/jwt-auth.guard';
+import { JwtAuthGuard } from '../guards/jwt-auth.guard';
 import { CartService } from './cart.service';
 import { CreateCartDto } from './dto/create-cart.dto';
 import { UpdateCartDto } from './dto/update-cart.dto';

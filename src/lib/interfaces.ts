@@ -1,6 +1,6 @@
 import { Request } from 'express';
-import { Product } from 'src/products/entities/product.entity';
-import { Review } from 'src/reviews/entities/review.entity';
+import { Product } from '../products/entities/product.entity';
+import { Review } from '../reviews/entities/review.entity';
 
 export interface IProductWithReviews extends Partial<Product> {
   numberOfReviews: number;

@@ -1,5 +1,5 @@
 import { Entity, PrimaryGeneratedColumn, JoinColumn } from 'typeorm';
-import { CreateDateColumn, UpdateDateColumn, Column } from 'typeorm';
+import { CreateDateColumn, UpdateDateColumn } from 'typeorm';
 import { OneToMany, OneToOne } from 'typeorm';
 import { User } from '../../users/entities/user.entity';
 import { CartItem } from '../../cart-item/entities/cart-item.entity';

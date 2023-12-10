@@ -2,7 +2,7 @@ import { Controller, Get, Post, Param, Delete } from '@nestjs/common';
 import { UseGuards, Req, HttpCode } from '@nestjs/common';
 import { Request } from 'express';
 import { FavoritesService } from './favorites.service';
-import { JwtAuthGuard } from 'src/guards/jwt-auth.guard';
+import { JwtAuthGuard } from '../guards/jwt-auth.guard';
 
 interface IRequest extends Request {
   user: { id: number };

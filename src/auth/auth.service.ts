@@ -1,21 +1,21 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
-import { CreateUserDto } from '../users/dto/create-user.dto';
-import { LoginUserDto } from './login-user.dto';
-import { UsersService } from '../users/users.service';
-import { JwtService } from '@nestjs/jwt/dist';
-import { BlacklistedTokensService } from 'src/blacklisted-tokens/blacklisted-tokens.service';
-import { CartService } from 'src/cart/cart.service';
 import { ConflictException } from '@nestjs/common/exceptions';
 import { NotFoundException } from '@nestjs/common/exceptions';
 import { ForbiddenException } from '@nestjs/common/exceptions';
 import { UnauthorizedException } from '@nestjs/common/exceptions';
+import { CreateUserDto } from '../users/dto/create-user.dto';
+import { LoginUserDto } from './login-user.dto';
+import { UsersService } from '../users/users.service';
+import { JwtService } from '@nestjs/jwt/dist';
+import { BlacklistedTokensService } from '../blacklisted-tokens/blacklisted-tokens.service';
+import { CartService } from '../cart/cart.service';
+import { EmailService } from '../services/email/email.servise';
 import * as bcrypt from 'bcryptjs';
 import { User } from '../users/entities/user.entity';
-import { IAuthResponse } from 'src/lib/interfaces';
-import { EmailService } from 'src/services/email/email.servise';
-import { generateConfirmLetter } from 'src/services/email/generateHtml';
+import { IAuthResponse } from '../lib/interfaces';
+import { generateConfirmLetter } from '../services/email/generateHtml';
 import { randomBytes } from 'crypto';
 
 @Injectable()
@@ -216,9 +216,12 @@ export class AuthService {
       const cart = await this.cartService.createCart(user.id);
 
       user.cart = cart;
-
-      await this.userRepository.save(user);
     }
+    user.isVerify = true;
+    user.v_code = null;
+
+    await this.userRepository.save(user);
+
     const token = await this.generateToken(user);
     return token;
   }
@@ -248,6 +251,11 @@ export class AuthService {
     const user = await this.userService.findOneByEmail(loginUserDto.email);
     if (!user) {
       throw new UnauthorizedException({ message: 'Wrong email or password' });
+    }
+    if (!user.isVerify) {
+      throw new UnauthorizedException({
+        message: 'Please confirm your e-mail',
+      });
     }
     const passwordEquals = await bcrypt.compare(
       loginUserDto.password,

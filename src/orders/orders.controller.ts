@@ -3,7 +3,7 @@ import { UseGuards, Controller } from '@nestjs/common';
 import { OrdersService } from './orders.service';
 import { CreateOrderDto } from './dto/create-order.dto';
 import { Request } from 'express';
-import { JwtAuthGuard } from 'src/guards/jwt-auth.guard';
+import { JwtAuthGuard } from '../guards/jwt-auth.guard';
 
 interface IRequest extends Request {
   user: { id: number };

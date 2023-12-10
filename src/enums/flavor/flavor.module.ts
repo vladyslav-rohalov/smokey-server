@@ -4,8 +4,8 @@ import { FlavorController } from './flavor.controller';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { Flavor } from './entities/flavor.entity';
 import { JwtModule } from '@nestjs/jwt/dist';
-import { AuthModule } from 'src/auth/auth.module';
-import { BlacklistedTokensModule } from 'src/blacklisted-tokens/blacklisted-tokens.module';
+import { AuthModule } from '../../auth/auth.module';
+import { BlacklistedTokensModule } from '../../blacklisted-tokens/blacklisted-tokens.module';
 
 @Module({
   imports: [

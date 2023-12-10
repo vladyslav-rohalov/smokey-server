@@ -1,11 +1,11 @@
 import { Controller, Get, Post, Body, Patch, Param } from '@nestjs/common';
 import { Query } from '@nestjs/common';
 import { UseGuards } from '@nestjs/common/decorators';
-import { JwtAuthGuard } from 'src/guards/jwt-auth.guard';
-import { RolesGuard } from 'src/guards/role.guard';
+import { JwtAuthGuard } from '../guards/jwt-auth.guard';
+import { RolesGuard } from '../guards/role.guard';
 import { AccessoriesService } from './accessories.service';
 import { CreateAccessoryDto } from './dto/create-accessory.dto';
-import { CreateProductDto } from 'src/products/dto/create-product.dto';
+import { CreateProductDto } from '../products/dto/create-product.dto';
 
 
 @Controller('api/products/accessories')

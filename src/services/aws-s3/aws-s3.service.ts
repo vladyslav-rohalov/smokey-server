@@ -4,7 +4,7 @@ import { v4 as uuidv4 } from 'uuid';
 import { Rembg } from 'rembg-node';
 import sharp from 'sharp';
 import 'dotenv/config';
-import { IOptionsUpload } from 'src/lib/interfaces';
+import { IOptionsUpload } from '../../lib/interfaces';
 
 const { AWS_BUCKET_NAME, AWS_ACCESS_KEY_ID, AWS_SECRET_ACCESS_KEY } =
   process.env;

@@ -1,6 +1,6 @@
 import { IsArray, ArrayMinSize, ValidateNested } from 'class-validator';
 import { Type } from 'class-transformer';
-import { CreateOrderItemDto } from 'src/order-item/dto/create-order-item.dto';
+import { CreateOrderItemDto } from '../../order-item/dto/create-order-item.dto';
 
 export class CreateOrderDto {
   @IsArray()

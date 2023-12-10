@@ -2,8 +2,8 @@ import { Controller, Body, Param } from '@nestjs/common';
 import { Get, Post, Patch, Delete } from '@nestjs/common';
 import { HookahSizeService } from './hookah-size.service';
 import { UseGuards } from '@nestjs/common/decorators';
-import { JwtAuthGuard } from 'src/guards/jwt-auth.guard';
-import { RolesGuard } from 'src/guards/role.guard';
+import { JwtAuthGuard } from '../../guards/jwt-auth.guard';
+import { RolesGuard } from '../../guards/role.guard';
 import { CreateHookahSizeDto } from './dto/create-hookah-size.dto';
 import { UpdateHookahSizeDto } from './dto/update-hookah-size.dto';
 

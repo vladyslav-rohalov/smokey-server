@@ -4,9 +4,9 @@ import { HttpCode } from '@nestjs/common';
 import { ProductsService } from './products.service';
 import { FilesInterceptor } from '@nestjs/platform-express';
 import { UseGuards } from '@nestjs/common/decorators';
-import { JwtAuthGuard } from 'src/guards/jwt-auth.guard';
-import { RolesGuard } from 'src/guards/role.guard';
-import { CreateCartDto } from 'src/cart/dto/create-cart.dto';
+import { JwtAuthGuard } from '../guards/jwt-auth.guard';
+import { RolesGuard } from '../guards/role.guard';
+import { CreateCartDto } from '../cart/dto/create-cart.dto';
 
 @Controller('api/products')
 export class ProductsController {

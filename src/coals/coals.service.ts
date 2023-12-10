@@ -3,14 +3,14 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { CreateCoalDto } from './dto/create-coal.dto';
 import { UpdateCoalDto } from './dto/update-coal.dto';
-import { Product } from 'src/products/entities/product.entity';
+import { Product } from '../products/entities/product.entity';
 import { Coal } from './entities/coal.entity';
-import { CreateProductDto } from 'src/products/dto/create-product.dto';
-import { UpdateProductDto } from 'src/products/dto/update-product.dto';
-import { ProductsService } from 'src/products/products.service';
-import { ISearchCoals, ICoalProducts } from 'src/lib/interfaces';
-import { Pagination, sortProducts } from 'src/lib/functions';
-import { paramToArr } from 'src/lib/functions';
+import { CreateProductDto } from '../products/dto/create-product.dto';
+import { UpdateProductDto } from '../products/dto/update-product.dto';
+import { ProductsService } from '../products/products.service';
+import { ISearchCoals, ICoalProducts } from '../lib/interfaces';
+import { Pagination, sortProducts } from '../lib/functions';
+import { paramToArr } from '../lib/functions';
 
 @Injectable()
 export class CoalsService {

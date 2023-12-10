@@ -1,18 +1,18 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
-import { Product } from 'src/products/entities/product.entity';
+import { Product } from '../products/entities/product.entity';
 import { Accessory } from './entities/accessory.entity';
-import { ProductsService } from 'src/products/products.service';
-import { AccessoryTypeService } from 'src/enums/accessory-type/accessory-type.service';
-import { BowlTypeService } from 'src/enums/bowl-type/bowl-type.service';
-import { CreateProductDto } from 'src/products/dto/create-product.dto';
-import { UpdateProductDto } from 'src/products/dto/update-product.dto';
+import { ProductsService } from '../products/products.service';
+import { AccessoryTypeService } from '../enums/accessory-type/accessory-type.service';
+import { BowlTypeService } from '../enums/bowl-type/bowl-type.service';
+import { CreateProductDto } from '../products/dto/create-product.dto';
+import { UpdateProductDto } from '../products/dto/update-product.dto';
 import { CreateAccessoryDto } from './dto/create-accessory.dto';
 import { UpdateAccessoryDto } from './dto/update-accessory.dto';
-import { ISearchAccessories, IAccessoryProducts } from 'src/lib/interfaces';
-import { sortProducts, Pagination } from 'src/lib/functions';
-import { paramToArr } from 'src/lib/functions';
+import { ISearchAccessories, IAccessoryProducts } from '../lib/interfaces';
+import { sortProducts, Pagination } from '../lib/functions';
+import { paramToArr } from '../lib/functions';
 
 @Injectable()
 export class AccessoriesService {

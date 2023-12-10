@@ -2,15 +2,15 @@ import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository, In } from 'typeorm';
 import { Product } from './entities/product.entity';
-import { BrandService } from 'src/enums/brand/brand.service';
-import { PromotionService } from 'src/enums/promotion/promotion.service';
-import { AwsS3Service } from 'src/services/aws-s3/aws-s3.service';
+import { BrandService } from '../enums/brand/brand.service';
+import { PromotionService } from '../enums/promotion/promotion.service';
+import { AwsS3Service } from '../services/aws-s3/aws-s3.service';
 import { CreateProductDto } from './dto/create-product.dto';
 import { UpdateProductDto } from './dto/update-product.dto';
-import { CreateCartDto } from 'src/cart/dto/create-cart.dto';
-import { ISearch, IOptionsUpload, IProducts } from 'src/lib/interfaces';
-import { IProductWithReviews } from 'src/lib/interfaces';
-import { Pagination, sortProducts } from 'src/lib/functions';
+import { CreateCartDto } from '../cart/dto/create-cart.dto';
+import { ISearch, IOptionsUpload, IProducts } from '../lib/interfaces';
+import { IProductWithReviews } from '../lib/interfaces';
+import { Pagination, sortProducts } from '../lib/functions';
 
 @Injectable()
 export class ProductsService {

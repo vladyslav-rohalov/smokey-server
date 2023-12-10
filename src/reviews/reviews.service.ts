@@ -6,13 +6,13 @@ import {
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { Review } from './entities/review.entity';
-import { Product } from 'src/products/entities/product.entity';
-import { User } from 'src/users/entities/user.entity';
-import { ProductsService } from 'src/products/products.service';
-import { AwsS3Service } from 'src/services/aws-s3/aws-s3.service';
+import { Product } from '../products/entities/product.entity';
+import { User } from '../users/entities/user.entity';
+import { ProductsService } from '../products/products.service';
+import { AwsS3Service } from '../services/aws-s3/aws-s3.service';
 import { CreateReviewDto } from './dto/create-review.dto';
 import { UpdateReviewDto } from './dto/update-review.dto';
-import { IProductReviews } from 'src/lib/interfaces';
+import { IProductReviews } from '../lib/interfaces';
 
 @Injectable()
 export class ReviewsService {

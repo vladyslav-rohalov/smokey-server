@@ -4,8 +4,8 @@ import { BrandController } from './brand.controller';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { Brand } from './entities/brand.entity';
 import { JwtModule } from '@nestjs/jwt/dist';
-import { AuthModule } from 'src/auth/auth.module';
-import { BlacklistedTokensModule } from 'src/blacklisted-tokens/blacklisted-tokens.module';
+import { AuthModule } from '../../auth/auth.module';
+import { BlacklistedTokensModule } from '../../blacklisted-tokens/blacklisted-tokens.module';
 
 @Module({
   imports: [

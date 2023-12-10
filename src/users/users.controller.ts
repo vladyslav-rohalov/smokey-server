@@ -2,11 +2,11 @@ import { Controller, HttpCode, UseGuards } from '@nestjs/common';
 import { Get, Patch, Delete, Body, Req } from '@nestjs/common';
 import { Request } from 'express';
 import { UsersService } from './users.service';
-import { AddressesService } from 'src/addresses/addresses.service';
-import { JwtAuthGuard } from 'src/guards/jwt-auth.guard';
-import { RolesGuard } from 'src/guards/role.guard';
+import { AddressesService } from '../addresses/addresses.service';
+import { JwtAuthGuard } from '../guards/jwt-auth.guard';
+import { RolesGuard } from '../guards/role.guard';
 import { UpdateUserDto } from './dto/update-user.dto';
-import { CreateAddressDto } from 'src/addresses/dto/create-address.dto';
+import { CreateAddressDto } from '../addresses/dto/create-address.dto';
 
 interface IRequest extends Request {
   user: { id: number };

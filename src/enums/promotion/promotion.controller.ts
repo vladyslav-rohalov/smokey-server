@@ -2,8 +2,8 @@ import { Controller, Body, Param } from '@nestjs/common';
 import { Get, Post, Patch, Delete } from '@nestjs/common';
 import { PromotionService } from './promotion.service';
 import { UseGuards } from '@nestjs/common/decorators';
-import { JwtAuthGuard } from 'src/guards/jwt-auth.guard';
-import { RolesGuard } from 'src/guards/role.guard';
+import { JwtAuthGuard } from '../../guards/jwt-auth.guard';
+import { RolesGuard } from '../../guards/role.guard';
 import { CreatePromotionDto } from './dto/create-promotion.dto';
 import { UpdatePromotionDto } from './dto/update-promotion.dto';
 
