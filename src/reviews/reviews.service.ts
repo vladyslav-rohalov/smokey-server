@@ -1,8 +1,5 @@
-import {
-  Injectable,
-  NotFoundException,
-  ForbiddenException,
-} from '@nestjs/common';
+import { Injectable } from '@nestjs/common';
+import { NotFoundException, ForbiddenException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { Review } from './entities/review.entity';
@@ -13,6 +10,10 @@ import { AwsS3Service } from '../services/aws-s3/aws-s3.service';
 import { CreateReviewDto } from './dto/create-review.dto';
 import { UpdateReviewDto } from './dto/update-review.dto';
 import { IProductReviews } from '../lib/interfaces';
+import { Express } from 'express';
+import { Multer } from 'multer';
+
+type File = Express.Multer.File;
 
 @Injectable()
 export class ReviewsService {
@@ -63,7 +64,8 @@ export class ReviewsService {
     id: number,
     createReviewDto: CreateReviewDto,
     userId: number,
-    images: Express.Multer.File[],
+    // images: Express.Multer.File[],
+    images: File[],
   ) {
     const updatedDto = {
       text: createReviewDto.text,
@@ -131,7 +133,8 @@ export class ReviewsService {
     id: number,
     updateReviewDto: UpdateReviewDto,
     userId: number,
-    images: Express.Multer.File[],
+    // images: Express.Multer.File[],
+    images: File[],
   ) {
     const updatedDto = {
       text: updateReviewDto.text,

@@ -5,7 +5,7 @@ import * as dotenv from 'dotenv';
 dotenv.config({ path: `.env.${process.env.NODE_ENV}` });
 
 async function bootstrap() {
-  const PORT = process.env.PORT || 3000;
+  const PORT = process.env.PORT || 5000;
   const app = await NestFactory.create(AppModule);
 
   app.enableCors();
@@ -17,7 +17,7 @@ async function bootstrap() {
 
   await app.listen(PORT, () =>
     console.log(
-      `server started on port = ${PORT} in ${process.env.NODE_ENV} mode`,
+      `server started on port = ${PORT} in ${process.env.NODE_ENV} mode.`,
     ),
   );
 }

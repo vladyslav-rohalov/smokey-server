@@ -112,7 +112,9 @@ export class AccessoriesService {
     return updatedProduct;
   }
 
-  async findAllAccessories(params: ISearchAccessories): Promise<IAccessoryProducts> {
+  async findAllAccessories(
+    params: ISearchAccessories,
+  ): Promise<IAccessoryProducts> {
     const { page, limit, sort, brand, status, type, bowlType } = params;
     const { id, images, publish, promotion, min, max } = params;
 
@@ -133,11 +135,11 @@ export class AccessoriesService {
       query = query.andWhere('product.id = :id', { id });
     }
 
-    if (publish) {
+    if (publish === true || publish === false) {
       query = query.andWhere('product.publish = :publish', { publish });
     }
 
-    if (images) {
+    if (images === true || images === false) {
       if (images === true) {
         query = query.andWhere('product.images IS NOT NULL');
       } else if (images === false) {

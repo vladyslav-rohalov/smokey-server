@@ -13,7 +13,8 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import { GoogleStrategy } from '../strategies/google.strategy';
 import { PassportModule } from '@nestjs/passport';
 import { EmailService } from '../services/email/email.servise';
-import 'dotenv/config';
+import * as dotenv from 'dotenv';
+dotenv.config({ path: `.env.${process.env.NODE_ENV}` });
 
 @Module({
   controllers: [AuthController],

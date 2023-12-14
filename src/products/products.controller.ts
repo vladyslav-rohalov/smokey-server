@@ -7,6 +7,10 @@ import { UseGuards } from '@nestjs/common/decorators';
 import { JwtAuthGuard } from '../guards/jwt-auth.guard';
 import { RolesGuard } from '../guards/role.guard';
 import { CreateCartDto } from '../cart/dto/create-cart.dto';
+import { Express } from 'express';
+import { Multer } from 'multer';
+
+type File = Express.Multer.File;
 
 @Controller('api/products')
 export class ProductsController {
@@ -73,7 +77,7 @@ export class ProductsController {
   @UseInterceptors(FilesInterceptor('images'))
   addImages(
     @Param('id') id: string,
-    @UploadedFiles() images: Express.Multer.File[],
+    @UploadedFiles() images: File[],
     @Body() bgOptions: { id: string; deleteBG: string; trim: string },
   ) {
     const options = {

@@ -62,6 +62,6 @@ export const AppDataSource = new DataSource({
     BowlType,
     HookahSize,
   ],
-  migrations: ['src/migrations/*.ts'],
+  migrations: ['/migrations/*.ts'],
   subscribers: [],
 });

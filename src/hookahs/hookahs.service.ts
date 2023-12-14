@@ -117,11 +117,11 @@ export class HookahsService {
       query = query.andWhere('product.id = :id', { id });
     }
 
-    if (publish) {
+    if (publish === true || publish === false) {
       query = query.andWhere('product.publish = :publish', { publish });
     }
 
-    if (images) {
+    if (images === true || images === false) {
       if (images === true) {
         query = query.andWhere('product.images IS NOT NULL');
       } else if (images === false) {

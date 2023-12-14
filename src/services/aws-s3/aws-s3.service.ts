@@ -5,6 +5,10 @@ import { Rembg } from 'rembg-node';
 import sharp from 'sharp';
 import 'dotenv/config';
 import { IOptionsUpload } from '../../lib/interfaces';
+import { Express } from 'express';
+import { Multer } from 'multer';
+
+type File = Express.Multer.File;
 
 const { AWS_BUCKET_NAME, AWS_ACCESS_KEY_ID, AWS_SECRET_ACCESS_KEY } =
   process.env;
@@ -41,7 +45,7 @@ export class AwsS3Service {
   }
 
   async uploadFiles(
-    files: Express.Multer.File[],
+    files: File[],
     options: IOptionsUpload,
   ): Promise<AWS.S3.ManagedUpload.SendData[]> {
     const uploadPromises = files.map(async file => {
@@ -63,6 +67,12 @@ export class AwsS3Service {
             mimetype,
           );
         }
+        // return await this.s3_upload(
+        //   buffer,
+        //   `${this.AWS_S3_BUCKET}/products`,
+        //   `${uuidv4()}`,
+        //   mimetype,
+        // );
       } catch (error) {
         throw new Error(`Error uploading file: ${error.message}`);
       }
@@ -71,7 +81,7 @@ export class AwsS3Service {
   }
 
   async uploadReviewFiles(
-    files: Express.Multer.File[],
+    files: File[],
   ): Promise<AWS.S3.ManagedUpload.SendData[]> {
     const uploadPromises = files.map(async file => {
       const { buffer, mimetype } = file;

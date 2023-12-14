@@ -7,6 +7,10 @@ import { FilesInterceptor } from '@nestjs/platform-express';
 import { CreateReviewDto } from './dto/create-review.dto';
 import { UpdateReviewDto } from './dto/update-review.dto';
 import { IProductReviews, IUserRequest } from '../lib/interfaces';
+import { Express } from 'express';
+import { Multer } from 'multer';
+
+type File = Express.Multer.File;
 
 @Controller('api/products/reviews')
 export class ReviewsController {
@@ -29,7 +33,7 @@ export class ReviewsController {
   @UseInterceptors(FilesInterceptor('images'))
   addProductReviews(
     @Param('id') id: string,
-    @UploadedFiles() images: Express.Multer.File[],
+    @UploadedFiles() images: File[],
     @Body() createReviewDto: CreateReviewDto,
     @Req() req: IUserRequest,
   ) {

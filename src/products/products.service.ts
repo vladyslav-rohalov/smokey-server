@@ -11,6 +11,10 @@ import { CreateCartDto } from '../cart/dto/create-cart.dto';
 import { ISearch, IOptionsUpload, IProducts } from '../lib/interfaces';
 import { IProductWithReviews } from '../lib/interfaces';
 import { Pagination, sortProducts } from '../lib/functions';
+import { Express } from 'express';
+import { Multer } from 'multer';
+
+type File = Express.Multer.File;
 
 @Injectable()
 export class ProductsService {
@@ -78,6 +82,7 @@ export class ProductsService {
   async findAll(params: Partial<ISearch>): Promise<IProducts> {
     let { page, limit, sort, id, images, publish } = params;
     let { brand, status, min, max, promotion } = params;
+
     let query = this.productRepository
       .createQueryBuilder('product')
       .innerJoinAndSelect('product.brand', 'brand')
@@ -99,10 +104,10 @@ export class ProductsService {
     if (id) {
       query = query.andWhere('product.id = :id', { id });
     }
-    if (publish) {
+    if (publish === true || publish === false) {
       query = query.andWhere('product.publish = :publish', { publish });
     }
-    if (images) {
+    if (images === true || images === false) {
       if (images === true) {
         query = query.andWhere('product.images IS NOT NULL');
       } else if (images === false) {
@@ -356,7 +361,8 @@ export class ProductsService {
 
   async addImages(
     productId: number,
-    images: Express.Multer.File[],
+    // images: Express.Multer.File[],
+    images: File[],
     options: IOptionsUpload,
   ) {
     const product = await this.productRepository.findOne({
