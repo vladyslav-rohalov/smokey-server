@@ -12,7 +12,7 @@ interface IRequest extends Request {
   user: { id: number; token: string };
 }
 
-@Controller('auth')
+@Controller('api/auth')
 export class AuthController {
   constructor(private authService: AuthService) {}
 

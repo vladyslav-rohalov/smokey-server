@@ -12,7 +12,7 @@ interface IRequest extends Request {
   user: { id: number };
 }
 
-@Controller('users')
+@Controller('api/users')
 export class UsersController {
   constructor(
     private readonly usersService: UsersService,

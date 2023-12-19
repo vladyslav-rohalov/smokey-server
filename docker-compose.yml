@@ -1,21 +1,17 @@
 services:
-  server:
+  nestjs:
     build:
       context: .
       dockerfile: Dockerfile
-    container_name: server
     restart: always
     ports:
       - '5000:5000'
     depends_on:
-      - db
+      - postgres
       - pgadmin
 
-  db:
+  postgres:
     image: postgres
-    env_file:
-      - .env.production
-    container_name: postgres
     ports:
       - '5432:5432'
     volumes:
@@ -24,10 +20,7 @@ services:
   pgadmin:
     image: dpage/pgadmin4
     restart: always
-    container_name: nest-pgadmin4
-    env_file:
-      - .env.production
     ports:
       - '5050:80'
     depends_on:
-      - db
+      - postgres

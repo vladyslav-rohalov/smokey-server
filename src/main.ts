@@ -15,7 +15,7 @@ async function bootstrap() {
     }),
   );
 
-  await app.listen(PORT, () =>
+  await app.listen(PORT, '0.0.0.0', () =>
     console.log(
       `server started on port = ${PORT} in ${process.env.NODE_ENV} mode.`,
     ),
